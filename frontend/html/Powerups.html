@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' type='text/css' href='../css/Powerups.css'>
+  <script type="text/JavaScript" src="../js/Powerups.js"></script>
+</head>
+
+<body>
+
+  <h1 id="header" style="background-color: #353839;">PolyPong</h1>
+
+  <hr>
+  <h2>Choose 3 Powerups</h2>
+  <br>
+
+  <div>
+    <button class="button" style="background-color: #353839; width: 25%;" id="bigger" onclick="highlightPowerUps('bigger')">
+       <img src="../images/Bigger Paddle.png" width="90" height="90"/>
+       <p>Bigger Paddle</p>
+    </button>
+
+    <button class="button" style="background-color: #353839; width: 25%;" id="smaller" onclick="highlightPowerUps('smaller')">
+       <img src="../images/Smaller Paddle.png" width="90" height="90"/>
+       <p>Smaller Paddle</p>
+    </button>
+
+    <button class="button" style="background-color: #353839; width: 25%;" id="curved" onclick="highlightPowerUps('curved')">
+       <img src="../images/Curved Paddle.png" width="90" height="90"/>
+       <p>Curved Paddle</p>
+    </button>
+  </div>
+
+  <div>
+    <button class="button" style="background-color: #353839; width: 25%;" id="invisible" onclick="highlightPowerUps('invisible')">
+       <img src="../images/Invisible Paddle.png" width="90" height="90"/>
+       <p>Invisible Paddle<br><br></p>
+    </button>
+
+    <button class="button" style="background-color: #353839; width: 25%;", id="split" onclick="highlightPowerUps('split')">
+       <img src="../images/Split Paddle.png" width="90" height="90"/>
+       <p>Split Paddle<br><br></p>
+    </button>
+
+    <button class="button" style="background-color: #353839; width: 25%;", id="distracting" onclick="highlightPowerUps('distracting')">
+       <img src="../images/Distracting Background.png" width="90" height="90"/>
+       <p>Distracting Background</p>
+    </button>
+  </div>
+
+  <div>
+    <button class="button" style="background-color: #353839; width: 25%;", id="anotherBall" onclick="highlightPowerUps('anotherBall')">
+       <img src="../images/Add a Ball into the Mix.png" width="90" height="90"/>
+       <p>Add a Ball into the Mix</p>
+    </button>
+
+    <button class="button" style="background-color: #353839; width: 25%;", id="changeShape" onclick="highlightPowerUps('changeShape')">
+       <img src="../images/Change Ball Shape - Star.png" width="90" height="90"/>
+       <p>Change Ball Shape - Star</p>
+    </button>
+
+    <button class="button" style="background-color: #353839; width: 25%;", id="bomb" onclick="highlightPowerUps('bomb')">
+       <img src="../images/Bomb.png" width="90" height="90"/>
+       <p>Bomb<br><br></p>
+    </button>
+  </div>
+
+  <div>
+    <button class="button" style="background-color: #353839; width: 25%;", id="catchAndAim" onclick="highlightPowerUps('catchAndAim')">
+       <img src="../images/Catch And Aim.png" width="90" height="90"/>
+       <p>Catch And Aim</p>
+    </button>
+  </div>
+
+  <br>
+  <hr>
+  <br>
+  <p>Change Skin:</p>
+  <br>
+
+  <div>
+    <button class="button button4" id="white" style="vertical-align: middle;" onclick="highlightSkins('white')">Default</button>
+    <button class="button button5" id="red" style="vertical-align: middle;" onclick="highlightSkins('red')">Red</button>
+    <button class="button button6" id="blue" style="vertical-align: middle;" onclick="highlightSkins('blue')">Blue</button>
+    <button class="button button7" id="orange" style="vertical-align: middle;" onclick="highlightSkins('orange')">Orange</button>
+  </div>
+
+  <br>
+  <hr>
+  <br>
+
+  <a href='Gameplay.html'>
+    <button class="button button9" style="vertical-align: middle;">Let's Play!</button>
+  </a>
+
+</body>
+</html>

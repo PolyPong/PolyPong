@@ -1,0 +1,61 @@
+@font-face { font-family: SuperLegendBoy; src: url('SuperLegendBoy-4w8Y.TTF'); }
+
+h1 {
+  font-family: SuperLegendBoy;
+  text-align: center;
+  color: white;
+  background-color: #353839;
+}
+
+body {
+  font-family: SuperLegendBoy;
+  font-size: 22px;
+  text-align: center;
+  color: white;
+  background-color: #353839;
+}
+
+p {
+  font-family: SuperLegendBoy;
+  text-align: center;
+  font-size: 22px;
+}
+
+ol {
+  margin: 22px;
+  font-size: 22px;
+	text-align: left;
+}
+
+.button {
+  font-family: SuperLegendBoy;
+  border: 2px solid #FFFFFF;
+  height: 100px;
+  color: white;
+  padding: 15px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 22px;
+  margin: 10px 0px;
+  cursor: pointer;
+  background-color: #353839;
+}
+
+.button:hover {
+  background-color: #FFFFFF; /* White */
+  color: #353839;
+}
+
+.button4 {
+  width: 20%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.alignleft {
+	float: left;
+}
+.alignright {
+	float: right;
+}
