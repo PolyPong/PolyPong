@@ -6,9 +6,6 @@ export const sendEmail = async (j: string) => {
     personalizations: [{
       subject: "Hello world",
       to: [
-        { email: "jychang@ualberta.ca" },
-        { email: "mantifao@ualberta.ca " },
-        { email: "awoosare@ualberta.ca" },
       ],
     }],
     from: { email: "heyitworks@polypong.ca" },
