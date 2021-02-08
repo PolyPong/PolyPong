@@ -1,7 +1,8 @@
-# NOTE: when we are done the project, we probably want to lock dependencies then
+# NOTE we should lock dependencies when this app is done
 yarn.lock
 
-/node_modules/
-/public/build/
-
 .DS_Store
+node_modules
+/.svelte
+/build
+/functions
