@@ -1,3 +1,6 @@
+# NOTE: when we are done the project, we probably want to lock dependencies then
+yarn.lock
+
 /node_modules/
 /public/build/
 
