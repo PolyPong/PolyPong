@@ -1,0 +1,96 @@
+<body>
+    <h1 id="header" style="background-color: #353839;">PolyPong</h1>
+    <hr />
+    <p>Sign Up:</p>
+
+    <label for="username" class="label1">Username:</label>
+    <input type="text" class="input" id="username" name="username" /><br /><br
+    />
+
+    <label for="email" class="label2">Email:</label>
+    <input type="text" class="input" id="email" name="email" /><br /><br />
+
+    <a href="/login">
+        <button class="button button8">Create Account</button>
+    </a>
+</body>
+
+<style>
+    @font-face {
+        font-family: SuperLegendBoy;
+        src: url("/fonts/SuperLegendBoy-4w8Y.ttf");
+    }
+
+    h1 {
+        font-family: SuperLegendBoy;
+        text-align: center;
+        color: white;
+        background-color: #353839;
+    }
+
+    body {
+        font-family: SuperLegendBoy;
+        font-size: 22px;
+        text-align: center;
+        color: white;
+        background-color: #353839;
+    }
+
+    p {
+        font-family: SuperLegendBoy;
+        text-align: center;
+        font-size: 22px;
+    }
+
+    .button {
+        font-family: SuperLegendBoy;
+        border: 2px solid #ffffff;
+        height: auto;
+        color: white;
+        padding: 15px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 22px;
+        margin: 10px 0px;
+        cursor: pointer;
+        background-color: #353839;
+        width: 20%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .button8 {
+        color: white;
+        background-color: #353839;
+        border: 2px solid white;
+    }
+    .button8:hover {
+        background-color: white;
+        color: #353839;
+    }
+
+    .label1 {
+        padding: 150px 120px;
+    }
+
+    .label2 {
+        padding: 150px 150px;
+    }
+
+    .input {
+        font-family: SuperLegendBoy;
+        height: auto;
+        width: 50%;
+        padding: 15px 0px;
+        text-align: center;
+        border: 2px solid white;
+        background-color: #353839;
+        font-size: 22px;
+        margin: 10px 0px;
+    }
+
+    input:focus {
+        color: white;
+    }
+</style>
