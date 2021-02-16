@@ -9,16 +9,46 @@
 	import Signup from "./routes/Signup.svelte";
 	import Stats from "./routes/Stats.svelte";
 	import Login from "./routes/Login.svelte";
+	import Auth0Demo from "./routes/Auth0Demo.svelte";
 	import { onMount } from "svelte";
-	import Logintest from "./routes/Logintest.svelte";
+	import auth from "./authService";
+	import { isAuthenticated, user } from "./store";
 
 	router.mode.hash();
 
-	onMount(() => router.goto("/home"));
+	let auth0Client;
+
+	onMount(async () => {
+		auth0Client = await auth.createClient();
+		isAuthenticated.set(await auth0Client.isAuthenticated());
+		user.set(await auth0Client.getUser());
+	});
 </script>
 
-<!-- <Route path="/" redirect="/home"/> -->
+<div>
+	<div>this will probably be a header or something</div>
+	<button on:click={() => auth.loginWithRedirect(auth0Client)}>Login</button>
+	<button
+		on:click={async () => {
+			const u = await auth0Client.getTokenSilently();
+			user.set(u);
+		}}>Login Silently</button
+	>
+	<div>
+		{JSON.stringify($user)}
+	</div>
+	<div>
+		{$isAuthenticated}
+	</div>
+</div>
+
 <Route>
+	<!-- <Route path="/" redirect="/home"/> -->
+
+	<Route path="/home">
+		<Home />
+	</Route>
+
 	<Route path="/game">
 		<Game />
 	</Route>
@@ -51,10 +81,11 @@
 		<Login />
 	</Route>
 
-	<Route path="logintest">
-		<Logintest />
+	<Route path="/authdemo">
+		<Auth0Demo />
 	</Route>
 </Route>
+<Route fallback>ruh roh</Route>
 
 <!-- <Route path="/" redirect="/home"/> -->
 <style>
