@@ -10,48 +10,53 @@
 	import Stats from "./routes/Stats.svelte";
 	import Login from "./routes/Login.svelte";
 	import { onMount } from "svelte";
+	import Logintest from "./routes/Logintest.svelte";
 
 	router.mode.hash();
 
 	onMount(() => router.goto("/home"));
 </script>
 
-<Route path="/home">
-	<Home />
+<!-- <Route path="/" redirect="/home"/> -->
+<Route>
+	<Route path="/game">
+		<Game />
+	</Route>
+
+	<Route path="/leaderboard">
+		<Leaderboard />
+	</Route>
+
+	<Route path="/lobby">
+		<Lobby />
+	</Route>
+
+	<Route path="/powerups">
+		<Powerups />
+	</Route>
+
+	<Route path="/settings">
+		<Settings />
+	</Route>
+
+	<Route path="/signup">
+		<Signup />
+	</Route>
+
+	<Route path="/stats">
+		<Stats />
+	</Route>
+
+	<Route path="/login">
+		<Login />
+	</Route>
+
+	<Route path="logintest">
+		<Logintest />
+	</Route>
 </Route>
 
-<Route path="/game">
-	<Game />
-</Route>
-
-<Route path="/leaderboard">
-	<Leaderboard />
-</Route>
-
-<Route path="/lobby">
-	<Lobby />
-</Route>
-
-<Route path="/powerups">
-	<Powerups />
-</Route>
-
-<Route path="/settings">
-	<Settings />
-</Route>
-
-<Route path="/signup">
-	<Signup />
-</Route>
-
-<Route path="/stats">
-	<Stats />
-</Route>
-
-<Route path="/login">
-	<Login />
-</Route>
-
+<!-- <Route path="/" redirect="/home"/> -->
 <style>
 	:global(body) {
 		margin: 0;
