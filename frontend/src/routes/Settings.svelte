@@ -1,22 +1,22 @@
 <script>
     let skinSelected = "white";
 
-    function highlightSkins(idOfSkin) {
+    function highlightSkins(idOfSkin: string) {
         if (idOfSkin == skinSelected) {
             return true;
         } else if (idOfSkin == "white") {
-            document.getElementById(skinSelected).style.backgroundColor =
+            document.getElementById(skinSelected)!.style.backgroundColor =
                 "#353839";
-            document.getElementById(skinSelected).style.color = skinSelected;
-            document.getElementById(idOfSkin).style.backgroundColor = idOfSkin;
-            document.getElementById(idOfSkin).style.color = "#353839";
+            document.getElementById(skinSelected)!.style.color = skinSelected;
+            document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
+            document.getElementById(idOfSkin)!.style.color = "#353839";
             skinSelected = idOfSkin;
         } else {
-            document.getElementById(skinSelected).style.backgroundColor =
+            document.getElementById(skinSelected)!.style.backgroundColor =
                 "#353839";
-            document.getElementById(skinSelected).style.color = skinSelected;
-            document.getElementById(idOfSkin).style.backgroundColor = idOfSkin;
-            document.getElementById(idOfSkin).style.color = "#FFFFFF";
+            document.getElementById(skinSelected)!.style.color = skinSelected;
+            document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
+            document.getElementById(idOfSkin)!.style.color = "#FFFFFF";
             skinSelected = idOfSkin;
         }
     }
@@ -33,7 +33,7 @@
             class="button button4"
             id="white"
             style="vertical-align: middle;"
-            on:click={highlightSkins("white")}>Default</button
+            on:click={() => highlightSkins("white")}>Default</button
         >
         <button
             class="button button5"

@@ -1,22 +1,22 @@
 <script>
-    let powerUpsSelected = [];
+    let powerUpsSelected: any[] = [];
     let skinSelected = "white";
 
-    function highlightPowerUps(idOfElement) {
+    function highlightPowerUps(idOfElement: any) {
         var id = document.getElementById(idOfElement);
         if (
-            id.style.backgroundColor ==
-                document.getElementById("header").style.backgroundColor &&
+            id && id.style.backgroundColor ==
+                document.getElementById("header")!.style.backgroundColor &&
             powerUpsSelected.length < 3
         ) {
             id.style.backgroundColor = "#FFFFFF";
             id.style.color = "#353839";
             powerUpsSelected.push(idOfElement);
-        } else {
-            id.style.backgroundColor = "#353839";
-            id.style.color = "#FFFFFF";
+        } else if (id){
+            id!.style.backgroundColor = "#353839";
+            id!.style.color = "#FFFFFF";
 
-            for (powerUp in powerUpsSelected) {
+            for (const powerUp of powerUpsSelected) {
                 if (powerUpsSelected[powerUp] == idOfElement) {
                     powerUpsSelected.splice(powerUp, 1);
                 }
@@ -24,22 +24,22 @@
         }
     }
 
-    function highlightSkins(idOfSkin) {
+    function highlightSkins(idOfSkin: string) {
         if (idOfSkin == skinSelected) {
             return true;
         } else if (idOfSkin == "white") {
-            document.getElementById(skinSelected).style.backgroundColor =
+            document.getElementById(skinSelected)!.style.backgroundColor =
                 "#353839";
-            document.getElementById(skinSelected).style.color = skinSelected;
-            document.getElementById(idOfSkin).style.backgroundColor = idOfSkin;
-            document.getElementById(idOfSkin).style.color = "#353839";
+            document.getElementById(skinSelected)!.style.color = skinSelected;
+            document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
+            document.getElementById(idOfSkin)!.style.color = "#353839";
             skinSelected = idOfSkin;
         } else {
-            document.getElementById(skinSelected).style.backgroundColor =
+            document.getElementById(skinSelected)!.style.backgroundColor =
                 "#353839";
-            document.getElementById(skinSelected).style.color = skinSelected;
-            document.getElementById(idOfSkin).style.backgroundColor = idOfSkin;
-            document.getElementById(idOfSkin).style.color = "#FFFFFF";
+            document.getElementById(skinSelected)!.style.color = skinSelected;
+            document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
+            document.getElementById(idOfSkin)!.style.color = "#FFFFFF";
             skinSelected = idOfSkin;
         }
     }
@@ -57,7 +57,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="bigger"
-            on:click={highlightPowerUps("bigger")}
+            on:click={() => highlightPowerUps("bigger")}
         >
             <img src="/images/Bigger Paddle.png" width="90" height="90" />
             <p>Bigger Paddle</p>
@@ -67,7 +67,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="smaller"
-            on:click={highlightPowerUps("smaller")}
+            on:click={() => highlightPowerUps("smaller")}
         >
             <img src="/images/Smaller Paddle.png" width="90" height="90" />
             <p>Smaller Paddle</p>
@@ -77,7 +77,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="curved"
-            on:click={highlightPowerUps("curved")}
+            on:click={() => highlightPowerUps("curved")}
         >
             <img src="/images/Curved Paddle.png" width="90" height="90" />
             <p>Curved Paddle</p>
@@ -89,7 +89,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="invisible"
-            on:click={highlightPowerUps("invisible")}
+            on:click={() => highlightPowerUps("invisible")}
         >
             <img src="/images/Invisible Paddle.png" width="90" height="90" />
             <p>Invisible Paddle<br /><br /></p>
@@ -99,7 +99,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="split"
-            on:click={highlightPowerUps("split")}
+            on:click={() => highlightPowerUps("split")}
         >
             <img src="/images/Split Paddle.png" width="90" height="90" />
             <p>Split Paddle<br /><br /></p>
@@ -109,7 +109,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="distracting"
-            on:click={highlightPowerUps("distracting")}
+            on:click={() => highlightPowerUps("distracting")}
         >
             <img
                 src="/images/Distracting Background.png"
@@ -125,7 +125,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="anotherBall"
-            on:click={highlightPowerUps("anotherBall")}
+            on:click={() => highlightPowerUps("anotherBall")}
         >
             <img
                 src="/images/Add a Ball into the Mix.png"
@@ -139,7 +139,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="changeShape"
-            on:click={highlightPowerUps("changeShape")}
+            on:click={() => highlightPowerUps("changeShape")}
         >
             <img
                 src="/images/Change Ball Shape - Star.png"
@@ -153,7 +153,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="bomb"
-            on:click={highlightPowerUps("bomb")}
+            on:click={() => highlightPowerUps("bomb")}
         >
             <img src="/images/Bomb.png" width="90" height="90" />
             <p>Bomb<br /><br /></p>
@@ -165,7 +165,7 @@
             class="button"
             style="background-color: #353839; width: 25%;"
             id="catchAndAim"
-            on:click={highlightPowerUps("catchAndAim")}
+            on:click={() => highlightPowerUps("catchAndAim")}
         >
             <img src="/images/Catch And Aim.png" width="90" height="90" />
             <p>Catch And Aim</p>
@@ -183,25 +183,25 @@
             class="button button4"
             id="white"
             style="vertical-align: middle;"
-            on:click={highlightSkins("white")}>Default</button
+            on:click={() => highlightSkins("white")}>Default</button
         >
         <button
             class="button button5"
             id="red"
             style="vertical-align: middle;"
-            on:click={highlightSkins("red")}>Red</button
+            on:click={() => highlightSkins("red")}>Red</button
         >
         <button
             class="button button6"
             id="blue"
             style="vertical-align: middle;"
-            on:click={highlightSkins("blue")}>Blue</button
+            on:click={() => highlightSkins("blue")}>Blue</button
         >
         <button
             class="button button7"
             id="orange"
             style="vertical-align: middle;"
-            on:click={highlightSkins("orange")}>Orange</button
+            on:click={() => highlightSkins("orange")}>Orange</button
         >
     </div>
 

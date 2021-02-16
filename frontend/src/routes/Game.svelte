@@ -5,13 +5,12 @@
         load();
         await tick();
         getSize();
-
     });
-    var canvas = null;
-    var ctx = null;
-    var w = null;
-    var h = null;
-    var currentShape = null;
+    var canvas: HTMLCanvasElement;
+    var ctx: CanvasRenderingContext2D;
+    var w: number = 0;
+    var h: number = 0;
+    var currentShape: null = null;
 
     function load() {
         w = document.documentElement.clientWidth;
@@ -19,7 +18,7 @@
         canvas = document.getElementById("drawing");
         canvas.width = w - 100;
         canvas.height = h - 150;
-        ctx = canvas.getContext("2d");
+        ctx = canvas.getContext("2d")!;
     }
 
     function getSize() {
@@ -37,7 +36,14 @@
         // drawPolygon((h-250)/2, (w-200)/2, currentShape, 255, 255, 255);
     }
 
-    function drawPolygon(shapeHeight, shapeWidth, sides, red, green, blue) {
+    function drawPolygon(
+        shapeHeight: number,
+        shapeWidth: number,
+        sides: number | null,
+        red: string | number,
+        green: string | number,
+        blue: string | number
+    ) {
         // Determine whether height or width is the limiting factor on the screen right now
         shapeHeight > shapeWidth
             ? (radius = shapeWidth)
@@ -200,40 +206,38 @@
     <p>Draw a:</p>
 
     <div>
-        <button id="triangle" class="button button8" onclick="drawTriangle()"
+        <button id="triangle" class="button button8" on:click={drawTriangle}
             >Triangle</button
         >
-        <button id="square" class="button button8" onclick="drawSquare()"
+        <button id="square" class="button button8" on:click={drawSquare}
             >Square</button
         >
-        <button id="pentagon" class="button button8" onclick="drawPentagon()"
+        <button id="pentagon" class="button button8" on:click={drawPentagon}
             >Pentagon</button
         >
-        <button id="hexagon" class="button button8" onclick="drawHexagon()"
+        <button id="hexagon" class="button button8" on:click={drawHexagon}
             >Hexagon</button
         >
     </div>
     <div>
-        <button id="septagon" class="button button8" onclick="drawSeptagon()"
+        <button id="septagon" class="button button8" on:click={drawSeptagon}
             >Septagon</button
         >
-        <button id="octagon" class="button button8" onclick="drawOctagon()"
+        <button id="octagon" class="button button8" on:click={drawOctagon}
             >Octagon</button
         >
-        <button id="nonagon" class="button button8" onclick="drawNonagon()"
+        <button id="nonagon" class="button button8" on:click={drawNonagon}
             >Nonagon</button
         >
-        <button id="decagon" class="button button8" onclick="drawDecagon()"
+        <button id="decagon" class="button button8" on:click={drawDecagon}
             >Decagon</button
         >
     </div>
     <div>
-        <button
-            id="hendecagon"
-            class="button button8"
-            onclick="drawHendecagon()">Hendecagon</button
+        <button id="hendecagon" class="button button8" on:click={drawHendecagon}
+            >Hendecagon</button
         >
-        <button id="dodecagon" class="button button8" onclick="drawDodecagon()"
+        <button id="dodecagon" class="button button8" on:click={drawDodecagon}
             >Dodecagon</button
         >
     </div>
@@ -243,7 +247,7 @@
 <style>
     @font-face {
         font-family: SuperLegendBoy;
-        src: url("/fonts/SuperLegendBoy-4w8Y.ttf");
+        src: url("SuperLegendBoy-4w8Y.ttf");
     }
 
     /* html, body {

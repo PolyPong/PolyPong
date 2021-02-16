@@ -1,8 +1,3 @@
-# NOTE we should lock dependencies when this app is done
-yarn.lock
-
-.DS_Store
+.snowpack
+build
 node_modules
-/.svelte
-/build
-/functions
