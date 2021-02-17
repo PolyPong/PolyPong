@@ -1,5 +1,5 @@
 <script>
-import { isAuthenticated } from "../store";
+    import { isAuthenticated } from "../store";
 
     import { onMount, tick } from "svelte";
 
@@ -196,8 +196,9 @@ import { isAuthenticated } from "../store";
     <h1 id="header" style="background-color: #353839;">PolyPong</h1>
     <hr />
     {#if $isAuthenticated}
-<div>hey you're authenticated</div>
+        <div>hey you're authenticated</div>
     {/if}
+    <a href="/">go to /</a>
 
     <canvas
         id="drawing"

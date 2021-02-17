@@ -28,20 +28,6 @@ async function loginWithPopup(client, options) {
   }
 }
 
-const loginWithRedirect = async (client, options) => {
-  try {
-    await client.loginWithRedirect({
-      redirect_uri: "http://localhost:8080/",
-    });
-    //logged in. you can get the user profile like this:
-    user.set(await client.getUser());
-    isAuthenticated.set(true);
-  } catch (e) {
-    // eslint-disable-next-line
-    console.error(e);
-  }
-};
-
 function logout(client) {
   return client.logout();
 }
@@ -49,7 +35,6 @@ function logout(client) {
 const auth = {
   createClient,
   loginWithPopup,
-  loginWithRedirect,
   logout,
 };
 

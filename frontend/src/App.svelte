@@ -20,6 +20,8 @@
 
 	onMount(async () => {
 		auth0Client = await auth.createClient();
+		// createclient should do this part automatically
+		// await auth0Client.getTokenSilently();
 		isAuthenticated.set(await auth0Client.isAuthenticated());
 		user.set(await auth0Client.getUser());
 	});
@@ -27,7 +29,7 @@
 
 <div>
 	<div>this will probably be a header or something</div>
-	<button on:click={() => auth.loginWithRedirect(auth0Client)}>Login</button>
+	<button on:click={() => auth.loginWithPopup(auth0Client)}>Login</button>
 	<button
 		on:click={async () => {
 			const u = await auth0Client.getTokenSilently();
@@ -40,6 +42,7 @@
 	<div>
 		{$isAuthenticated}
 	</div>
+	<a href="/game">goto game</a>
 </div>
 
 <Route>
