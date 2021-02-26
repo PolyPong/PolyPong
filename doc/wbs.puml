@@ -1,0 +1,162 @@
+@startwbs
+* PolyPong
+** 1 User Registration
+*** 1.1 FR-1 User.Registration
+**** 1.1.1 Create registration form UI
+**** 1.1.2 Redirect user to registration form
+**** 1.1.3 Verify user input in form
+***** 1.1.3.1 Integrate Registration form with Auth0
+***** 1.1.3.2 Verify email address is valid
+***** 1.1.3.3 Verify username is valid
+**** 1.1.4 Store user email in database
+**** 1.1.5 Redirect user to home page
+
+** 2 User Login
+*** 2.1 FR-2 User.Login
+**** 2.1.1 Create UI for login
+**** 2.1.2 Verify User credentials
+***** 2.1.2.1 Vefify identity with Auth0 integration
+**** 2.1.3 Redirect user to home page
+
+** 3 Play Game
+*** 3.1 FR-3 Game.Create
+**** 3.1.1 Create UI to create a new game
+***** 3.1.1.1 Request new game from server
+**** 3.1.2 Server logic for creating a new game
+***** 3.1.2.1 Create lobby
+****** 3.1.2.1.1 Generate game ID
+****** 3.1.2.1.2 Open WebSocket connection server side
+
+*** 3.2 FR-4 Game.Share.Link
+**** 3.2.1 Generate link from Game ID
+**** 3.2.2 Create UI for sharing link
+***** 3.2.2.1 Copy link to user's clipboard
+
+*** 3.3 FR-5 Game.Join
+**** 3.3.1 Create UI for joining game based on link/game ID
+**** 3.3.2 Open WebSocket connection client side
+**** 3.3.3 Add user to game lobby on the server
+**** 3.3.4 Check if lobby is full
+
+*** 3.4 FR-6 Game.Play
+**** 3.4.1 Create UI for starting game
+**** 3.4.2 Create UI for playing game
+***** 3.4.2.1 Render paddle on canvas
+***** 3.4.2.2 Render ball on canvas
+***** 3.4.2.3 Render n-sided polygons on canvas
+***** 3.4.2.4 Ball collision
+**** 3.4.3 Game server
+***** 3.4.3.1 Game logic
+***** 3.4.3.2 Game synchronization algorithm
+***** 3.4.3.3 Receive player updates from clients
+***** 3.4.3.4 Broadcast game updates to clients
+**** 3.4.4 Game client
+***** 3.4.4.1 Handle user input
+***** 3.4.4.2 Send player updates to server
+***** 3.4.4.3 Receive game updates from server
+***** 3.4.4.4 Game synchronization algorithm
+
+** 4 Leaderboard and Statistics
+*** 4.1 FR-7 User.Earn.XP
+**** 4.1.1 Implement XP earning algorithm
+**** 4.1.2 Assign XP at the end of game
+**** 4.1.3 Save XP updates to database
+*** 4.2 FR-8 User.View.Local.Leaderboard
+**** 4.2.1 Get leaderboard data from database
+**** 4.2.2 Create UI for viewing local leaderboard
+*** 4.3 FR-9 User.View.Global.Leaderboard
+**** 4.3.1 Get leaderboard data from database
+**** 4.3.2 Create UI for viewing global leaderboard
+*** 4.4 FR-10 User.Stats
+**** 4.4.1 Get user statistics from database
+**** 4.4.2 Create UI for viewing user statistics
+
+** 5 Power Ups
+*** 5.1 FR-11 Game.PowerUps
+**** 5.1.1 Create UI for selecting power up
+**** 5.1.2 Send user choice to server
+**** 5.1.3 Update game in server to allow user to use that power up
+*** 5.2 FR-12 PowerUps.Expanded.Paddle
+**** 5.2.1 Create UI to use power up
+**** 5.2.2 Send update to server to notify use of the power up
+**** 5.2.3 Server broadcast use of power up to other players
+**** 5.2.3 Render power up effect client side
+*** 5.3 FR-13 PowerUps.Shrink.Paddle
+**** 5.3.1 Create UI to use power up
+**** 5.3.2 Send update to server to notify use of the power up
+**** 5.3.3 Server broadcast use of power up to other players
+**** 5.3.3 Render power up effect client side
+*** 5.4 FR-14 PowerUps.Self.Invisible.Paddle
+**** 5.4.1 Create UI to use power up
+**** 5.4.2 Send update to server to notify use of the power up
+**** 5.4.3 Server broadcast use of power up to other players
+**** 5.4.3 Render power up effect client side
+*** 5.5 FR-15 PowerUps.Others.Invisible.Paddle
+**** 5.5.1 Create UI to use power up
+**** 5.5.2 Send update to server to notify use of the power up
+**** 5.5.3 Server broadcast use of power up to other players
+**** 5.5.3 Render power up effect client side
+*** 5.6 FR-16 PowerUps.Invisible.Ball
+**** 5.6.1 Create UI to use power up
+**** 5.6.2 Send update to server to notify use of the power up
+**** 5.6.3 Server broadcast use of power up to other players
+**** 5.6.3 Render power up effect client side
+*** 5.7 FR-17 PowerUps.Self.ShapedPaddle.CurvedOutwards
+**** 5.7.1 Create UI to use power up
+**** 5.7.2 Send update to server to notify use of the power up
+**** 5.7.3 Server broadcast use of power up to other players
+**** 5.7.3 Render power up effect client side
+*** 5.8 FR-18 PowerUps.Self.ShapedPaddle.CurvedInwards
+**** 5.8.1 Create UI to use power up
+**** 5.8.2 Send update to server to notify use of the power up
+**** 5.8.3 Server broadcast use of power up to other players
+**** 5.8.3 Render power up effect client side
+*** 5.9 FR-19 PowerUps.Self.ShapedPaddle.Bumpy
+**** 5.9.1 Create UI to use power up
+**** 5.9.2 Send update to server to notify use of the power up
+**** 5.9.3 Server broadcast use of power up to other players
+**** 5.9.3 Render power up effect client side
+*** 5.10 FR-20 PowerUps.Colour.Background
+**** 5.10.1 Create UI to use power up
+**** 5.10.2 Send update to server to notify use of the power up
+**** 5.10.3 Server broadcast use of power up to other players
+**** 5.10.3 Render power up effect client side
+*** 5.11 FR-21 PowerUps.Self.Split.Paddle
+**** 5.11.1 Create UI to use power up
+**** 5.11.2 Send update to server to notify use of the power up
+**** 5.11.3 Server broadcast use of power up to other players
+**** 5.11.3 Render power up effect client side
+*** 5.12 FR-22 PowerUps.Others.Split.Paddle
+**** 5.12.1 Create UI to use power up
+**** 5.12.2 Send update to server to notify use of the power up
+**** 5.12.3 Server broadcast use of power up to other players
+**** 5.12.3 Render power up effect client side
+*** 5.13 FR-23 PowerUps.Add.Ball
+**** 5.13.1 Create UI to use power up
+**** 5.13.2 Send update to server to notify use of the power up
+**** 5.13.3 Server broadcast use of power up to other players
+**** 5.13.3 Render power up effect client side
+*** 5.14 FR-24 PowerUps.Stop.Aim
+**** 5.14.1 Create UI to use power up
+**** 5.14.2 Send update to server to notify use of the power up
+**** 5.14.3 Server broadcast use of power up to other players
+**** 5.14.3 Render power up effect client side
+*** 5.15 FR-25 PowerUps.Bomb
+**** 5.15.1 Create UI to use power up
+**** 5.15.2 Send update to server to notify use of the power up
+**** 5.15.3 Server broadcast use of power up to other players
+**** 5.15.3 Render power up effect client side
+*** 5.16 FR-26 PowerUps.Path.Trace
+**** 5.16.1 Create UI to use power up
+**** 5.16.2 Send update to server to notify use of the power up
+**** 5.16.3 Server broadcast use of power up to other players
+**** 5.16.3 Render power up effect client side
+
+** 6 Skins
+*** 6.1 FR-27 User.Earn.Skin
+**** 6.1.1 Create UI for informing user of new skin once XP reaches threshold
+**** 6.1.2 Check for XP reaching threshold
+*** 6.2 FR-28 User.Select.Skin
+**** 6.2.1 Create UI for user to select skin
+**** 6.2.2 Save user choice of skin in database
+@endwbs
