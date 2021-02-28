@@ -1,12 +1,207 @@
-<script>
+<script `lang="typescript"`>
     import { isAuthenticated } from "../store";
 
     import { onMount, tick } from "svelte";
+
+
+    class Lobby {
+        gameLink: string;
+        players: Player[];
+
+        constructor(players: Player[], gameLink: string) {
+            this.players = players;
+            this.gameLink = gameLink;
+        }
+    }
+
+    class Game { 
+        numPlayers: number;
+        ballVisible: boolean;
+        numBalls: number;
+        backgroundColor: number;
+        activePowerups: Powerup[];
+        players: Player[];
+
+        constructor(
+            numPlayers: number, 
+            ballVisible: boolean, 
+            numBalls: number, 
+            backgroundColor: number,
+            activePowerups: Powerup[], 
+            players: Player[]) {
+                this.numPlayers = numPlayers;
+                this.ballVisible = ballVisible;
+                this.numBalls = numBalls;
+                this.backgroundColor = backgroundColor;
+                this.activePowerups = activePowerups;
+                this.players = players;
+            }
+
+        // update(messageFromServer){  // array of updated positions for each players, optional array of powers ups, what kind of powerups and initiated by who, optional event of this player died (or something)
+        //     paddles[playerX].update(messageFromServer.powerup)
+        // }
+    }
+
+    enum Shape {
+        Regular = 0,
+        CurvedInwards,
+        CurvedOutwards,
+        Bumpy
+    }
+
+    enum Color {
+        White,
+        Red,
+        Green,
+        Blue
+    }
+
+    class Paddle {
+        x: number;
+        y: number;
+        length: number;
+        angle: number;
+        invisible: boolean;
+        shape: Shape;
+        paddleColor: number;
+
+        constructor(
+            x: number,
+            y: number,
+            length: number,
+            angle: number,
+            invisible: boolean,
+            shape: Shape,
+            paddleColor: Color) {
+                this.x = x;
+                this.y = y;
+                this.length = length;
+                this.angle = angle;
+                this.invisible = invisible;
+                this.shape = shape;
+                this.paddleColor = paddleColor;
+            }
+    }
+
+    class Player {
+        username: string;
+        email: string;
+        paddle: Paddle;
+        inventory: Powerup[];
+        xp: number;
+
+        constructor(
+            username: string,
+            email: string,
+            paddle: Paddle,
+            inventory: Powerup[],
+            xp: number) {
+                this.username = username;
+                this.email = email;
+                this.paddle = paddle;
+                this.inventory = inventory;
+                this.xp = xp;
+        }
+
+        // Does a player contain a paddle? Does skin/paddle color belong to player or to paddle?
+        // Answer: Skin color currently belongs to the paddle
+        // misc. stats (win/loss, games won, etc.)
+    }
+
+    interface Powerup {
+        applyPowerup(): void;
+    }
+
+    class ExpandedPaddle implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class ShrinkPaddle implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class MakeSelfInvisible implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class MakeOthersInvisible implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class MakeBallInvisible implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class MakePaddleCurveOutwards implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class MakePaddleCurveInwards implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class MakePaddleBumpy implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class SetBackgroundColor implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class SplitPaddle implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class AddBall implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class CatchAndAim implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class Bomb implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
+    class TraceBallPath implements Powerup {
+        applyPowerup() {
+            return;
+        }
+    }
+
 
     onMount(async () => {
         load();
         await tick();
         getSize();
+        render();
     });
 
     var canvas: HTMLCanvasElement;
@@ -14,7 +209,7 @@
     var w: number = 0;
     var h: number = 0;
     var radius: number = 400;
-    var currentShape: number = 3;
+    var currentShape: number = 0;
 
     function load() {
         w = document.documentElement.clientWidth;
@@ -32,12 +227,15 @@
         canvas = document.getElementById("drawing");
         canvas.width = w - 100;
         canvas.height = h - 150;
-        redraw();
     }
 
-    function redraw() {
-        drawPolygon((h - 200) / 2, (w - 150) / 2, currentShape, 255, 255, 255);
-        // drawPolygon((h-250)/2, (w-200)/2, currentShape, 255, 255, 255);
+    function render() {
+        if (currentShape == 0){
+
+        } else {
+            drawPolygon((h - 200) / 2, (w - 150) / 2, currentShape, 255, 255, 255);
+            // drawPolygon((h-250)/2, (w-200)/2, currentShape, 255, 255, 255);
+        }
     }
 
 
@@ -148,6 +346,14 @@
         console.log("Yo!");
         drawPolygon((h - 200) / 2, (w - 150) / 2, 12, 255, 255, 255);
     }
+
+
+    // function gameLoop(){
+    //     // update() function here
+    //     update();
+    //     // render() function here
+    //     render();
+    // }
 
     function paddles() {
         //   var canvas = document.getElementById("canvas");
