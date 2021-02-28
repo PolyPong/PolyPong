@@ -8,11 +8,13 @@
         await tick();
         getSize();
     });
+
     var canvas: HTMLCanvasElement;
     var ctx: CanvasRenderingContext2D;
     var w: number = 0;
     var h: number = 0;
-    var currentShape: null = null;
+    var radius: number = 400;
+    var currentShape: number = 3;
 
     function load() {
         w = document.documentElement.clientWidth;
@@ -38,10 +40,11 @@
         // drawPolygon((h-250)/2, (w-200)/2, currentShape, 255, 255, 255);
     }
 
+
     function drawPolygon(
         shapeHeight: number,
         shapeWidth: number,
-        sides: number | null,
+        sides: number,
         red: string | number,
         green: string | number,
         blue: string | number
@@ -50,6 +53,7 @@
         shapeHeight > shapeWidth
             ? (radius = shapeWidth)
             : (radius = shapeHeight);
+
         // Set the currentShape equal to the sides of the shape we are drawing
         currentShape = sides;
         // Clear the canvas
@@ -86,7 +90,7 @@
     // 11 Sides = 32.727272727 degrees = 32.727272727/4 degrees
     // 12 Sides = 30 degrees = 15 degrees
 
-    function rotationAngle(sides) {
+    function rotationAngle(sides: number) {
         return (360 / sides) * (((sides + 2) % 4) / 4);
         // for(let i = 3; i <= 12; i++){
         //   console.log("Number of Sides: " + i + " Rotation Angle: " + (360/i)*((i+2)%4 / 4));
