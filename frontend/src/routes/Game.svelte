@@ -10,6 +10,7 @@
     var game: Game.Game;
     var leftArrowPressed = false;
     var rightArrowPressed = false;
+    var playerNumber: number = 0;
 
     const paddleCoverageRatio:number = 1/4;
     const ballScaleFactor: number = 1/30;
@@ -89,10 +90,10 @@
 
         // Handles paddle movement side-to-side using the left and right arrow keys, 
         // only lets the paddle move along the length of its respective side (bounded by the side length)
-        if (leftArrowPressed && ((game.players[0].paddle.x - game.players[0].paddle.width) > -game.sideLength/2) ){ 
-            game.players[0].paddle.x -= Game.Paddle.velocity;
-        } else if (rightArrowPressed && (game.players[0].paddle.x < game.sideLength/2)) {
-            game.players[0].paddle.x += Game.Paddle.velocity;
+        if (leftArrowPressed && ((game.players[playerNumber].paddle.x - game.players[playerNumber].paddle.width) > -game.sideLength/2) ){ 
+            game.players[playerNumber].paddle.x -= Game.Paddle.velocity;
+        } else if (rightArrowPressed && (game.players[playerNumber].paddle.x < game.sideLength/2)) {
+            game.players[playerNumber].paddle.x += Game.Paddle.velocity;
         }
         moveBall();
 
@@ -104,7 +105,23 @@
 
     // Re-render the game according to the new state
     function render() {
+        //Move the origin to the exact center of the canvas
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+
+        // Rotate so that the player which has 'playerNumber' number is at the bottom
+        // Need to rotate BEFORE paddles are drawn to the screen, need to rotate around center of canvas
+        ctx.rotate(-2 * Math.PI * playerNumber / game.sides); 
         drawPaddles();
+        // Undo the spell we cast 
+        ctx.rotate(2 * Math.PI * playerNumber / game.sides); 
+
+        // Later on, when the ball information is coming in from the server, we will want to include
+        // drawBall() in between the two rotations. For now, the ball information is not rotated because
+        // right now the ball information is from player 0's perspective, not from player playerNumber's perspective
+        
+        // TLDR: drawBall() stays outside the rotations until we are synchronizing ball information across clients
+
+
         drawBall();
     }
 
@@ -169,9 +186,6 @@
     }
 
     function drawPaddles() {
-        //Move the origin to the exact center of the canvas
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-
         ctx.lineWidth = Game.Paddle.height;
 
         for (var i = 0; i < game.sides; i++){
@@ -222,10 +236,11 @@
     // collision Detect function
     function collisionDetect() {
         // returns true or false
+        console.log("Player number: " + playerNumber);
         var top = getPaddleY()-Game.Paddle.height/2;
-        var right = game.players[0].paddle.x;
+        var right = game.players[playerNumber].paddle.x;
         var bottom = getPaddleY()+Game.Paddle.height/2;
-        var left = game.players[0].paddle.x - game.players[0].paddle.width;
+        var left = game.players[playerNumber].paddle.x - game.players[playerNumber].paddle.width;
 
         var topOfBall = game.ball.y - game.ball.radius;
         var rightOfBall = game.ball.x + game.ball.radius;
@@ -238,11 +253,11 @@
     function handleCollision() {
         var angle = 0;
         // If the ball hits the left quarter of the paddle, make the ball go left
-        if (game.ball.x < (game.players[0].paddle.x - 3*game.players[0].paddle.width / 4)) { 
+        if (game.ball.x < (game.players[playerNumber].paddle.x - 3*game.players[playerNumber].paddle.width / 4)) { 
             angle = -1 * Math.PI / 4;   // -45 degrees
         }
         // Else If the ball hits the right quarter of the paddle, make the ball go right
-        else if (game.ball.x > (game.players[0].paddle.x - game.players[0].paddle.width / 4)) {  
+        else if (game.ball.x > (game.players[playerNumber].paddle.x - game.players[playerNumber].paddle.width / 4)) {  
             angle = Math.PI / 4;        // 45 degrees
         } 
         // Else Angle = 0
