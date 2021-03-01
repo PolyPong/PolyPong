@@ -12,6 +12,7 @@
     var rightArrowPressed = false;
 
     const paddleCoverageRatio:number = 1/4;
+    const frameRate = 1000/60;  // 60 FPS
     
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -39,16 +40,16 @@
 
         canvas.width = w - 100;
         canvas.height = h - 150;
-        ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;
+        ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;       
     }
 
 
     function startGame(sides: number) {
         // Create new games with 'sides' number of players
         game = new Game.Game(sides);
-
+    
         // Starts the game loop
-        setInterval(gameLoop, 1000/60)
+        setInterval(gameLoop, frameRate);
     }
 
     function gameLoop() {
@@ -89,12 +90,18 @@
         } else if (rightArrowPressed && (game.players[0].paddle.x < game.sideLength/2)) {
             game.players[0].paddle.x += Game.Paddle.velocity;
         }
+        moveBall();
+
+        if (collisionDetect()){
+            handleCollision();
+        }
 
     }
 
     // Re-render the game according to the new state
     function render() {
         drawPaddles();
+        drawBall();
     }
 
 
@@ -194,8 +201,57 @@
             return game.radius - 450/game.sides + game.sides;
         }
     }
+ 
+    function moveBall() {
+        game.ball.x += game.ball.dx;
+        game.ball.y += game.ball.dy;
+    }
 
-    
+    function drawBall() {
+        ctx.beginPath();
+        ctx.arc(game.ball.x, game.ball.y, game.ball.radius, 0, Math.PI*2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    // collision Detect function
+    function collisionDetect() {
+        // returns true or false
+        var top = getPaddleY()-Game.Paddle.height/2;
+        var right = game.players[0].paddle.x;
+        var bottom = getPaddleY()+Game.Paddle.height/2;
+        var left = game.players[0].paddle.x - game.players[0].paddle.width;
+
+        var topOfBall = game.ball.y - game.ball.radius;
+        var rightOfBall = game.ball.x + game.ball.radius;
+        var bottomOfBall = game.ball.y + game.ball.radius;
+        var leftOfBall = game.ball.x - game.ball.radius;
+
+        return leftOfBall < right && topOfBall < bottom && rightOfBall > left && bottomOfBall > top;
+    }
+
+    function handleCollision() {
+        var angle = 0;
+        // If the ball hits the left quarter of the paddle, make the ball go left
+        if (game.ball.x < (game.players[0].paddle.x - 3*game.players[0].paddle.width / 4)) { 
+            angle = -1 * Math.PI / 4;   // -45 degrees
+        }
+        // Else If the ball hits the right quarter of the paddle, make the ball go right
+        else if (game.ball.x > (game.players[0].paddle.x - game.players[0].paddle.width / 4)) {  
+            angle = Math.PI / 4;        // 45 degrees
+        } 
+        // Else Angle = 0
+
+        // Update X and Y velocity of the ball
+        game.ball.dy = -1*game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+        game.ball.dx = game.ball.velocity * Math.sin(angle);
+
+        // Increase ball's velocity (optional)
+        game.ball.velocity += 0.2;
+    }
+
+
     function drawTriangle() {
         startGame(3);
     }

@@ -12,6 +12,7 @@ export class Game {
     radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
     sides: number;
     sideLength: number;
+    ball: Ball = new Ball();
     ballVisible: boolean = true;
     numBalls: number = 1;
     backgroundColor: Color = Color.Grey;
@@ -58,7 +59,7 @@ export class Paddle {
     width: number = 100;
     static readonly height: number = 10;
 
-    static velocity: number = 1;
+    static velocity: number = 10;
 
     x: number;
     invisible: boolean;
@@ -103,6 +104,17 @@ export class Player {
     // Does a player contain a paddle? Does skin/paddle color belong to player or to paddle?
     // Answer: Skin color currently belongs to the paddle
     // misc. stats (win/loss, games won, etc.)
+}
+
+export class Ball {
+    x: number = 0;
+    y: number = 0;
+    dx: number = -1;
+    dy: number = 2;
+
+    velocity: number = 2;
+
+    radius: number = 10;
 }
 
 
