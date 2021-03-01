@@ -73,13 +73,16 @@
         canvas.width = w - 100;
         canvas.height = h - 150;
         drawPolygon((h - 200) / 2, (w - 150) / 2, game.sides, 255, 255, 255);
+
+        // Get the length of each side
+        game.sideLength = 2*game.radius*Math.sin(Math.PI/game.sides);
     }
 
     // Update the state of the game, using what the server sends us
     function update() {
-        if (leftArrowPressed){ //&& user.y > 0) {
+        if (leftArrowPressed && ((game.players[0].paddle.x - Game.Paddle.width) > -game.sideLength/2) ){ //&& user.y > 0) {
             game.players[0].paddle.x -= Game.Paddle.velocity;
-        } else if (rightArrowPressed) { // downArrowPressed && (user.y < canvas.height - user.height)) {
+        } else if (rightArrowPressed && (game.players[0].paddle.x < game.sideLength/2)) { // downArrowPressed && (user.y < canvas.height - user.height)) {
             game.players[0].paddle.x += Game.Paddle.velocity;
         }
     }

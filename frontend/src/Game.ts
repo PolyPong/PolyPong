@@ -13,6 +13,7 @@ export class Lobby {
 export class Game { 
     radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
     sides: number;
+    sideLength: number;
     ballVisible: boolean = true;
     numBalls: number = 1;
     backgroundColor: string = "#353839";
