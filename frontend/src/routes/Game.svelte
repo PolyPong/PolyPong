@@ -8,8 +8,8 @@
     var canvas: HTMLCanvasElement;
     var ctx: CanvasRenderingContext2D;
     var game: Game.Game;
-    // var leftArrowPressed = false;
-    // var rightArrowPressed = false;
+    var leftArrowPressed = false;
+    var rightArrowPressed = false;
     // var game = new Game.Game(400, 4, true, 1, 0, [], [])
     // var player1Paddle = new Game.Paddle(getPlayerInitialX(4, 1), getPlayerInitialY(4, 1), 100, 0, false, Game.Shape.Regular, Game.Color.Red);
     // var player1 = new Game.Player("GG", "GG", player1Paddle, [], 0)
@@ -57,7 +57,6 @@
         Game.Paddle.width = game.radius/game.sides;
         // 450/sides or game.radius/3;
 
-
         setInterval(gameLoop, 1000/60)
     }
 
@@ -78,13 +77,16 @@
 
     // Update the state of the game, using what the server sends us
     function update() {
-
+        if (leftArrowPressed){ //&& user.y > 0) {
+            game.players[0].paddle.x -= Game.Paddle.velocity;
+        } else if (rightArrowPressed) { // downArrowPressed && (user.y < canvas.height - user.height)) {
+            game.players[0].paddle.x += Game.Paddle.velocity;
+        }
     }
 
     // Re-render the game according to the new state
     function render() {
         drawPaddles();
-
     }
 
     function drawPolygon(shapeHeight: number, shapeWidth: number, sides: number, red: string | number, green: string | number, blue: string | number) {
@@ -154,8 +156,8 @@
 
         for (var i = 0; i < game.sides; i++){
             // In place of 0, we need game.players[i].paddle.x
-            ctx.moveTo(0, getPaddleY());
-            ctx.lineTo(0-Game.Paddle.width, getPaddleY());
+            ctx.moveTo(game.players[i].paddle.x, getPaddleY());
+            ctx.lineTo(game.players[i].paddle.x-Game.Paddle.width, getPaddleY());
             ctx.stroke();
             ctx.rotate(2 * Math.PI / game.sides);
         }
@@ -215,6 +217,42 @@
 
     function drawDodecagon() {
         startGame(12);
+    }
+
+    /* moving Paddles */
+    // add an eventListener to browser window
+    window.addEventListener('keydown', keyDownHandler);
+    window.addEventListener('keyup', keyUpHandler);
+
+    // gets activated when we press down a key
+    function keyDownHandler(event) {
+        // get the keyCode
+        switch (event.keyCode) {
+            // "left arrow" key
+            case 37:
+            // set upArrowPressed = true
+            leftArrowPressed = true;
+            break;
+            // "down arrow" key
+            case 39:
+            rightArrowPressed = true;
+            break;
+        }
+    }
+
+    // gets activated when we release the key
+    function keyUpHandler(event) {
+        // get the keyCode
+        switch (event.keyCode) {
+            // "left arraow" key
+            case 37:
+            leftArrowPressed = false;
+            break;
+            // "right arrow" key
+            case 39:
+            rightArrowPressed = false;
+            break;
+        }
     }
 
 </script>

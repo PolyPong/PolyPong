@@ -21,7 +21,13 @@ export class Game {
 
     constructor(sides: number) {
             this.sides = sides;
-
+            for (var i = 0; i < sides; i++){
+                console.log(i);
+                var player: Player = new Player("","",new Paddle(0,0,0,0,true,Shape.Regular,Color.Blue),[],0);
+                console.log(player);
+                this.players.push(player);
+            }
+            console.log(this.players);
     }
 
 
@@ -50,6 +56,7 @@ export class Paddle {
     static readonly height: number = 10;
     x: number;
     y: number;
+    static velocity: number = 1;
     length: number;
     angle: number;
     invisible: boolean;
