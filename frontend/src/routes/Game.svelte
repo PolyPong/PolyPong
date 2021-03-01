@@ -12,6 +12,7 @@
     var rightArrowPressed = false;
 
     const paddleCoverageRatio:number = 1/4;
+    const ballScaleFactor: number = 1/30;
     const frameRate = 1000/60;  // 60 FPS
     
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
@@ -78,6 +79,9 @@
             game.players[i].paddle.width = game.sideLength * paddleCoverageRatio;
             // TODO: Need to handle if expanded paddle/shrunk paddle is applied here
         }
+
+        // TODO adjust the ball size based on game.radius
+        game.ball.radius = game.radius*ballScaleFactor;
     }
 
     // Update the state of the game, using what the server sends us
