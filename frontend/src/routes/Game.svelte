@@ -10,13 +10,10 @@
     var game: Game.Game;
     var leftArrowPressed = false;
     var rightArrowPressed = false;
-    // var game = new Game.Game(400, 4, true, 1, 0, [], [])
-    // var player1Paddle = new Game.Paddle(getPlayerInitialX(4, 1), getPlayerInitialY(4, 1), 100, 0, false, Game.Shape.Regular, Game.Color.Red);
-    // var player1 = new Game.Player("GG", "GG", player1Paddle, [], 0)
-    // var player2Paddle = new Game.Paddle(getPlayerInitialX(4, 2), getPlayerInitialY(4, 2), 100, 0, false, Game.Shape.Regular, Game.Color.Red);
-    // var player2 = new Game.Player("GG", "GG", player1Paddle, [], 0)
-    // game.players = [player1, player2]
 
+    const paddleCoverageRatio:number = 1/4;
+    
+    // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
     //     console.log("X position")
     //     console.log((game.radius-200)*Math.cos(Math.PI/sides + 2*Math.PI*(playerNumber-1)/sides));
@@ -29,8 +26,7 @@
     //     return (game.radius-500/sides)*Math.sin(Math.PI/sides + 2*Math.PI*(playerNumber-1)/sides)
     // }
     
-
-
+    
     onMount(async () => {
         load();
         // await tick();
@@ -46,51 +42,61 @@
         ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;
     }
 
+
     function startGame(sides: number) {
         // Create new games with 'sides' number of players
         game = new Game.Game(sides);
 
-
-        // Set the width of paddles accordingly
-        console.log("radius:" + game.radius);
-        // Game.Paddle.width = 450/sides - game.radius;
-        Game.Paddle.width = game.radius/game.sides;
-        // 450/sides or game.radius/3;
-
+        // Starts the game loop
         setInterval(gameLoop, 1000/60)
     }
 
     function gameLoop() {
-        adjustSize();
-        update();
-        render();
+        adjustSize();   // For when users change the size of their window, the game board and the paddles change size
+        update();       // For updating the state of the game
+        render();       // For rendering the updated state of the game (ie. clears the screen and draws the new state onto the canvas)
     }
 
+
     // Draw the current game board or polygon according to the size of the client's window
+    // Also adjust the size of paddles based on the length of each side 
+    // (currently, each paddle is one quarter of the side length)
     function adjustSize() {
         w = document.documentElement.clientWidth;
         h = document.documentElement.clientHeight;
         canvas.width = w - 100;
         canvas.height = h - 150;
+
         drawPolygon((h - 200) / 2, (w - 150) / 2, game.sides, 255, 255, 255);
 
         // Get the length of each side
         game.sideLength = 2*game.radius*Math.sin(Math.PI/game.sides);
+        
+        // Set the width of each paddle to be a quarter of the side length
+        for (var i = 0; i < game.players.length; i++) {
+            game.players[i].paddle.width = game.sideLength * paddleCoverageRatio;
+            // TODO: Need to handle if expanded paddle/shrunk paddle is applied here
+        }
     }
 
     // Update the state of the game, using what the server sends us
     function update() {
-        if (leftArrowPressed && ((game.players[0].paddle.x - Game.Paddle.width) > -game.sideLength/2) ){ //&& user.y > 0) {
+
+        // Handles paddle movement side-to-side using the left and right arrow keys, 
+        // only lets the paddle move along the length of its respective side (bounded by the side length)
+        if (leftArrowPressed && ((game.players[0].paddle.x - game.players[0].paddle.width) > -game.sideLength/2) ){ 
             game.players[0].paddle.x -= Game.Paddle.velocity;
-        } else if (rightArrowPressed && (game.players[0].paddle.x < game.sideLength/2)) { // downArrowPressed && (user.y < canvas.height - user.height)) {
+        } else if (rightArrowPressed && (game.players[0].paddle.x < game.sideLength/2)) {
             game.players[0].paddle.x += Game.Paddle.velocity;
         }
+
     }
 
     // Re-render the game according to the new state
     function render() {
         drawPaddles();
     }
+
 
     function drawPolygon(shapeHeight: number, shapeWidth: number, sides: number, red: string | number, green: string | number, blue: string | number) {
         
@@ -116,18 +122,19 @@
         ctx.beginPath(); // Begin the path
         ctx.moveTo(game.radius, 0); // Move the "pencil" to the (radius, 0) on the unit circle
         for (let i = 1; i < sides; i++) {
-            // Draw a line to each of the points on the circle
+            // Draw a line to each of the vertices of the polygon (plotting all the vertices on the circumference of a circle)
             ctx.lineTo(game.radius * Math.cos(a * i), game.radius * Math.sin(a * i));
         }
         ctx.closePath();
 
         ctx.strokeStyle = "rgba(" + red + ", " + green + ", " + blue + ", 1.0)";
         ctx.stroke();
-        // ctx.fillStyle = "rgba(0,0,0,0)"; // alpha
-        // ctx.fill();
+
+        // For changing the background color of just the game board/within the polygon
+        ctx.fillStyle = game.backgroundColor; // See game.ts, default color is set to the same color as rest of board
+        ctx.fill();
 
         ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
-        //ctx.rotate(-1*180/sides * (Math.PI / 180));
         ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
 
@@ -154,23 +161,29 @@
         //Move the origin to the exact center of the canvas
         ctx.translate(canvas.width / 2, canvas.height / 2);
 
-        ctx.beginPath()
         ctx.lineWidth = Game.Paddle.height;
 
         for (var i = 0; i < game.sides; i++){
-            // In place of 0, we need game.players[i].paddle.x
+
+            ctx.beginPath()
+            ctx.strokeStyle = game.players[i].paddle.paddleColor;
+
+            // Starting from the exact center, we move down the canvas (positive Y is down)
+            // and across to where the right side of the paddle is
+            // Old note, ignore: In place of 0, we need game.players[i].paddle.x
             ctx.moveTo(game.players[i].paddle.x, getPaddleY());
-            ctx.lineTo(game.players[i].paddle.x-Game.Paddle.width, getPaddleY());
+            // We then go to the left (since negative X is left) by 
+            // the paddle width (game.players[i].paddle.width)
+            ctx.lineTo(game.players[i].paddle.x-game.players[i].paddle.width, getPaddleY());
             ctx.stroke();
+            ctx.closePath();
             ctx.rotate(2 * Math.PI / game.sides);
         }
-
         ctx.lineWidth = 1;
-        ctx.closePath();
     }
 
     function getPaddleY(){
-        console.log("Radius: " + game.radius)
+        // Attempting to get the paddles to resize well, still not a great solution but handles about 85% of cases well
         if (game.sides == 3) {
             if (game.radius < 200) {
                 return 200 - 450/game.sides - 10;
@@ -182,6 +195,7 @@
         }
     }
 
+    
     function drawTriangle() {
         startGame(3);
     }
@@ -222,39 +236,31 @@
         startGame(12);
     }
 
-    /* moving Paddles */
-    // add an eventListener to browser window
+    // Adding an EventListener to window to listen for keys being pressed
     window.addEventListener('keydown', keyDownHandler);
     window.addEventListener('keyup', keyUpHandler);
 
-    // gets activated when we press down a key
+    // Activated when we press a key down
     function keyDownHandler(event) {
-        // get the keyCode
         switch (event.keyCode) {
-            // "left arrow" key
-            case 37:
-            // set upArrowPressed = true
-            leftArrowPressed = true;
-            break;
-            // "down arrow" key
-            case 39:
-            rightArrowPressed = true;
-            break;
+            case 37:    // Left arrow key
+                leftArrowPressed = true;
+                break;
+            case 39:    // Right arrow key
+                rightArrowPressed = true;
+                break;
         }
     }
 
-    // gets activated when we release the key
+    // Activated when we release the key
     function keyUpHandler(event) {
-        // get the keyCode
         switch (event.keyCode) {
-            // "left arraow" key
-            case 37:
-            leftArrowPressed = false;
-            break;
-            // "right arrow" key
-            case 39:
-            rightArrowPressed = false;
-            break;
+            case 37:    // Left arrow key
+                leftArrowPressed = false;
+                break;
+            case 39:    // Right arrow key
+                rightArrowPressed = false;
+                break;
         }
     }
 
