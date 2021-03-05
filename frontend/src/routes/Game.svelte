@@ -1,7 +1,7 @@
 <script lang="typescript">
     import { isAuthenticated } from "../store";
     import { onMount, tick } from "svelte";
-    import * as Game from "../Game"
+    import * as Game from "@polypong/polypong-common"
 
     var w: number;
     var h: number;

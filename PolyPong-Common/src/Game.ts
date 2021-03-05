@@ -11,7 +11,9 @@ export class Lobby {
 export class Game { 
     radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
     sides: number;
-    sideLength: number;
+    // sideLength: number;
+    // hey Michael, I commented this out because
+    //index.ts:14:5 - error TS2564: Property 'sideLength' has no initializer and is not definitely assigned in the constructor.
     ball: Ball = new Ball();
     ballVisible: boolean = true;
     numBalls: number = 1;
