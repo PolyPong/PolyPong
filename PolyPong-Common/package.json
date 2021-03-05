@@ -1,0 +1,17 @@
+{
+  "name": "PolyPong-Common",
+  "version": "1.0.0",
+  "description": "Objects in PolyPong that are used in both the client and the server",
+  "main": "index.js",
+  "repository": "https://github.com/ECE493Capstone/project",
+  "author": "Arun Woosaree",
+  "license": "None",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^4.2.3"
+  },
+  "scripts":{
+    "build": "tsc"
+  }
+}
