@@ -1,17 +1,23 @@
 {
   "name": "PolyPong-Common",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Objects in PolyPong that are used in both the client and the server",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "repository": "https://github.com/ECE493Capstone/project",
   "author": "Arun Woosaree",
   "license": "None",
-  "private": true,
   "dependencies": {},
   "devDependencies": {
     "typescript": "^4.2.3"
   },
-  "scripts":{
+  "scripts": {
     "build": "tsc"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
