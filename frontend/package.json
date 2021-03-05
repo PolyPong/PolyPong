@@ -9,7 +9,7 @@
     "svelte": "^3.24.0"
   },
   "devDependencies": {
-    "@polypong/polypong-common": "*",
+    "@polypong/polypong-common": "file:../PolyPong-Common",
     "@snowpack/plugin-dotenv": "^2.0.5",
     "@snowpack/plugin-svelte": "^3.5.0",
     "@snowpack/plugin-typescript": "^1.2.0",

@@ -1,6 +1,6 @@
 {
   "name": "@polypong/polypong-common",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Objects in PolyPong that are used in both the client and the server",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,6 @@
   "repository": "https://github.com/PolyPong/PolyPong",
   "author": "Arun Woosaree",
   "license": "None",
-  "dependencies": {},
   "devDependencies": {
     "typescript": "^4.2.3"
   },
