@@ -1,4 +1,6 @@
 import { Context } from "https://deno.land/x/oak/mod.ts";
+import {Lobby, Game } from "../PolyPong-Common/src/index";
+
 import {
   create,
   getNumericDate,
@@ -73,3 +75,9 @@ export const auth = async (ctx: Context) => {
 
     }
 };
+
+
+export const newgame = (user_id: string) => {
+  
+  
+}
