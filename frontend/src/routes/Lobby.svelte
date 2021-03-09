@@ -3,36 +3,42 @@
     import { v4 } from "uuid";
 
     let ws: WebSocket;
-    let lobby_id: string;
-    let lobby_input: string;
+    let lobby_id: string | null;
+    let lobby_input: string | null;
     const user_id = v4();
 
     const gotMessage = async (m) => {
         try {
             const message = JSON.parse(m.data);
-            console.log(message)
-            if (message.event === "lobby_created"){
-                lobby_id = message.lobby_id
-                console.log(lobby_id)
+            console.log(message);
+            if (message.event === "lobby_created") {
+                lobby_id = message.lobby_id;
+                console.log(message.lobby_id);
+                joinGame(message.lobby_id);
             }
-
-        } catch(e) {
+            if (message.event === "join_lobby") {
+                if (message.user_id === user_id) {
+                    lobby_id = lobby_input;
+                    lobby_input = null;
+                }
+            }
+        } catch (e) {
             // console.error(e, m.data)
-            console.log("ignoring", m.data)
+            console.log("ignoring", m.data);
         }
-    }
+    };
 
     onMount(async () => {
         ws = new WebSocket("ws://localhost:5000/ws");
         ws.addEventListener("message", gotMessage);
         setInterval(() => {
-            if (!ws){
-                console.log("ws not ready yet")
-                return
+            if (!ws) {
+                console.log("ws not ready yet");
+                return;
             }
-            if (ws.readyState === WebSocket.CLOSED){
-                console.log("ws is closed")
-                return
+            if (ws.readyState === WebSocket.CLOSED) {
+                console.log("ws is closed");
+                return;
             }
             ws.send(`hello from ${user_id}`);
 
@@ -40,19 +46,19 @@
         }, 5000);
     });
 
-    onDestroy(() => ws.close())
+    onDestroy(() => ws.close());
 
-    $: joinGame(undefined);
+    // $: joinGame(undefined);
 
     const joinGame = (input: string | undefined) => {
-        if (!ws){
+        if (!ws) {
             return;
         }
-        console.log(`joining game ${lobby_input}`);
+        console.log(`joining game ${input ? input : lobby_input}`);
         ws.send(
             JSON.stringify({
                 action: "join_game",
-                lobby_id: "9de09ef9-fe39-49b3-acb8-5eb4f04b96c9",
+                lobby_id: input ? input : lobby_input,
                 user_id,
             })
         );
@@ -66,16 +72,20 @@
         <button
             on:click={async () => {
                 ws.send(JSON.stringify({ action: "create_lobby" }));
-                console.log("attempting to create lobby")
+                console.log("attempting to create lobby");
             }}
         >
             Create Lobby
         </button>
 
-        <input type="text" value={lobby_input} />
-        <button on:click={() => {
-            joinGame(lobby_input)
-        }}> join game </button>
+        <input type="text" bind:value={lobby_input} />
+        <button
+            on:click={() => {
+                joinGame(lobby_input);
+            }}
+        >
+            join game
+        </button>
     {/if}
     <h1>PolyPong</h1>
     <hr />
