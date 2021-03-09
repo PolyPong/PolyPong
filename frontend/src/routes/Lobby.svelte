@@ -1,67 +1,77 @@
-<script>
+<script lang="ts">
     import { onDestroy, onMount } from "svelte";
     import { v4 } from "uuid";
+    import {
+        ServerEvent,
+    ClientAction
+} from "@polypong/polypong-common"
+import type {
+    ClientResponse,
+    JoinGamePayload,
+    LobbyCreatedPayload,
+    ServerResponse,
+    JoinSuccessPayload,
+    ErrorPayload,
+    LobbyJoinedPayload
+} from "@polypong/polypong-common"
 
     let ws: WebSocket;
     let lobby_id: string | null;
-    let lobby_input: string | null;
+    let lobby_input: string;
     const user_id = v4();
 
-    const gotMessage = async (m) => {
+    const gotMessage = async (m: MessageEvent) => {
         try {
             const message = JSON.parse(m.data);
             console.log(message);
-            if (message.event === "lobby_created") {
-                lobby_id = message.lobby_id;
-                console.log(message.lobby_id);
-                joinGame(message.lobby_id);
+            if (message.event === ServerEvent.LobbyCreated) {
+                lobby_id = message.data.lobby_id;
+                joinGame(message.data.lobby_id);
             }
-            if (message.event === "join_lobby") {
-                if (message.user_id === user_id) {
+            if (message.event === ServerEvent.LobbyJoined) {
+                if (message.data.user_id === user_id) {
                     lobby_id = lobby_input;
-                    lobby_input = null;
+                    lobby_input = "";
                 }
             }
         } catch (e) {
-            // console.error(e, m.data)
-            console.log("ignoring", m.data);
+            console.error(`got message: ${m.data} failed to parse it as json, so ignoring...`);
         }
     };
 
     onMount(async () => {
         ws = new WebSocket("ws://localhost:5000/ws");
         ws.addEventListener("message", gotMessage);
-        setInterval(() => {
-            if (!ws) {
-                console.log("ws not ready yet");
-                return;
-            }
-            if (ws.readyState === WebSocket.CLOSED) {
-                console.log("ws is closed");
-                return;
-            }
-            ws.send(`hello from ${user_id}`);
+        // setInterval(() => {
+        //     if (!ws) {
+        //         console.log("ws not ready yet");
+        //         return;
+        //     }
+        //     if (ws.readyState === WebSocket.CLOSED) {
+        //         console.log("ws is closed");
+        //         return;
+        //     }
+        //     ws.send(`hello from ${user_id}`);
 
-            console.log("sent message");
-        }, 5000);
+        //     console.log("sent message");
+        // }, 5000);
     });
 
     onDestroy(() => ws.close());
-
-    // $: joinGame(undefined);
 
     const joinGame = (input: string | undefined) => {
         if (!ws) {
             return;
         }
-        console.log(`joining game ${input ? input : lobby_input}`);
-        ws.send(
-            JSON.stringify({
-                action: "join_game",
-                lobby_id: input ? input : lobby_input,
-                user_id,
-            })
-        );
+        console.log(`joining game ${input ?? lobby_input}`);
+        const payload: ClientResponse<JoinGamePayload> = {
+            action: ClientAction.JoinLobby,
+            data: {
+                lobby_id: input ?? lobby_input,
+                user_id
+            }
+        }
+        ws.send(JSON.stringify(payload));
     };
 </script>
 
@@ -71,7 +81,10 @@
     {:else}
         <button
             on:click={async () => {
-                ws.send(JSON.stringify({ action: "create_lobby" }));
+                const payload = {
+                    action: ClientAction.CreateLobby
+                }
+                ws.send(JSON.stringify(payload));
                 console.log("attempting to create lobby");
             }}
         >

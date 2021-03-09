@@ -7,6 +7,11 @@ enum ServerEvent {
     LobbyCreated,
     JoinSuccess,
     Error,
+    LobbyJoined,
+}
+
+interface LobbyJoinedPayload{
+    user_id: string
 }
 
 interface JoinGamePayload {
@@ -32,6 +37,10 @@ interface ClientResponse<T> {
     data: T
 }
 
+interface ErrorPayload{
+    message: string
+}
+
 
 /*
 for example: we can get a ServerResponse<LobbyCreated>
@@ -53,12 +62,16 @@ or we can get a ClientAction<JoinLobby> from the client in the server
 }
 */
 
-export {
-    ClientAction,
+export type {
     ClientResponse,
-    ServerEvent,
     JoinGamePayload,
     LobbyCreatedPayload,
     ServerResponse,
-    JoinSuccessPayload
+    JoinSuccessPayload,
+    ErrorPayload,
+    LobbyJoinedPayload
+}
+export {
+    ServerEvent,
+    ClientAction
 }

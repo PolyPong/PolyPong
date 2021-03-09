@@ -5,6 +5,17 @@ import {
 
 import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 import { v4 } from "https://deno.land/std@0.84.0/uuid/mod.ts";
+import {
+  ClientAction,
+  ClientResponse,
+  ServerEvent,
+  JoinGamePayload,
+  LobbyCreatedPayload,
+  ServerResponse,
+  JoinSuccessPayload,
+  ErrorPayload,
+  LobbyJoinedPayload
+} from "../PolyPong-Common/src/Payload.ts";
 
 class Lobby {
   userlist: Map<string, WebSocket>;
@@ -14,14 +25,22 @@ class Lobby {
 
   joinGame(user_id: string, ws: WebSocket) {
     this.userlist.set(user_id, ws);
-    this.broadcast(JSON.stringify({
-      event: `user ${user_id} has joined the game`,
-    }));
+
+    const response: ServerResponse<LobbyJoinedPayload> = {
+      event: ServerEvent.LobbyJoined,
+      data: {
+        user_id,
+      },
+    };
+    this.broadcast(JSON.stringify(response), user_id);
   }
 
-  broadcast(message: string) {
-    for (const sock of this.userlist.values()) {
-      sock.send(message);
+  broadcast(message: string, ignore: string | undefined) {
+    for (const [k, v] of this.userlist.entries()) {
+      if (k === ignore) {
+        continue;
+      }
+      v.send(message);
     }
   }
 }
@@ -38,42 +57,41 @@ export const createLobby: () => string = () => {
 };
 
 const doStuff = async (ws: any) => {
-  // broadcast(`${uid} has joined`)
-  console.log("uhhhh");
   for await (const event of ws) {
     console.log("got message", event);
-    ws.send(JSON.stringify({ info: `server got your message: ${event}` }));
-    try {
-      // for now, let's just assume all messages are in JSON
-      // regular ol' strings are a no go
-
+    // in case parsing fails, we wrap in a try/catch
+    try { 
       const message = JSON.parse(event);
-      if (message.action === "join_game") {
-        const lobby = LOBBIES.get(message.lobby_id);
+      if (message.action === ClientAction.JoinLobby) {
+        const lobby = LOBBIES.get(message.data.lobby_id);
         if (!lobby) {
-          ws.send(JSON.stringify({ error: "lobby not found" }));
+          const response: ServerResponse<ErrorPayload> = {
+            event: ServerEvent.Error,
+            data: {
+              message: "lobby not found"
+            }
+          }
+          ws.send(JSON.stringify(response));
           continue;
         }
-        lobby.joinGame(message.user_id, ws);
+        lobby.joinGame(message.data.user_id, ws);
         continue;
-      } else if (message.action === "create_lobby") {
+      } else if (message.action === ClientAction.CreateLobby) {
         const lobby_id = createLobby();
-        ws.send(JSON.stringify({ event: "lobby_created", lobby_id }));
+        const response: ServerResponse<LobbyCreatedPayload> = {
+          event: ServerEvent.LobbyCreated,
+          data: {
+            lobby_id,
+          },
+        };
+        ws.send(JSON.stringify(response));
       }
     } catch {
-      console.log(`got message: ${event} , ignoring...`);
+      console.error(`got message: ${event} failed to parse it as json, so ignoring...`);
       continue;
     }
   }
 };
-
-// const createLobbyRoute = (ctx: Context) => {
-//   console.log(ctx)
-//   const lobby_id = createLobby();
-//   ctx.response.body = {
-//     lobby_id
-//   }
-// }
 
 const handleSocket = async (ctx: Context) => {
   console.log(ctx);
@@ -91,7 +109,6 @@ const handleSocket = async (ctx: Context) => {
 };
 
 export {
-  // createLobbyRoute,
   handleSocket,
 };
 export default Lobby;
