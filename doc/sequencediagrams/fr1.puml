@@ -37,17 +37,27 @@ activate user
                         user --> auth0: login credentials (Github/Google)
                         auth0 --> user: JWT (contains email + token)
                 deactivate auth0
-                user --> a: new username + JWT
-                a -> db: Register (username + email)
-                activate db
-                        alt username is unique
-                                db --> a: Success
-                                a --> user: Success
-                        else
-                                db --> a: Error
-                                a --> user: Error: pick a different username
+                user -> a: Register (new username + JWT)
+                a -> auth0: validate JWT
+                activate auth0
+                alt JWT is valid
+                        auth0 --> a: valid
+                        a -> db: Register (username + email)
+                        activate db
+                                alt username is unique
+                                        db --> a: Success
+                                        a --> user: Success
+                                else
+                                        db --> a: Error
+                                        a --> user: Error: pick a different username
+                                end
+                        deactivate db
+                else
+                        auth0 --> a: invaliid
+                        a --> user: invalid JWT
                         end
-                deactivate db
+                        deactivate auth0
+                
                 deactivate a
 deactivate user
 
