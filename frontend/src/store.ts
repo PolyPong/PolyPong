@@ -5,6 +5,8 @@ export const user = writable({});
 export const popupOpen = writable(false);
 export const error = writable();
 
+export const ws = writable(new WebSocket("ws://localhost:5000/ws"));
+
 export const tasks = writable([]);
 
 export const user_tasks = derived([tasks, user], ([$tasks, $user]) => {

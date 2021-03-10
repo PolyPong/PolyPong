@@ -14,8 +14,8 @@ import type {
     ErrorPayload,
     LobbyJoinedPayload
 } from "@polypong/polypong-common"
+import {ws} from "../store"
 
-    let ws: WebSocket;
     let lobby_id: string | null;
     let lobby_input: string;
     const user_id = v4();
@@ -40,8 +40,7 @@ import type {
     };
 
     onMount(async () => {
-        ws = new WebSocket("ws://localhost:5000/ws");
-        ws.addEventListener("message", gotMessage);
+        $ws.addEventListener("message", gotMessage);
         // setInterval(() => {
         //     if (!ws) {
         //         console.log("ws not ready yet");
@@ -57,10 +56,10 @@ import type {
         // }, 5000);
     });
 
-    onDestroy(() => ws.close());
+    onDestroy(() => $ws.close());
 
     const joinGame = (input: string | undefined) => {
-        if (!ws) {
+        if (!$ws) {
             return;
         }
         console.log(`joining game ${input ?? lobby_input}`);
@@ -71,7 +70,7 @@ import type {
                 user_id
             }
         }
-        ws.send(JSON.stringify(payload));
+        $ws.send(JSON.stringify(payload));
     };
 </script>
 
@@ -84,7 +83,7 @@ import type {
                 const payload = {
                     action: ClientAction.CreateLobby
                 }
-                ws.send(JSON.stringify(payload));
+                $ws.send(JSON.stringify(payload));
                 console.log("attempting to create lobby");
             }}
         >
