@@ -1,0 +1,36 @@
+
+@startuml
+
+actor user
+
+participant AuthenticationClass as a
+participant Auth0Authenticator as auth0
+
+activate user
+        user -> a: Login
+        activate a
+                a -> auth0: Request OAuth login
+                activate auth0
+                        auth0 -> user: Request login credentials (Github/Google)
+                        user --> auth0: login credentials (Github/Google)
+                        auth0 --> user: JWT (contains email + token)
+                        user --> a: JWT
+                        a -> auth0: verify JWT
+                        alt JWT is valid
+                                auth0 --> a: valid
+                                a --> user: Success
+                        else
+                                auth0 --> a: invalid
+                                a --> user: Error: Invalid JWT
+                        end
+
+                deactivate auth0
+                deactivate a
+deactivate user
+
+
+
+
+
+
+@enduml
