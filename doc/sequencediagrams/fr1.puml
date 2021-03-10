@@ -1,0 +1,59 @@
+@startuml
+
+actor user
+
+participant AuthenticationClass as a
+participant Auth0Authenticator as auth0
+participant DatabaseHelperClass as db
+
+
+'activate user
+''        user -> a: Registration Request
+''        activate a
+''                a -> user: Request username
+''                alt username unique and accepted
+''                a --> user: Username accepted
+''                        a -> auth0: Request OAuth Login
+''                        auth0 -> user: Request Authentication (Google/GitHub)
+''                        user --> auth0: authentication credentials (Google/Github)
+''                        a -> db: Save user information
+''                        activate db
+''                                db --> a: Success
+''                                deactivate db
+''                        auth0 --> a: email
+''                        a --> a: token
+''                        a --> user: Success
+''                deactivate a
+''        else
+''                a --> user: Username already in use, try a different one
+'deactivate user
+'
+activate user
+        user -> a: Request Registration
+        activate a
+                a -> auth0: Request OAuth login
+                activate auth0
+                        auth0 -> user: Request login credentials (Github/Google)
+                        user --> auth0: login credentials (Github/Google)
+                        auth0 --> user: JWT (contains email + token)
+                deactivate auth0
+                user --> a: new username + JWT
+                a -> db: Register (username + email)
+                activate db
+                        alt username is unique
+                                db --> a: Success
+                                a --> user: Success
+                        else
+                                db --> a: Error
+                                a --> user: Error: pick a different username
+                        end
+                deactivate db
+                deactivate a
+deactivate user
+
+        
+
+
+                
+                
+@enduml
