@@ -4,14 +4,19 @@ participant Lobby as L
 participant Game as G
 activate user
 
-        user -> L: create lobby
+        user -> L: create and join lobby
         activate L
-                L -> G: create game
-                activate G
-                        G --> L: game
-                deactivate G
                 L --> user: lobby ID
+                user -> L: start game
+                alt 3 or more users in lobby
+                        L -> G : create game
+                        activate G
+                        G --> user: start game
+                        else
+                                L --> user: error: not enough players to start game
+                                end
         deactivate L
+                deactivate G
 deactivate user
 
 
