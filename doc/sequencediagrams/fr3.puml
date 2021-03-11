@@ -1,10 +1,15 @@
 actor user
 
 participant Lobby as L
+participant Game as G
 activate user
 
         user -> L: create lobby
         activate L
+                L -> G: create game
+                activate G
+                        G --> L: game
+                deactivate G
                 L --> user: lobby ID
         deactivate L
 deactivate user
