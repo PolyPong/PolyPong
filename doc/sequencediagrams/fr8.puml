@@ -1,0 +1,36 @@
+@startuml
+actor user
+
+participant Leaderboard as L
+participant AuthenticationClass as A
+participant User as U
+participant DatabaseHelperClass as db
+
+activate user
+user -> L: view leaderboard (JWT)
+        activate L
+                L -> A: verify JWT
+                activate A
+                        alt jwt is valid
+                                A --> L: valid
+                                L -> U: get user XP
+                                activate U
+                                        U -> db: get user XP
+                                        activate db
+                                                db --> U: user XP
+                                        deactivate db
+                                        U --> L: user XP
+                                deactivate U
+                                L -> db: get leaderboard data
+                                activate db
+                                        db --> L: leaderboard data
+                                deactivate db
+                                L --> user: local leaderboard
+                        else
+                                A --> L: invalid
+                deactivate A
+                        L --> user: invalid JWT
+                end
+deactivate L
+
+@enduml
