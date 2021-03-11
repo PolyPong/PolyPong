@@ -6,12 +6,12 @@ participant Player as U
 participant DatabaseHelperClass as db
 
 activate user
-user -> U: view stats (username)
+user -> U: getStats()
 
                 activate U
-                U -> db: get user statistics data
+                U -> db: getWinsAndLosses(username)
                         activate db
-                db --> U: user statistics data
+                db --> U: [numbers]
 U --> user: statistics
                                 deactivate db
 
