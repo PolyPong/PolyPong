@@ -1,0 +1,26 @@
+actor user
+
+participant Game as G
+participant UserClass as U
+participant DatabaseHelperClass as db
+
+activate user
+
+        loop
+                user -> G: play game
+                activate G
+                        G --> user: game event
+        end     
+deactivate user
+                G -> U: add XP
+                activate U
+                        U -> db: update XP
+                        activate db
+                                db --> U: ok
+                                deactivate db
+                        U --> G: ok
+                        deactivate U
+                deactivate G
+
+
+
