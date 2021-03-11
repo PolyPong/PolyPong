@@ -5,13 +5,12 @@ participant Leaderboard as L
 participant DatabaseHelperClass as db
 
 activate user
-user -> L: view leaderboard
+user -> L: getGlobalLeaderboard()
         activate L
-                L -> db: get leaderboard data
+                L -> db: getXPForTopPlayers()
                 activate db
-                db --> L: leaderboard data
+                db --> L: (usernames, xp)[]
                 deactivate db
                 L --> user: global leaderboard
 deactivate L
-
 @enduml
