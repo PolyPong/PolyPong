@@ -1,20 +1,32 @@
 actor user
 
-participant Lobby as L
+'participant Lobby as L
 participant Game as G
+'activate user
+''
+''        user -> L: begin game
+''        activate L
+''                L -> G: start game
+''        deactivate L
+''        activate G
+''                G --> user: game
+''                loop
+''                        user -> G: game action
+''                        G --> user: game event
+''                end
+''                deactivate G
+'deactivate user
+
 activate user
 
-        user -> L: begin game
-        activate L
-                L -> G: start game
-        deactivate L
+        user -> G: begin game
         activate G
-                G --> user: game
+        G --> user: game
                 loop
                         user -> G: game action
                         G --> user: game event
                 end
+        activate G
                 deactivate G
 deactivate user
-
 
