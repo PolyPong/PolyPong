@@ -1,3 +1,4 @@
+@startuml
 'actor user
 ''
 'participant Leaderboard as L
@@ -33,25 +34,24 @@
 'deactivate L
 ''
 
-@startuml
+
 actor user
 
 participant Leaderboard as L
 participant DatabaseHelperClass as db
 
 activate user
-user -> L: view leaderboard (username)
+user -> L: getLocalLeaderboard(username)
         activate L
-                L -> db: get XP (user)
+                L -> db: getXP(username)
                 activate db
-                        db --> L : XP
+                        db --> L : (usernames, xp)[]
                         
                                         deactivate db
-                                L -> db: get leaderboard data
-                                activate db
-                                        db --> L: leaderboard data
-                                deactivate db
+'                                L -> db: get leaderboard data
+ '                               activate db
+  '                                      db --> L: leaderboard data
+  '                              deactivate db
                                 L --> user: local leaderboard
 deactivate L
-
 @enduml
