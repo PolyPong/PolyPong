@@ -1,0 +1,32 @@
+@startuml
+actor user
+
+participant User as U
+participant AuthenticationClass as A
+participant DatabaseHelperClass as db
+
+
+activate user
+        user -> U: request select skin (JWT)
+        activate U
+                U -> A: verify JWT
+                activate A
+                        alt JWT is valid
+                                A --> U: valid
+                                U -> db: get XP
+                                activate db
+                                db --> U: XP
+                                        U --> user: available skins
+                                        user -> U: select skin
+                                        U -> db: update selected skin
+                                        db --> U: ok
+                                        U --> user: success
+                                else
+                                        A --> U: invalid
+                                        U --> user: invalid JWT
+                                end
+                                
+        deactivate U
+        
+deactivate user
+@enduml
