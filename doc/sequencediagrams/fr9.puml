@@ -1,0 +1,17 @@
+@startuml
+actor user
+
+participant Leaderboard as L
+participant DatabaseHelperClass as db
+
+activate user
+user -> L: view leaderboard
+        activate L
+                L -> db: get leaderboard data
+                activate db
+                db --> L: leaderboard data
+                deactivate db
+                L --> user: global leaderboard
+deactivate L
+
+@enduml
