@@ -1,0 +1,21 @@
+actor user
+
+participant Game as G
+participant User as U
+
+activate user
+        user -> G: use expanded paddle power up
+        activate G
+                G -> U: check if power up was selected earlier and not used before
+                        activate U
+                alt power up selected earlier and not used before
+                        U --> G: yes
+                        G --> user: ok
+                else
+                        U --> G: no
+                                deactivate U
+                                G --> user: Error: cannot user power up
+                end
+        deactivate G
+        
+deactivate user

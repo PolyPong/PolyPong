@@ -1,0 +1,21 @@
+@startuml
+actor user
+
+' TODO: check this one again'
+' 
+participant Game as G
+participant User as U
+
+
+activate user
+        user -> G: select powerups
+        activate G
+        G -> U: update selected powerups
+                activate U
+        U --> G: ok
+        G --> user: ok
+        deactivate U
+                deactivate G
+        
+deactivate user
+@enduml
