@@ -1,0 +1,12 @@
+actor user
+
+participant Lobby as L
+activate user
+
+        user -> L: create lobby
+        activate L
+                L --> user: lobby ID
+        deactivate L
+deactivate user
+
+
