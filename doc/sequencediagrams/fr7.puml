@@ -1,26 +1,25 @@
+@startuml
 actor user
 
 participant Game as G
-participant UserClass as U
+participant Player as U
 participant DatabaseHelperClass as db
 
 activate user
 
-        loop
                 user -> G: play game
                 activate G
-                        G --> user: game event
-        end     
-deactivate user
+         
+
                 G -> U: add XP
+deactivate G
                 activate U
                         U -> db: update XP
                         activate db
                                 db --> U: ok
                                 deactivate db
-                        U --> G: ok
+'                        U --> G: ok
+U --> user: notification: updated XP
+deactivate user
                         deactivate U
-                deactivate G
-
-
-
+@enduml

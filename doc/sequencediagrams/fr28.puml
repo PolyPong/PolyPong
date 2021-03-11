@@ -1,7 +1,7 @@
 @startuml
 actor user
 
-participant User as U
+participant Player as U
 participant AuthenticationClass as A
 participant DatabaseHelperClass as db
 

@@ -4,7 +4,7 @@ actor user
 ' TODO: check this one again'
 ' 
 participant Game as G
-participant User as U
+participant Player as U
 
 
 activate user

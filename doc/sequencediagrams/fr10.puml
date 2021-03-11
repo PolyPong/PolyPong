@@ -1,22 +1,20 @@
 @startuml
 actor user
 
-participant Leaderboard as L
-participant User as U
+
+participant Player as U
 participant DatabaseHelperClass as db
 
 activate user
-user -> L: view stats (username)
-        activate L
-                L -> U: get statistics
+user -> U: view stats (username)
+
                 activate U
                 U -> db: get user statistics data
                         activate db
-                db --> U: user statustics data
+                db --> U: user statistics data
+U --> user: statistics
                                 deactivate db
-                U --> L: statistics
-                deactivate L
-                deactivate U
-deactivate L
 
+                deactivate U
+deactivate user
 @enduml

@@ -1,14 +1,14 @@
 actor user
 participant Game
-participant User as U
+participant Player as U
 participant DatabaseHelperClass as db
 
 activate user
-        loop
+''        loop
         user -> Game: play game
         activate Game
-                        Game --> user: game event
-                end
+''                        Game --> user: game event
+''                end
                 
         Game -> U: add XP
         deactivate Game
@@ -21,9 +21,9 @@ activate user
                 db --> U: XP
         deactivate db
                 alt XP is high enough
-                        U --> user: new skin available
+                        U --> user: notification: new skin available
                 else
-                        U --> user
+                        U --> user: no new skin available
                 end
 deactivate user
 deactivate U

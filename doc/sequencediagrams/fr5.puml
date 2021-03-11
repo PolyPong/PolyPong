@@ -1,15 +1,15 @@
 actor user
 
 participant Lobby as L
-participant Game as G
+'participant Game as G
 activate user
 
         user -> L: request join (lobby ID)
         activate L
-                L -> G: add user to game
-                activate G
-                        G --> L: added user to game
-                deactivate G
+ ''               L -> G: add user to game
+''                activate G
+''                        G --> L: added user to game
+''                deactivate G
                 L --> user: success
         deactivate L
 deactivate user

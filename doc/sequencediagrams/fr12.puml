@@ -1,7 +1,7 @@
 actor user
 
 participant Game as G
-participant User as U
+participant Player as U
 
 activate user
         user -> G: use expanded paddle power up
