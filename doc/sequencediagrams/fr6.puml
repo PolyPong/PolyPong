@@ -1,32 +1,19 @@
+@startuml
 actor user
 
-'participant Lobby as L
 participant Game as G
-'activate user
-''
-''        user -> L: begin game
-''        activate L
-''                L -> G: start game
-''        deactivate L
-''        activate G
-''                G --> user: game
-''                loop
-''                        user -> G: game action
-''                        G --> user: game event
-''                end
-''                deactivate G
-'deactivate user
+
 
 activate user
 
-        user -> G: begin game
-        activate G
-        G --> user: game
+'        user -> G: begin game
+'        activate G
+'        G --> user: game
                 loop
-                        user -> G: game action
-                        G --> user: game event
+                        user -> G: updateClientState(game)
+                        G --> user: render game
                 end
         activate G
                 deactivate G
 deactivate user
-
+@enduml
