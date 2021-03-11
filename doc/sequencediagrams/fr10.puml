@@ -1,0 +1,22 @@
+@startuml
+actor user
+
+participant Leaderboard as L
+participant User as U
+participant DatabaseHelperClass as db
+
+activate user
+user -> L: view stats (username)
+        activate L
+                L -> U: get statistics
+                activate U
+                U -> db: get user statistics data
+                        activate db
+                db --> U: user statustics data
+                                deactivate db
+                U --> L: statistics
+                deactivate L
+                deactivate U
+deactivate L
+
+@enduml
