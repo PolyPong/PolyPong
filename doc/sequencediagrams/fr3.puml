@@ -1,22 +1,22 @@
+@startuml
 actor user
 
 participant Lobby as L
 participant Game as G
 activate user
 
-        user -> L: create and join lobby
+        user -> L: createLobby()
         activate L
                 L --> user: lobby ID
-                user -> L: start game
+                user -> L: startGame
                 alt 3 or more users in lobby
-                        L -> G : create game
+                        L -> G : new Game(num_sides)
                         activate G
-                        G --> user: start game
+                        G --> user: Game
                         else
-                                L --> user: error: not enough players to start game
+                                L --> user: Error: not enough players to start game
                                 end
         deactivate L
                 deactivate G
 deactivate user
-
-
+@enduml
