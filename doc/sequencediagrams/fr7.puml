@@ -7,16 +7,16 @@ participant DatabaseHelperClass as db
 
 activate user
 
-                user -> G: play game
+                user -> G: endGame()
                 activate G
          
 
-                G -> U: add XP
+                G -> U:. earnXP(xp)
 deactivate G
                 activate U
-                        U -> db: update XP
+                        U -> db: updateXP(username, xp)
                         activate db
-                                db --> U: ok
+                                db --> U: new XP
                                 deactivate db
 '                        U --> G: ok
 U --> user: notification: updated XP
