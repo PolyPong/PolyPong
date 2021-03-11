@@ -1,0 +1,12 @@
+actor user
+
+participant Lobby as L
+activate user
+
+        user -> L: request share link
+        activate L
+                L --> user: link with lobby ID
+        deactivate L
+deactivate user
+
+
