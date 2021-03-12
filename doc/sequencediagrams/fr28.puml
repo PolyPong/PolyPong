@@ -21,10 +21,12 @@ activate user
                                         U -> db: savePaddleColor(username, color)
                                         db --> U: success
                                         U --> user: success
+                deactivate db
                                 else
                                         A --> U: false
                                         U --> user: Error: unauthenticated
                                 end
+                deactivate A
                                 
         deactivate U
         
