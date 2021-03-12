@@ -5,19 +5,19 @@ participant DatabaseHelperClass as db
 
 activate user
 ''        loop
-        user -> Game: play game
+        user -> Game: endGame()
         activate Game
 ''                        Game --> user: game event
 ''                end
                 
-        Game -> U: add XP
+        Game -> U:. earnXP(xp)
         deactivate Game
         activate U
         
-                U -> db: update XP
+                U -> db: updateXP(username, xp)
         activate db
-                db --> U: ok
-                U -> db: check current XP
+                db --> U: success
+                U -> db: getXP(username)
                 db --> U: XP
         deactivate db
                 alt XP is high enough
