@@ -1,69 +1,40 @@
 @startuml
-
 actor user
 
-participant AuthenticationClass as a
+participant Authenticator as a
 participant Auth0Authenticator as auth0
 participant DatabaseHelperClass as db
 
-
-'activate user
-''        user -> a: Registration Request
-''        activate a
-''                a -> user: Request username
-''                alt username unique and accepted
-''                a --> user: Username accepted
-''                        a -> auth0: Request OAuth Login
-''                        auth0 -> user: Request Authentication (Google/GitHub)
-''                        user --> auth0: authentication credentials (Google/Github)
-''                        a -> db: Save user information
-''                        activate db
-''                                db --> a: Success
-''                                deactivate db
-''                        auth0 --> a: email
-''                        a --> a: token
-''                        a --> user: Success
-''                deactivate a
-''        else
-''                a --> user: Username already in use, try a different one
-'deactivate user
-'
 activate user
-        user -> a: Request Registration
+        user -> a: register()
         activate a
-                a -> auth0: Request OAuth login
+                a -> auth0: loginWithPopup()
                 activate auth0
                         auth0 -> user: Request login credentials (Github/Google)
                         user --> auth0: login credentials (Github/Google)
                         auth0 --> user: JWT (contains email + token)
                 deactivate auth0
-                user -> a: Register (new username + JWT)
-                a -> auth0: validate JWT
+                user -> a: setUsername(newusername, JWT)
+                a -> auth0: isAuthenticated()
                 activate auth0
                 alt JWT is valid
-                        auth0 --> a: valid
-                        a -> db: Register (username + email)
+                        auth0 --> a: true
+                        a -> db: addUser(username, email)
                         activate db
                                 alt username is unique
-                                        db --> a: Success
+                                        db --> a: true
                                         a --> user: Success
                                 else
-                                        db --> a: Error
+                                        db --> a: false
                                         a --> user: Error: pick a different username
                                 end
                         deactivate db
                 else
-                        auth0 --> a: invaliid
+                        auth0 --> a: false
                         a --> user: invalid JWT
                         end
                         deactivate auth0
-                
+
                 deactivate a
 deactivate user
-
-        
-
-
-                
-                
 @enduml
