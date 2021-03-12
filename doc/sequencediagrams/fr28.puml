@@ -7,23 +7,23 @@ participant DatabaseHelperClass as db
 
 
 activate user
-        user -> U: request select skin (JWT)
+        user -> U: getAvailableSkins()
         activate U
-                U -> A: verify JWT
+                U -> A: playerAuthenticated()
                 activate A
-                        alt JWT is valid
-                                A --> U: valid
-                                U -> db: get XP
+                        alt user authenticated
+                                A --> U: true
+                                U -> db: getXP()
                                 activate db
                                 db --> U: XP
-                                        U --> user: available skins
-                                        user -> U: select skin
-                                        U -> db: update selected skin
-                                        db --> U: ok
+                                        U --> user: [colors]
+                                        user -> U: selectPaddleSkin(color)
+                                        U -> db: savePaddleColor(username, color)
+                                        db --> U: success
                                         U --> user: success
                                 else
-                                        A --> U: invalid
-                                        U --> user: invalid JWT
+                                        A --> U: false
+                                        U --> user: Error: unauthenticated
                                 end
                                 
         deactivate U
