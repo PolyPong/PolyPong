@@ -17,7 +17,7 @@ activate user
                                 activate db
                                 db --> U: XP
                                         U --> user: [colors]
-                                        user -> U: selectPaddleSkin(color)
+                                        user -> U: setPaddleSkin(color)
                                         U -> db: savePaddleColor(username, color)
                                         db --> U: success
                                         U --> user: success
