@@ -19,6 +19,8 @@ import {
 
 class Lobby {
   userlist: Map<string, WebSocket>;
+  lobby_id: string
+  
   constructor() {
     this.userlist = new Map();
   }
