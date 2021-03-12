@@ -6,35 +6,29 @@ participant Auth0Authenticator as auth0
 participant DatabaseHelperClass as db
 
 activate user
-        user -> a: register()
+        user -> a: register(username)
         activate a
-                a -> auth0: loginWithPopup()
-                activate auth0
-                        auth0 -> user: Request login credentials (Github/Google)
-                        user --> auth0: login credentials (Github/Google)
-                        auth0 --> user: JWT (contains email + token)
-                deactivate auth0
-                user -> a: setUsername(newusername, JWT)
-                a -> auth0: isAuthenticated()
-                activate auth0
-                alt JWT is valid
-                        auth0 --> a: true
-                        a -> db: addUser(username, email)
+                        a -> db: usernameAvailable(username)
                         activate db
                                 alt username is unique
-                                        db --> a: true
+                                   db --> a: true
+a -> auth0: loginWithPopup()
+activate auth0
+          
+                        auth0 -> user: Request login credentials (Github/Google)
+                        user --> auth0: login credentials (Github/Google)
+auth0 --> a: JWT
+deactivate auth0
+a -> db: addUser(username, email)
+db --> a: Success
                                         a --> user: Success
                                 else
                                         db --> a: false
+deactivate db
                                         a --> user: Error: pick a different username
+deactivate a
                                 end
-                        deactivate db
-                else
-                        auth0 --> a: false
-                        a --> user: invalid JWT
-                        end
-                        deactivate auth0
+                
 
-                deactivate a
 deactivate user
 @enduml
