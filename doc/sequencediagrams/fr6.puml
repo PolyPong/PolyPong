@@ -9,11 +9,13 @@ activate user
 '        user -> G: begin game
 '        activate G
 '        G --> user: game
+
                 loop
+        activate G
                         user -> G: updateClientState(game)
                         G --> user: render game
                 end
-        activate G
+
                 deactivate G
 deactivate user
 @enduml
