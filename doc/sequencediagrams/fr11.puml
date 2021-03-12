@@ -3,19 +3,25 @@ actor user
 
 ' TODO: check this one again'
 ' 
-participant Game as G
-participant Player as U
+'participant Game as G
+participant Player as P
 
 
 activate user
-        user -> G: select powerups
-        activate G
-        G -> U: update selected powerups
-                activate U
-        U --> G: ok
-        G --> user: ok
-        deactivate U
-                deactivate G
-        
+'        user -> G: select powerups
+'        activate G
+'        G -> U: update selected powerups
+'                activate U
+'        U --> G: ok
+'        G --> user: ok
+'        deactivate U
+'                deactivate G
+
+loop 3 times
+user -> P: addPowerup(powerup)
+activate P
+P --> user: success
+end
+deactivate P
 deactivate user
 @enduml
