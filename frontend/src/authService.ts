@@ -1,6 +1,6 @@
 // src/authService.js
 
-import createAuth0Client from "@auth0/auth0-spa-js";
+import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import { isAuthenticated, popupOpen, user } from "./store";
 import config from "./auth_config";
 
@@ -13,7 +13,7 @@ async function createClient() {
   return auth0Client;
 }
 
-async function loginWithPopup(client, options) {
+async function loginWithPopup(client: Auth0Client, options: any) {
   popupOpen.set(true);
   try {
     await client.loginWithPopup(options);
@@ -28,7 +28,7 @@ async function loginWithPopup(client, options) {
   }
 }
 
-function logout(client) {
+function logout(client: Auth0Client) {
   return client.logout();
 }
 
