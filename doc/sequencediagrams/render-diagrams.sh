@@ -2,5 +2,6 @@
 
 for f in *.puml
 do
-  echo "$f"
+  plantuml -tsvg $f -o output/ &
 done
+wait

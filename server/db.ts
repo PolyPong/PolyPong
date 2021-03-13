@@ -72,7 +72,7 @@ const getUser = async (username: string) => {
 };
 
 const getXP = async (username: string) => {
-    const result = await users.findOne({username}, {projection: {_id: 0, xp: 1}})
+    const result = await users.findOne({username: {$eq: username}}, {projection: {_id: 0, xp: 1}})
     return result ? result.xp : -1
 }
 
