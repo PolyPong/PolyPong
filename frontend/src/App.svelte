@@ -9,7 +9,6 @@
 	import Signup from "./routes/Signup.svelte";
 	import Stats from "./routes/Stats.svelte";
 	import Login from "./routes/Login.svelte";
-	import Auth0Demo from "./routes/Auth0Demo.svelte";
 	import { onMount } from "svelte";
 	import auth from "./authService";
 	import { isAuthenticated, user } from "./store";
