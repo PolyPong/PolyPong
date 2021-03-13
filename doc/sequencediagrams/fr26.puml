@@ -1,0 +1,16 @@
+@startuml
+actor user
+
+participant Player as P
+'participant Game as G
+'participant Paddle as pad
+'participant Ball as B
+
+activate user
+user -> P: applyPowerup(PathTrace)
+activate P
+P --> user: success
+deactivate P
+        
+deactivate user
+@enduml
