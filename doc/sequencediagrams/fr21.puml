@@ -1,0 +1,19 @@
+@startuml
+actor user
+'expand paddle
+
+participant Player as P
+participant Paddle as pad
+
+activate user
+user -> P: applyPowerup(SelfSplitPaddle)
+activate P
+P -> pad: splitPaddle()
+activate pad
+pad --> P: success
+deactivate pad
+P --> user: success
+deactivate P
+        
+deactivate user
+@enduml
