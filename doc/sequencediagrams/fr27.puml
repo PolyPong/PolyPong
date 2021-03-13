@@ -1,3 +1,4 @@
+@startuml
 actor user
 participant Game
 participant Player as U
@@ -16,9 +17,9 @@ activate user
         
                 U -> db: updateXP(username, xp)
         activate db
-                db --> U: success
-                U -> db: getXP(username)
                 db --> U: XP
+  '              U -> db: getXP(username)
+  '              db --> U: XP
         deactivate db
                 alt XP is high enough
                         U --> user: notification: new skin available
@@ -27,3 +28,4 @@ activate user
                 end
 deactivate user
 deactivate U
+@enduml
