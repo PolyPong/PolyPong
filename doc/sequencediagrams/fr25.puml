@@ -1,0 +1,24 @@
+@startuml
+actor user
+
+participant Player as P
+participant Game as G
+'participant Paddle as pad
+participant Ball as B
+
+activate user
+user -> P: applyPowerup(Bomb)
+activate P
+P -> G: makeBallBomb()
+activate G
+G -> B: turnIntoBomb()
+activate B
+B --> G: success
+deactivate B
+G --> P: success
+deactivate G
+P --> user: success
+deactivate P
+        
+deactivate user
+@enduml
