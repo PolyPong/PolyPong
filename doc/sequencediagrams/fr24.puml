@@ -1,0 +1,22 @@
+@startuml
+actor user
+'expand paddle
+participant Player as P
+participant Game as G
+'participant Paddle as pad
+
+activate user
+user -> P: applyPowerup(StopAndAim)
+activate P
+P -> G: stopBall()
+activate G
+
+G --> P: success
+P -> G: launchBall()
+G --> P: success
+deactivate G
+P --> user: success
+deactivate P
+        
+deactivate user
+@enduml
