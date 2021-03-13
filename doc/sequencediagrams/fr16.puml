@@ -1,0 +1,19 @@
+@startuml
+actor user
+
+participant Player as P
+participant Game as G
+'participant Paddle as pad
+
+activate user
+user -> P: applyPowerup(InvisibleBall)
+activate P
+P -> G: makeBallInvisible()
+activate G
+G --> P: success
+deactivate G
+P --> user: success
+deactivate P
+        
+deactivate user
+@enduml
