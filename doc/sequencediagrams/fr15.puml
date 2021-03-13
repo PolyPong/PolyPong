@@ -1,0 +1,25 @@
+@startuml
+actor user
+'expand paddle
+participant Player as P
+participant Game as G
+participant Paddle as pad
+
+activate user
+user -> P: applyPowerup(OthersInvisiblePaddle)
+activate P
+P -> G: makeOtherPaddlesInvisible(player)
+activate G
+loop num players - 1 times
+G -> pad: makePaddleInvisible()
+activate pad
+pad --> G: success
+deactivate pad
+end
+G --> P: success
+deactivate G
+P --> user: success
+deactivate P
+        
+deactivate user
+@enduml
