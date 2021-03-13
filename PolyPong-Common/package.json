@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsc",
     "prepublish": "tsc",
-    "preinstall": "npm run build"
+    "preinstall": "npm i && npm run build"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
