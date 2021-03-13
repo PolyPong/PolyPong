@@ -4,12 +4,17 @@ actor user
 participant Player as P
 participant Game as G
 'participant Paddle as pad
+participant Ball as B
 
 activate user
 user -> P: applyPowerup(InvisibleBall)
 activate P
 P -> G: makeBallInvisible()
 activate G
+G -> B: changeBallColor(color)
+activate B
+B --> G: success
+deactivate B
 G --> P: success
 deactivate G
 P --> user: success
