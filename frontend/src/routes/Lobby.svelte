@@ -1,41 +1,33 @@
 <script lang="ts">
     import { onDestroy, onMount } from "svelte";
     import { v4 } from "uuid";
-    import {
-        ServerEvent,
-    ClientAction
-} from "@polypong/polypong-common"
-import type {
-    ClientResponse,
-    JoinGamePayload,
-    LobbyCreatedPayload,
-    ServerResponse,
-    JoinSuccessPayload,
-    ErrorPayload,
-    LobbyJoinedPayload
-} from "@polypong/polypong-common"
-import {ws} from "../store"
+    import type { JoinGamePayload } from "@polypong/polypong-common";
+    import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
+    import { ws } from "../store";
 
     let lobby_id: string | null;
     let lobby_input: string;
     const user_id = v4();
 
     const gotMessage = async (m: MessageEvent) => {
+        console.log(m.data)
         try {
             const message = JSON.parse(m.data);
             console.log(message);
-            if (message.event === ServerEvent.LobbyCreated) {
-                lobby_id = message.data.lobby_id;
-                joinGame(message.data.lobby_id);
+            if (message.type === "lobby_created") {
+                lobby_id = message.lobby_id;
+                joinGame(message.lobby_id);
             }
-            if (message.event === ServerEvent.LobbyJoined) {
-                if (message.data.user_id === user_id) {
+            if (message.type === "join_success") {
+                if (message.user_id === user_id) {
                     lobby_id = lobby_input;
                     lobby_input = "";
                 }
             }
         } catch (e) {
-            console.error(`got message: ${m.data} failed to parse it as json, so ignoring...`);
+            console.error(
+                `got message: ${m.data} failed to parse it as json, so ignoring...`
+            );
         }
     };
 
@@ -63,26 +55,28 @@ import {ws} from "../store"
             return;
         }
         console.log(`joining game ${input ?? lobby_input}`);
-        const payload: ClientResponse<JoinGamePayload> = {
-            action: ClientAction.JoinLobby,
-            data: {
-                lobby_id: input ?? lobby_input,
-                user_id
-            }
-        }
+        const payload: JoinGamePayload = {
+            type: "join_game",
+
+            lobby_id: input ?? lobby_input,
+            user_id,
+        };
         $ws.send(JSON.stringify(payload));
     };
+
+    const startGame = () => {};
 </script>
 
 <body>
     {#if lobby_id}
         <div>here's the lobby id: {lobby_id}</div>
+        <button on:click={startGame}>Start Game</button>
     {:else}
         <button
             on:click={async () => {
                 const payload = {
-                    action: ClientAction.CreateLobby
-                }
+                    type: "create_lobby",
+                };
                 $ws.send(JSON.stringify(payload));
                 console.log("attempting to create lobby");
             }}

@@ -89,6 +89,7 @@ export class Player {
     paddle: Paddle;
     inventory: Powerup[];
     xp: number;
+    websocketConnection: WebSocket | null;
 
     constructor(
         username: string,
@@ -101,6 +102,7 @@ export class Player {
             this.paddle = paddle;
             this.inventory = inventory;
             this.xp = xp;
+            this.websocketConnection = null;
     }
 
     // Does a player contain a paddle? Does skin/paddle color belong to player or to paddle?
