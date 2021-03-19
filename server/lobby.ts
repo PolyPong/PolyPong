@@ -13,6 +13,8 @@ import {
   LobbyCreatedPayload
 } from "../PolyPong-Common/src/Payload.ts";
 
+import {Game} from './Game.ts';
+
 class Lobby {
   userlist: Map<string, WebSocket>;
   lobby_id: string;
@@ -79,6 +81,19 @@ const doStuff = async (ws: any) => {
           lobby_id,
         };
         ws.send(JSON.stringify(response));
+      } else if (message.type === "start_game") {
+        const {lobby_id} = message;
+        const lobby = LOBBIES.get(lobby_id);
+        if (!lobby){
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          ws.send(JSON.stringify(response));
+          continue;
+        }
+        
+        const game = new Game(lobby.userlist);
       }
     } catch {
       console.error(

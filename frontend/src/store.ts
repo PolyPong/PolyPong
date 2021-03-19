@@ -1,4 +1,8 @@
+
+import Lobby from "./routes/Lobby.svelte";
 import { writable, derived } from "svelte/store";
+import type {JoinGamePayload} from "@polypong/polypong-common";
+import { get} from 'svelte/store';
 
 export const isAuthenticated = writable(false);
 export const user = writable<any>({});
@@ -6,3 +10,39 @@ export const popupOpen = writable(false);
 export const error = writable(null);
 
 export const ws = writable(new WebSocket("ws://localhost:5000/ws"));
+
+export const lobby = writable(null);
+
+export const lobby_id = writable<string>("");
+export const user_id = writable<string>("");
+
+export const joinGame = (input: string | undefined, user_id: string) => {
+    const payload: JoinGamePayload = {
+        type: "join_game",
+        lobby_id: !!input ? input :  get(lobby_id),
+        user_id,
+    };
+    get(ws).send(JSON.stringify(payload));
+}
+
+const gotMessage = async (m: MessageEvent) => {
+    console.log(m.data)
+    try {
+        const message = JSON.parse(m.data);
+        console.log(message);
+        if (message.type === "lobby_created") {
+            lobby_id.set(message.lobby_id);
+            joinGame(message.lobby_id, get(user_id));
+        }
+        if (message.type === "join_success") {
+            if (message.user_id === get(user_id)) {
+                
+            }
+        }
+    } catch (e) {
+        console.error(
+            `got message: ${m.data} failed to parse it as json, so ignoring...`
+        );
+    }
+};
+get(ws).addEventListener("message", gotMessage);

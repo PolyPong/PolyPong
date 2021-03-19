@@ -1,38 +1,18 @@
 <script lang="ts">
-    import { onDestroy, onMount } from "svelte";
+    import { onDestroy, onMount, afterUpdate } from "svelte";
     import { v4 } from "uuid";
     import type { JoinGamePayload } from "@polypong/polypong-common";
     import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
-    import { ws } from "../store";
+    import {lobby_id, user_id, ws, joinGame} from "../store";
 
-    let lobby_id: string | null;
     let lobby_input: string;
-    const user_id = v4();
+    user_id.set(v4());
+    afterUpdate(() => console.log($lobby_id))
 
-    const gotMessage = async (m: MessageEvent) => {
-        console.log(m.data)
-        try {
-            const message = JSON.parse(m.data);
-            console.log(message);
-            if (message.type === "lobby_created") {
-                lobby_id = message.lobby_id;
-                joinGame(message.lobby_id);
-            }
-            if (message.type === "join_success") {
-                if (message.user_id === user_id) {
-                    lobby_id = lobby_input;
-                    lobby_input = "";
-                }
-            }
-        } catch (e) {
-            console.error(
-                `got message: ${m.data} failed to parse it as json, so ignoring...`
-            );
-        }
-    };
+   
 
     onMount(async () => {
-        $ws.addEventListener("message", gotMessage);
+        
         // setInterval(() => {
         //     if (!ws) {
         //         console.log("ws not ready yet");
@@ -48,28 +28,20 @@
         // }, 5000);
     });
 
-    onDestroy(() => $ws.close());
-
-    const joinGame = (input: string | undefined) => {
+    const joinGameButton = (input: string | undefined) => {
         if (!$ws) {
             return;
         }
-        console.log(`joining game ${input ?? lobby_input}`);
-        const payload: JoinGamePayload = {
-            type: "join_game",
-
-            lobby_id: input ?? lobby_input,
-            user_id,
-        };
-        $ws.send(JSON.stringify(payload));
+        joinGame(input, user_id);
+        
     };
 
     const startGame = () => {};
 </script>
 
 <body>
-    {#if lobby_id}
-        <div>here's the lobby id: {lobby_id}</div>
+    {#if !!$lobby_id}
+        <div>here's the lobby id: {$lobby_id}</div>
         <button on:click={startGame}>Start Game</button>
     {:else}
         <button
@@ -87,7 +59,7 @@
         <input type="text" bind:value={lobby_input} />
         <button
             on:click={() => {
-                joinGame(lobby_input);
+                joinGameButton(lobby_input);
             }}
         >
             join game

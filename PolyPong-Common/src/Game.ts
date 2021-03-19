@@ -8,7 +8,7 @@ export class Lobby {
     }
 }
 
-export class Game { 
+export class ClientGame { 
     radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
     sides: number;
     // sideLength: number;
@@ -23,13 +23,15 @@ export class Game {
 
     constructor(sides: number) {
             this.sides = sides;
+
+   
             for (var i = 0; i < sides; i++){
                 // Note width of each paddle is set to the radius of the shape divided by the number of sides
                 if (i < 1) {
-                    var player: Player = new Player("","",new Paddle(0,this.radius/this.sides,true,Shape.Regular,Color.Red),[],0);
+                    var player: Player = new Player("","",new Paddle(0,this.radius/this.sides,true,Shape.Regular,Color.Red),[],0, null);
                 
                 } else{
-                    var player: Player = new Player("","",new Paddle(0,this.radius/this.sides,true,Shape.Regular,Color.White),[],0);
+                    var player: Player = new Player("","",new Paddle(0,this.radius/this.sides,true,Shape.Regular,Color.White),[],0, null);
                 }
                 //var player: Player = new Player("","",new Paddle(0,this.radius/this.sides,true,Shape.Regular,Color.White),[],0);
                 this.players.push(player);
@@ -40,6 +42,8 @@ export class Game {
     // update(messageFromServer){  // array of updated positions for each players, optional array of powers ups, what kind of powerups and initiated by who, optional event of this player died (or something)
     //     paddles[playerX].update(messageFromServer.powerup)
     // }
+
+
 }
 
 export enum Shape {
@@ -96,13 +100,14 @@ export class Player {
         email: string,
         paddle: Paddle,
         inventory: Powerup[],
-        xp: number) {
+        xp: number,
+        websocketConnection: WebSocket | null) {
             this.username = username;
             this.email = email;
             this.paddle = paddle;
             this.inventory = inventory;
             this.xp = xp;
-            this.websocketConnection = null;
+            this.websocketConnection = websocketConnection;
     }
 
     // Does a player contain a paddle? Does skin/paddle color belong to player or to paddle?

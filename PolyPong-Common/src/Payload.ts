@@ -28,6 +28,16 @@ export interface CreateLobbyRequest {
   type: "create_lobby";
 }
 
+export interface StartGameRequest {
+  type: "start_game";
+  lobby_id: string;
+}
+
+export interface ServerSaysGameStarted {
+  type: "game_started";
+  sides: number;
+}
+
 type ServerEvent =
   | ErrorPayload
   | LobbyJoinedPayload
