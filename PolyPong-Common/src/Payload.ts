@@ -36,6 +36,7 @@ export interface StartGameRequest {
 export interface ServerSaysGameStarted {
   type: "game_started";
   sides: number;
+  your_player_number: number;
 }
 
 type ServerEvent =

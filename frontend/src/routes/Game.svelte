@@ -1,20 +1,22 @@
 <script lang="typescript">
-    import { isAuthenticated } from "../store";
+    import { isAuthenticated, game_info } from "../store";
     import { onMount, tick } from "svelte";
-    import * as Game from "@polypong/polypong-common"
+    import {GameClient, Shape, Color, Paddle, Player, Ball} from "@polypong/polypong-common"
 
-    var w: number;
-    var h: number;
-    var canvas: HTMLCanvasElement;
-    var ctx: CanvasRenderingContext2D;
-    var game: Game.Game;
-    var leftArrowPressed = false;
-    var rightArrowPressed = false;
-    var playerNumber: number = 0;
+    let w: number;
+    let h: number;
+    let canvas: HTMLCanvasElement;
+    let ctx: CanvasRenderingContext2D;
+    let leftArrowPressed = false;
+    let rightArrowPressed = false;
+    let playerNumber: number = 0;
+
+    let game: GameClient;
 
     const paddleCoverageRatio:number = 1/4;
     const ballScaleFactor: number = 1/30;
-    const frameRate = 1000/60;  // 60 FPS
+    // const frameRate = 1000/60;  // 60 FPS
+    const frameRate = 5000;
     
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -32,7 +34,8 @@
     
     onMount(async () => {
         load();
-        // await tick();
+        startGame($game_info.sides);      
+        console.log($game_info);
     })
 
     function load() {
@@ -48,8 +51,7 @@
 
     function startGame(sides: number) {
         // Create new games with 'sides' number of players
-        game = new Game.Game(sides);
-    
+        game = new GameClient(sides);
         // Starts the game loop
         setInterval(gameLoop, frameRate);
     }
@@ -91,9 +93,9 @@
         // Handles paddle movement side-to-side using the left and right arrow keys, 
         // only lets the paddle move along the length of its respective side (bounded by the side length)
         if (leftArrowPressed && ((game.players[playerNumber].paddle.x - game.players[playerNumber].paddle.width) > -game.sideLength/2) ){ 
-            game.players[playerNumber].paddle.x -= Game.Paddle.velocity;
+            game.players[playerNumber].paddle.x -= Paddle.velocity;
         } else if (rightArrowPressed && (game.players[playerNumber].paddle.x < game.sideLength/2)) {
-            game.players[playerNumber].paddle.x += Game.Paddle.velocity;
+            game.players[playerNumber].paddle.x += Paddle.velocity;
         }
         moveBall();
 
@@ -186,7 +188,7 @@
     }
 
     function drawPaddles() {
-        ctx.lineWidth = Game.Paddle.height;
+        ctx.lineWidth = Paddle.height;
 
         for (var i = 0; i < game.sides; i++){
 
@@ -237,9 +239,10 @@
     function collisionDetect() {
         // returns true or false
         console.log("Player number: " + playerNumber);
-        var top = getPaddleY()-Game.Paddle.height/2;
+        console.log(game);
+        var top = getPaddleY()-Paddle.height/2;
         var right = game.players[playerNumber].paddle.x;
-        var bottom = getPaddleY()+Game.Paddle.height/2;
+        var bottom = getPaddleY()+Paddle.height/2;
         var left = game.players[playerNumber].paddle.x - game.players[playerNumber].paddle.width;
 
         var topOfBall = game.ball.y - game.ball.radius;

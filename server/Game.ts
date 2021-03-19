@@ -44,6 +44,7 @@ export class Game {
         const payload: ServerSaysGameStarted = {
             type: "game_started",
             sides: this.sides,
+            your_player_number: this.players.indexOf(player),
         }
         player.websocketConnection!.send(JSON.stringify(payload));
     }

@@ -36,7 +36,13 @@
         
     };
 
-    const startGame = () => {};
+    const startGame = () => {
+        const payload: StartGameRequest = {
+            type: "start_game",
+            lobby_id: $lobby_id,
+        }
+        $ws.send(JSON.stringify(payload));
+    };
 </script>
 
 <body>

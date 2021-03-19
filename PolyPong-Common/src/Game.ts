@@ -8,7 +8,7 @@ export class Lobby {
     }
 }
 
-export class ClientGame { 
+export class GameClient { 
     radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
     sides: number;
     // sideLength: number;
