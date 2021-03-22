@@ -11,27 +11,27 @@
 	import Login from "./routes/Login.svelte";
 	import { onMount } from "svelte";
 	import auth from "./authService";
-	import { isAuthenticated, user } from "./store";
+	import { isAuthenticated, user, auth0Client } from "./store";
 
 	router.mode.hash();
 
-	let auth0Client;
+	// let auth0Client;
 
 	onMount(async () => {
-		auth0Client = await auth.createClient();
 		// createclient should do this part automatically
 		// await auth0Client.getTokenSilently();
-		isAuthenticated.set(await auth0Client.isAuthenticated());
-		user.set(await auth0Client.getUser());
+		console.log("We are here")
+		isAuthenticated.set(await (await $auth0Client).isAuthenticated());
+		user.set(await (await $auth0Client).getUser());
 	});
 </script>
 
 <div>
 	<div>this will probably be a header or something</div>
-	<button on:click={() => auth.loginWithPopup(auth0Client)}>Login</button>
+	<button on:click={async () => auth.loginWithPopup((await $auth0Client), null)}>Login</button>
 	<button
 		on:click={async () => {
-			const u = await auth0Client.getTokenSilently();
+			const u = await (await $auth0Client).getTokenSilently();
 			user.set(u);
 		}}>Login Silently</button
 	>
@@ -81,10 +81,6 @@
 
 	<Route path="/login">
 		<Login />
-	</Route>
-
-	<Route path="/authdemo">
-		<Auth0Demo />
 	</Route>
 </Route>
 <Route fallback>ruh roh</Route>
