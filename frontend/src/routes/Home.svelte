@@ -2,30 +2,36 @@
     import auth from "../authService";
 	import { isAuthenticated, user, auth0Client, popupOpen } from "../store";
 
-    // const logIn = async () => {
-    //     isAuthenticated.set(await (await $auth0Client).isAuthenticated());
-	// 	user.set(await (await $auth0Client).getUser());
-    //     auth.loginWithPopup((await $auth0Client), null)
+    async function logIn() {
+        isAuthenticated.set(await (await $auth0Client).isAuthenticated());
+		user.set(await (await $auth0Client).getUser());
+        auth.loginWithPopup((await $auth0Client));  // Do not pass in null in the options field or the code will break
 
-    //     while(popupOpen){
+        testPopupOpen();
+    }
 
-    //     }
 
-    //     // setTimeOut - event listener based on popupOpen
+    function testPopupOpen() {
+        if(!$popupOpen){
+            loggedInOrRegister();
+        } else {
+            setTimeout(testPopupOpen, 1000);
+        }
+    }
 
-    // }
+    async function loggedInOrRegister() {
+        if ($isAuthenticated) {
+            console.log($user.email)
+            // Check if user email is in the database
 
-    // const loggedInOrRegister = async () => {
-    //     if ($isAuthenticated) {
-    //         // Check if user email is in the database
-    //         console.log($user.email)
+            // If email already exists in the database, redirect to login.svelte
 
-    //         // If email already exists in the database, redirect to login.svelte
-
-    //         // Otherwise redirect to the sign up page and allow the user to choose a username
+            // Otherwise redirect to the sign up page and allow the user to choose a username
             
-    //     }
-    // }
+        } else {
+            // Not authenticated
+        }
+    }
 
 
 </script>
@@ -44,9 +50,7 @@
         <a href="/signup">
             <button class="button button2">Sign Up</button>
         </a>
-        <a href="/login">
-            <button class="button button3">Log In</button>
-        </a>
+        <button class="button button3" on:click={logIn}>Log In</button>
     </div>
 
     <hr />

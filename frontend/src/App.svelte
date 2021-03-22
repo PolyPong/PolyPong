@@ -25,7 +25,7 @@
 	});
 </script>
 
-<div>
+<!-- <div>
 	<div>this will probably be a header or something</div>
 	<button on:click={async () => auth.loginWithPopup((await $auth0Client), null)}>Login</button>
 	<button
@@ -41,7 +41,7 @@
 		{$isAuthenticated}
 	</div>
 	<a href="/game">goto game</a>
-</div>
+</div> -->
 
 <Route>
 	<Route path="/" redirect="/home"/>
@@ -89,5 +89,6 @@
 	:global(body) {
 		margin: 0;
 		font-family: Arial, Helvetica, sans-serif;
+		background-color: #353839;
 	}
 </style>

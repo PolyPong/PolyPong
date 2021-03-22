@@ -5,7 +5,6 @@ import { get } from "svelte/store";
 import {router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import config from "./auth_config";
-import auth from "./authService";
 
 export const isAuthenticated = writable(false);
 export const auth0Client = writable<Promise<Auth0Client>>(
