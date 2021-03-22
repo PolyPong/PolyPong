@@ -3,11 +3,17 @@ import { derived, writable } from "svelte/store";
 import type { JoinGamePayload } from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import {router } from "tinro";
-import type { Auth0Client } from "@auth0/auth0-spa-js";
+import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
+import config from "./auth_config";
 import auth from "./authService";
 
 export const isAuthenticated = writable(false);
-export const auth0Client = writable<Promise<Auth0Client>>(auth.createClient());
+export const auth0Client = writable<Promise<Auth0Client>>(
+  createAuth0Client({
+    domain: config.domain,
+    client_id: config.clientId,
+  })
+);
 export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);

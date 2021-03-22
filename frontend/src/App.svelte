@@ -20,7 +20,6 @@
 	onMount(async () => {
 		// createclient should do this part automatically
 		// await auth0Client.getTokenSilently();
-		console.log("We are here")
 		isAuthenticated.set(await (await $auth0Client).isAuthenticated());
 		user.set(await (await $auth0Client).getUser());
 	});
@@ -45,7 +44,7 @@
 </div>
 
 <Route>
-	<!-- <Route path="/" redirect="/home"/> -->
+	<Route path="/" redirect="/home"/>
 
 	<Route path="/home">
 		<Home />

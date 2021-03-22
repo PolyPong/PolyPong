@@ -1,9 +1,10 @@
 <script lang="ts">
     import { onDestroy, onMount, afterUpdate } from "svelte";
     import { v4 } from "uuid";
-    import type { JoinGamePayload } from "@polypong/polypong-common";
+    import type { JoinGamePayload, StartGameRequest } from "@polypong/polypong-common";
     import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
     import {lobby_id, user_id, ws, joinGame} from "../store";
+  
 
     let lobby_input: string;
     user_id.set(v4());
@@ -32,7 +33,7 @@
         if (!$ws) {
             return;
         }
-        joinGame(input, user_id);
+        joinGame(input, $user_id);
         
     };
 
