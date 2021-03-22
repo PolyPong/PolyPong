@@ -3,16 +3,9 @@ import {
   Document,
   MongoClient,
 } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
+import { Color } from "../PolyPong-Common";
 
 const client = new MongoClient();
-
-// todo import from polypong-common
-enum Paddle {
-  White,
-  Red,
-  Green,
-  Blue,
-}
 
 // Defining schema interface
 interface UserSchema {
@@ -21,7 +14,7 @@ interface UserSchema {
   email: string;
   wins: number;
   losses: number;
-  paddle: Paddle;
+  paddleColor: Color;
   xp: number;
 }
 await client.connect("mongodb://0.0.0.0:27017");
@@ -61,7 +54,7 @@ const addUser: (username: string, email: string) => Document = async (
     email,
     wins: 0,
     losses: 0,
-    paddle: Paddle.White,
+    paddleColor: Color.White,
     xp: 0,
   });
   return insertId;
