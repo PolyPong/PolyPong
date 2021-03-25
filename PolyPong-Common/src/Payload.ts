@@ -1,3 +1,10 @@
+// // this one is for the npm module
+// import { GameClient } from "./Game";
+
+// this one is for deno
+// @ts-ignore
+import { GameClient } from "./Game.ts";
+
 export interface LobbyJoinedPayload {
   type: "lobby_joined_info";
   user_id: string;
@@ -17,6 +24,7 @@ export interface LobbyCreatedPayload {
 export interface SomeoneElseJoined {
   type: "join_success";
   user_id: string;
+  lobby_id: string;
 }
 
 export interface ErrorPayload {
@@ -43,7 +51,22 @@ type ServerEvent =
   | ErrorPayload
   | LobbyJoinedPayload
   | SomeoneElseJoined
-  | LobbyCreatedPayload;
-type ClientAction = JoinGamePayload | CreateLobbyRequest;
+  | LobbyCreatedPayload
+  | ServerUpdate;
+type ClientAction = JoinGamePayload | CreateLobbyRequest | ClientUpdate;
 
 export type { ClientAction, ServerEvent };
+
+export interface ClientUpdate {
+  type: "client_update";
+  player_id: string;
+  player_number: number;
+  lobby_id: string;
+  event: GameClient;
+}
+
+export interface ServerUpdate {
+  type: "server_update",
+  event: GameClient,
+  player_number: number
+}

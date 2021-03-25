@@ -33,8 +33,7 @@
         if (!$ws) {
             return;
         }
-        joinGame(input, $user_id);
-        
+        joinGame(input, $user_id);        
     };
 
     const startGame = () => {

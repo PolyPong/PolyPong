@@ -20,9 +20,12 @@ export class GameClient {
     backgroundColor: Color = Color.Grey;
     activePowerups: Powerup[] = [];
     players: Player[] = [];
+    // player_number: number;
 
+    // constructor(sides: number, player_number: number) {
     constructor(sides: number) {
             this.sides = sides;
+            // this.player_number = player_number;
 
    
             for (var i = 0; i < sides; i++){
@@ -42,6 +45,10 @@ export class GameClient {
     // update(messageFromServer){  // array of updated positions for each players, optional array of powers ups, what kind of powerups and initiated by who, optional event of this player died (or something)
     //     paddles[playerX].update(messageFromServer.powerup)
     // }
+
+    mergeState(state: GameClient, player_number: number){
+        this.players[player_number] = state.players[player_number];
+    }
 
 
 }
@@ -125,6 +132,7 @@ export class Ball {
 
     radius: number = 10;
 }
+
 
 
 // Note: Powerups may be better implemented as functions in the paddle or ball or player classes instead

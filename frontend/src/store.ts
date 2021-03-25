@@ -1,6 +1,6 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
-import type { JoinGamePayload } from "@polypong/polypong-common";
+import { GameClient, JoinGamePayload } from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import {router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
@@ -26,6 +26,8 @@ export const user_id = writable<string>("");
 
 export const game_info = writable<any>({});
 
+export const game = writable<GameClient>(new GameClient(0));
+
 export const joinGame = (input: string | undefined, user_id: string) => {
   const payload: JoinGamePayload = {
     type: "join_game",
@@ -33,6 +35,7 @@ export const joinGame = (input: string | undefined, user_id: string) => {
     user_id,
   };
   get(ws).send(JSON.stringify(payload));
+  lobby_id.set(!!input ? input : get(lobby_id));
 };
 
 const gotMessage = async (m: MessageEvent) => {
@@ -47,17 +50,23 @@ const gotMessage = async (m: MessageEvent) => {
       if (message.user_id === get(user_id)) {
           console.log(`${message.user_id} has joined`)
       }
+      lobby_id.set(message.lobby_id)
     } else if (message.type === "game_started"){
         game_info.set({
             sides: message.sides,
             my_player_number: message.your_player_number,
         });
         router.goto("/game");
+    } else if (message.type === "server_update") {
+      const {event, player_number} = message;
+      console.log(get(game));
+      get(game).mergeState(event, player_number);
     }
   } catch (e) {
     console.error(
       `got message: ${m.data} failed to parse it as json, so ignoring...`,
     );
+    console.error(e)
   }
 };
 get(ws).addEventListener("message", gotMessage);

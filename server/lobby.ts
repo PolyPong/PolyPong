@@ -8,25 +8,32 @@ import { v4 } from "https://deno.land/std@0.84.0/uuid/mod.ts";
 import {
   ClientAction,
   ErrorPayload,
+  LobbyCreatedPayload,
   LobbyJoinedPayload,
   ServerEvent,
-  LobbyCreatedPayload
 } from "../PolyPong-Common/src/Payload.ts";
 
-import {Game} from './Game.ts';
+import { Game } from "./Game.ts";
+import {GameClient} from '../PolyPong-Common/src/Game.ts'
 
 class Lobby {
   userlist: Map<string, WebSocket>;
   lobby_id: string;
+  game: Game;
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
     this.lobby_id = lobby_id;
+    this.game = new Game(new Map()); // will be replaced by setGame
+  }
+
+  setGame(game: Game){
+    this.game = game;
   }
 
   joinGame(user_id: string, ws: WebSocket) {
     this.userlist.set(user_id, ws);
-
+  
     const response: LobbyJoinedPayload = {
       type: "lobby_joined_info",
       user_id,
@@ -42,6 +49,10 @@ class Lobby {
       }
       v.send(message);
     }
+  }
+
+  mergeGameState(game: GameClient, player_number: number){
+    this.game!.mergeState(game, player_number);
   }
 }
 
@@ -82,9 +93,9 @@ const doStuff = async (ws: any) => {
         };
         ws.send(JSON.stringify(response));
       } else if (message.type === "start_game") {
-        const {lobby_id} = message;
+        const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
-        if (!lobby){
+        if (!lobby) {
           const response: ErrorPayload = {
             type: "error",
             message: "lobby not found",
@@ -92,13 +103,35 @@ const doStuff = async (ws: any) => {
           ws.send(JSON.stringify(response));
           continue;
         }
-        
+
         const game = new Game(lobby.userlist);
+        lobby.setGame(game);
+      } else if (message.type === "client_update") {
+        const { lobby_id } = message;
+        const lobby = LOBBIES.get(lobby_id);
+        if (!lobby) {
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          ws.send(JSON.stringify(response));
+          continue;
+        }
+        const {player_id, event, player_number} = message;
+        lobby!.mergeGameState(event, player_number);
+
+        const payload: ServerEvent = {
+          type: "server_update",
+          event: lobby!.game,
+          player_number,
+        };
+        lobby!.broadcast(JSON.stringify(payload), player_id);
       }
-    } catch {
+    } catch(e) {
       console.error(
         `got message: ${event} failed to parse it as json, so ignoring...`,
       );
+      console.error(e)
       continue;
     }
   }
