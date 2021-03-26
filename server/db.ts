@@ -3,7 +3,7 @@ import {
   Document,
   MongoClient,
 } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
-import { Color } from "../PolyPong-Common";
+import { Color } from "../PolyPong-Common/src/Game.ts";
 
 const client = new MongoClient();
 
@@ -60,6 +60,15 @@ const addUser: (username: string, email: string) => Document = async (
   return insertId;
 };
 
+const checkExists = async (field: string, str: string) => {
+  const query = {[field]: str};
+  console.log(query);
+  console.log(await users.findOne({[field]: str}));
+
+  return !!(await users.findOne({[field]: str}));
+};
+
+
 const getUser = async (username: string) => {
   return await users.findOne({username: {$eq: username}}, {projection: {_id: 0}});
 };
@@ -77,3 +86,12 @@ console.log(result);
 
 const arunsxp = await getXP("arun");
 console.log(arunsxp);
+
+const dbHelper = {
+  checkExists,
+  addUser,
+  getUser,
+  getXP,
+};
+
+export default dbHelper;

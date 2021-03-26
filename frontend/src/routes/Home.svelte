@@ -1,6 +1,9 @@
 <script>
     import auth from "../authService";
-	import { isAuthenticated, user, auth0Client, popupOpen } from "../store";
+	import { isAuthenticated, user, auth0Client, popupOpen, ws } from "../store";
+
+    import {router } from "tinro";
+    import type { CheckExists } from "@polypong/polypong-common";
 
     async function logIn() {
         isAuthenticated.set(await (await $auth0Client).isAuthenticated());
@@ -22,12 +25,16 @@
     async function loggedInOrRegister() {
         if ($isAuthenticated) {
             console.log($user.email)
+
             // Check if user email is in the database
-
-            // If email already exists in the database, redirect to login.svelte
-
-            // Otherwise redirect to the sign up page and allow the user to choose a username
-            
+            // Send over a check_exists request for the email to server and wait for response (response happens in store.ts)
+            const request: CheckExists = {
+                type: "check_exists",
+                field: "email",
+                str: $user.email,
+            }
+            console.log(JSON.stringify(request))
+            $ws.send(JSON.stringify(request));
         } else {
             // Not authenticated
         }

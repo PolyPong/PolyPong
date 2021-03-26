@@ -5,6 +5,25 @@
 // @ts-ignore
 import { GameClient } from "./Game.ts";
 
+export interface CheckExists {
+  type: "check_exists";
+  field: string;
+  str: string;
+}
+
+export interface ServerExistsResponse {
+  type: "check_exists";
+  field: string;
+  str: string;
+  exists: boolean;
+}
+
+export interface CreateUser {
+  type: "create_user";
+  username: string;
+  email: boolean;
+}
+
 export interface LobbyJoinedPayload {
   type: "lobby_joined_info";
   user_id: string;

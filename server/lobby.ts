@@ -11,10 +11,13 @@ import {
   LobbyCreatedPayload,
   LobbyJoinedPayload,
   ServerEvent,
+  ServerExistsResponse,
 } from "../PolyPong-Common/src/Payload.ts";
 
 import { Game } from "./Game.ts";
 import {GameClient} from '../PolyPong-Common/src/Game.ts'
+
+import dbHelper from "./db.ts";
 
 class Lobby {
   userlist: Map<string, WebSocket>;
@@ -126,6 +129,24 @@ const doStuff = async (ws: any) => {
           player_number,
         };
         lobby!.broadcast(JSON.stringify(payload), player_id);
+      } else if (message.type === "check_exists") {
+        const field = message.field;
+        const str = message.str;
+        const strExists = await dbHelper.checkExists(field, str);
+        console.log("strExists: ", strExists)
+        const response: ServerExistsResponse = {
+          type: "check_exists",
+          field: field,
+          str: str,
+          exists: false,
+        }
+        if (strExists){
+          response.exists = true;
+        }
+        ws.send(JSON.stringify(response));
+      } 
+      else if (message.type === "create_user"){
+        dbHelper.addUser(message.username, message.email);
       }
     } catch(e) {
       console.error(

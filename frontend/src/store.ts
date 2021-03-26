@@ -28,6 +28,8 @@ export const game_info = writable<any>({});
 
 export const game = writable<GameClient>(new GameClient(0));
 
+export const usernameExists = writable<boolean>(false);
+
 export const joinGame = (input: string | undefined, user_id: string) => {
   const payload: JoinGamePayload = {
     type: "join_game",
@@ -61,6 +63,33 @@ const gotMessage = async (m: MessageEvent) => {
       const {event, player_number} = message;
       console.log(get(game));
       get(game).mergeState(event, player_number);
+    } else if (message.type === "check_exists") {
+      // If email already exists in the database, redirect to login.svelte
+      // Otherwise redirect to the sign up page and allow the user to choose a username
+      if (message.field === "email"){
+        if (message.exists){
+          router.goto("/login");
+        } else {
+          router.goto("/signup");
+        }
+      } else if (message.field === "username"){
+        if (message.exists){
+          console.log("Username already exists");
+          usernameExists.set(true);
+        } else {
+          console.log("Username does not exist yet");
+          const request: CreateUser = {
+            type: "create_user",
+            username: message.str,
+            email: get(user).email,
+          }
+          get(ws).send(JSON.stringify(request));
+          console.log("Request to create user has been sent");
+          router.goto("/login");
+        }
+      } else {
+        console.log("Error. Unrecognized field")
+      }
     }
   } catch (e) {
     console.error(
