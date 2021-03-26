@@ -1,6 +1,6 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
-import { GameClient, JoinGamePayload } from "@polypong/polypong-common";
+import { GameClient, JoinGamePayload, CreateUser } from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import {router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
