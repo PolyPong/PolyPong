@@ -5,22 +5,16 @@
         ws,
         user_id,
         lobby_id,
-        game
+        game,
     } from "../store";
     import { onMount, tick } from "svelte";
-    import {
-        GameClient,
-        Shape,
-        Color,
-        Paddle,
-        Player,
-        Ball,
-    } from "@polypong/polypong-common";
+    import { Paddle } from "@polypong/polypong-common";
     import type {
         ClientUpdate,
         KeyDownEvent,
         KeyUpEvent,
     } from "@polypong/polypong-common";
+    import { GameClient } from "../Game";
     let w: number;
     let h: number;
     let canvas: HTMLCanvasElement;
@@ -295,7 +289,8 @@
         if (
             $game.ball.x <
             $game.players[$game_info.my_player_number].paddle.x -
-                (3 * $game.players[$game_info.my_player_number].paddle.width) / 4
+                (3 * $game.players[$game_info.my_player_number].paddle.width) /
+                    4
         ) {
             angle = (-1 * Math.PI) / 4; // -45 degrees
         }
@@ -368,7 +363,7 @@
             lobby_id: $lobby_id,
             player_number: $game_info.my_player_number,
             event: $game,
-        }
+        };
         $ws.send(JSON.stringify(payload));
     };
 

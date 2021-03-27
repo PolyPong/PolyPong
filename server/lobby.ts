@@ -5,6 +5,7 @@ import {
 
 import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 import { v4 } from "https://deno.land/std@0.84.0/uuid/mod.ts";
+
 import {
   ClientAction,
   ErrorPayload,
@@ -12,31 +13,31 @@ import {
   LobbyJoinedPayload,
   ServerEvent,
   ServerExistsResponse,
-} from "../PolyPong-Common/src/Payload.ts";
+  Game,
+} from "../PolyPong-Common/src/Game.ts";
 
-import { Game } from "./Game.ts";
-import {GameClient} from '../PolyPong-Common/src/Game.ts'
+import {GameServer} from "./Game.ts"
 
 import dbHelper from "./db.ts";
 
 class Lobby {
   userlist: Map<string, WebSocket>;
   lobby_id: string;
-  game: Game;
+  game: GameServer;
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
     this.lobby_id = lobby_id;
-    this.game = new Game(new Map()); // will be replaced by setGame
+    this.game = new GameServer(new Map()); // will be replaced by setGame
   }
 
-  setGame(game: Game){
+  setGame(game: GameServer) {
     this.game = game;
   }
 
   joinGame(user_id: string, ws: WebSocket) {
     this.userlist.set(user_id, ws);
-  
+
     const response: LobbyJoinedPayload = {
       type: "lobby_joined_info",
       user_id,
@@ -54,7 +55,7 @@ class Lobby {
     }
   }
 
-  mergeGameState(game: GameClient, player_number: number){
+  mergeGameState(game: Game, player_number: number) {
     this.game!.mergeState(game, player_number);
   }
 }
@@ -107,7 +108,7 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
-        const game = new Game(lobby.userlist);
+        const game = new GameServer(lobby.userlist);
         lobby.setGame(game);
       } else if (message.type === "client_update") {
         const { lobby_id } = message;
@@ -120,7 +121,7 @@ const doStuff = async (ws: any) => {
           ws.send(JSON.stringify(response));
           continue;
         }
-        const {player_id, event, player_number} = message;
+        const { player_id, event, player_number } = message;
         lobby!.mergeGameState(event, player_number);
 
         const payload: ServerEvent = {
@@ -133,26 +134,25 @@ const doStuff = async (ws: any) => {
         const field = message.field;
         const str = message.str;
         const strExists = await dbHelper.checkExists(field, str);
-        console.log("strExists: ", strExists)
+        console.log("strExists: ", strExists);
         const response: ServerExistsResponse = {
           type: "check_exists",
           field: field,
           str: str,
           exists: false,
-        }
-        if (strExists){
+        };
+        if (strExists) {
           response.exists = true;
         }
         ws.send(JSON.stringify(response));
-      } 
-      else if (message.type === "create_user"){
+      } else if (message.type === "create_user") {
         dbHelper.addUser(message.username, message.email);
       }
-    } catch(e) {
+    } catch (e) {
       console.error(
         `got message: ${event} failed to parse it as json, so ignoring...`,
       );
-      console.error(e)
+      console.error(e);
       continue;
     }
   }

@@ -1,10 +1,12 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
-import { GameClient, JoinGamePayload, CreateUser } from "@polypong/polypong-common";
+import type {Game, JoinGamePayload, CreateUser } from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import {router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import config from "./auth_config";
+import {GameClient} from "./Game";
+
 
 export const isAuthenticated = writable(false);
 export const auth0Client = writable<Promise<Auth0Client>>(
@@ -26,7 +28,7 @@ export const user_id = writable<string>("");
 
 export const game_info = writable<any>({});
 
-export const game = writable<GameClient>(new GameClient(0));
+export const game = writable<Game>(new GameClient(0));
 
 export const usernameExists = writable<boolean>(false);
 
