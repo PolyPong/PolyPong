@@ -28,7 +28,7 @@ export const user_id = writable<string>("");
 
 export const game_info = writable<any>({});
 
-export const game = writable<Game>(new GameClient(0));
+export const game = writable<GameClient>(new GameClient(0));
 
 export const usernameExists = writable<boolean>(false);
 
