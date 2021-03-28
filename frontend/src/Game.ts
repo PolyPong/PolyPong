@@ -46,7 +46,8 @@ export class GameClient extends Game {
     }
   }
   mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
-    if (player_number) {
+    // using one equal here instead of 2. if it's not null OR if it's not undefined, then it must be a number
+    if (player_number != null) {
       this.players[player_number] = state.players[player_number];
     }
     this.ball.dx = state.ball.dx;
