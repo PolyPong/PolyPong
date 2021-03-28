@@ -60,7 +60,7 @@ class Lobby {
   }
 
   mergeGameState(game: Game, player_number: number) {
-    this.game!.mergeState(game, player_number);
+    this.game!.mergeState(game, player_number, undefined);
   }
 
   incrementReady() {

@@ -11,7 +11,6 @@ export class Lobby {
 export abstract class Game {
   radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
   sides: number = 0;
-  // sideLength: number;
   // hey Michael, I commented this out because
   //index.ts:14:5 - error TS2564: Property 'sideLength' has no initializer and is not definitely assigned in the constructor.
   ball: Ball = new Ball();
@@ -23,7 +22,7 @@ export abstract class Game {
   // player_number: number;
 
   // constructor(sides: number, player_number: number) {
-  abstract mergeState(game: Game, player_number: number): void;
+  abstract mergeState(game: Game, player_number: number, message: ClientUpdateMessage): void;
 }
 
 export enum Shape {

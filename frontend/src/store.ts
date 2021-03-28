@@ -64,7 +64,7 @@ const gotMessage = async (m: MessageEvent) => {
     } else if (message.type === "server_update") {
       const { event, player_number } = message;
       console.log(get(game));
-      get(game).mergeState(event, player_number);
+      get(game).mergeState(event, player_number, undefined);
 
       if (message.message === "game_start"){
         game_active.set(true);

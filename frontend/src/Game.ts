@@ -1,10 +1,12 @@
-import { Game, Paddle, Player, Ball, Shape, Color } from "@polypong/polypong-common";
+import { Game, Paddle, Player, Ball, Shape, Color, ClientUpdateMessage } from "@polypong/polypong-common";
 
 export class GameClient extends Game {
+  sideLength: number;
   constructor(sides: number) {
     super();
     this.sides = sides;
     // this.player_number = player_number;
+    this.sideLength  = 2 * this.radius * Math.sin(Math.PI / sides);
 
     for (var i = 0; i < sides; i++) {
       // Note width of each paddle is set to the radius of the shape divided by the number of sides
@@ -43,7 +45,7 @@ export class GameClient extends Game {
       this.players.push(player);
     }
   }
-  mergeState(state: GameClient, player_number: number | undefined) {
+  mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
     if (player_number) {
       this.players[player_number] = state.players[player_number];
     }
