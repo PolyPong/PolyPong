@@ -310,7 +310,7 @@
     }
 
     function handleCollision() {
-        var angle = 0;
+        let angle = 0;
         // If the ball hits the left quarter of the paddle, make the ball go left
         if (
             $game.ball.x <
@@ -333,6 +333,16 @@
         // Update X and Y velocity of the ball
         $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
         $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+        
+        const payload: ClientUpdate = {
+            type: "client_update",
+            event: $game,
+            player_number: $game_info.my_player_number,
+            lobby_id: $lobby_id,
+            player_id: $user_id,
+            message: "ball_update",
+        }
+        $ws.send(JSON.stringify(payload));
 
         // Increase ball's velocity (optional)
         $game.ball.velocity += 0.2;
@@ -389,6 +399,7 @@
             lobby_id: $lobby_id,
             player_number: $game_info.my_player_number,
             event: $game,
+            message: "paddle_movement",
         };
         $ws.send(JSON.stringify(payload));
     };

@@ -18,7 +18,7 @@ import {
   Ball
 } from "../PolyPong-Common/src/Game.ts";
 
-import {GameServer} from "./Game.ts"
+import { GameServer } from "./Game.ts"
 
 import dbHelper from "./db.ts";
 
@@ -66,18 +66,18 @@ class Lobby {
   incrementReady() {
     this.ready_count += 1;
   }
-  checkReady(){
+  checkReady() {
 
-    if (this.ready_count < this.userlist.size){
+    if (this.ready_count < this.userlist.size) {
       return
     }
 
     this.startGame();
   }
 
-  startGame(){
+  startGame() {
     const payload: ServerUpdate = {
-      
+
       type: "server_update",
       event: this.game,
       player_number: undefined,
@@ -143,7 +143,7 @@ const doStuff = async (ws: any) => {
         if (!lobby) {
           const response: ErrorPayload = {
             type: "error",
-        message: "lobby not found",
+            message: "lobby not found",
           };
           ws.send(JSON.stringify(response));
           continue;
@@ -158,7 +158,7 @@ const doStuff = async (ws: any) => {
           message: undefined,
         };
         lobby!.broadcast(JSON.stringify(payload), player_id);
-} else if (message.type === "check_exists") {
+      } else if (message.type === "check_exists") {
         const field = message.field;
         const str = message.str;
         const strExists = await dbHelper.checkExists(field, str);

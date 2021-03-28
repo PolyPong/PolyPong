@@ -296,7 +296,10 @@ export interface ClientUpdate {
   player_number: number;
   lobby_id: string;
   event: Game;
+  message: ClientUpdateMessage
 }
+
+export type ClientUpdateMessage = "paddle_movement" | "ball_update"| "i_died" | undefined;
 
 export interface ServerUpdate {
   type: "server_update";
