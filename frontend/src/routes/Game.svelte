@@ -333,8 +333,8 @@
     }
 
     function handleCollision() {
-        let angle = 0;
         const theta = 2*Math.PI*$game_info.my_player_number/$game.sides;
+        let angle = theta;
         const transformedBallX = $game.ball.x*Math.cos(theta) + $game.ball.y*Math.sin(theta);
         const transformedBallY = -$game.ball.x*Math.sin(theta) + $game.ball.y*Math.cos(theta);
 
@@ -346,7 +346,7 @@
                 (3 * $game.players[$game_info.my_player_number].paddle.width) /
                     4
         ) {
-            angle = (-1 * Math.PI) / 4; // -45 degrees
+            angle = theta + (-1 * Math.PI) / 4; // -45 degrees
         }
         // Else If the ball hits the right quarter of the paddle, make the ball go right
         else if (
@@ -354,7 +354,7 @@
             $game.players[$game_info.my_player_number].paddle.x -
                 $game.players[$game_info.my_player_number].paddle.width / 4
         ) {
-            angle = Math.PI / 4; // 45 degrees
+            angle = theta + Math.PI / 4; // 45 degrees
         }
         // Else Angle = 0
 
@@ -368,8 +368,12 @@
         // $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
         // $game.ball.dx = $game.ball.velocity * Math.sin(angle);
 
-        $game.ball.dy = -$game.ball.dy; // -1 to reverse the direction of the ball
-        $game.ball.dx = -$game.ball.dx;
+        // $game.ball.dy = -$game.ball.dy; // -1 to reverse the direction of the ball
+        // $game.ball.dx = -$game.ball.dx;
+        $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+        $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+
+
     
         const payload: ClientUpdate = {
             type: "client_update",

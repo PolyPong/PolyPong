@@ -60,6 +60,8 @@ export class GameServer extends Game {
     }
     
     if (message === "ball_update"){
+      this.ball.x = game.ball.x;
+      this.ball.y = game.ball.y;
       this.ball.dx = game.ball.dx;
       this.ball.dy = game.ball.dy;
     }

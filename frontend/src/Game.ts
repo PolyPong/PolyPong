@@ -50,8 +50,13 @@ export class GameClient extends Game {
     if (player_number != null) {
       this.players[player_number] = state.players[player_number];
     }
-    this.ball.dx = state.ball.dx;
-    this.ball.dy = state.ball.dy;
+    if (message === "ball_update"){
+      console.log("Ball update: " + state.ball.x + ", " + state.ball.y );
+      this.ball.x = state.ball.x;
+      this.ball.y = state.ball.y;
+      this.ball.dx = state.ball.dx;
+      this.ball.dy = state.ball.dy;
+    }
   }
 
   jsonify() {

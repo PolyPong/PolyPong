@@ -15,7 +15,8 @@ import {
   ServerExistsResponse,
   Game,
   ServerUpdate,
-  Ball
+  Ball,
+  ClientUpdateMessage,
 } from "../PolyPong-Common/src/Game.ts";
 
 import { GameServer } from "./Game.ts"
@@ -59,8 +60,8 @@ class Lobby {
     }
   }
 
-  mergeGameState(game: Game, player_number: number) {
-    this.game!.mergeState(game, player_number, undefined);
+  mergeGameState(game: Game, player_number: number, message: ClientUpdateMessage) {
+    this.game!.mergeState(game, player_number, message);
   }
 
   incrementReady() {
@@ -149,7 +150,7 @@ const doStuff = async (ws: any) => {
           continue;
         }
         const { player_id, event, player_number } = message;
-        lobby!.mergeGameState(event, player_number);
+        lobby!.mergeGameState(event, player_number, message.message);
 
         const payload: ServerEvent = {
           type: "server_update",
