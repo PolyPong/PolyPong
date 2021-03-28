@@ -1,13 +1,13 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
-import type {Game, JoinGamePayload, CreateUser } from "@polypong/polypong-common";
+import type { Game, JoinGamePayload, CreateUser } from "@polypong/polypong-common";
 import { get } from "svelte/store";
-import {router } from "tinro";
+import { router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import config from "./auth_config";
-import {GameClient} from "./Game";
+import { GameClient } from "./Game";
 
-
+export const game_active = writable(false);
 export const isAuthenticated = writable(false);
 export const auth0Client = writable<Promise<Auth0Client>>(
   createAuth0Client({
@@ -52,30 +52,34 @@ const gotMessage = async (m: MessageEvent) => {
       joinGame(message.lobby_id, get(user_id));
     } else if (message.type === "join_success") {
       if (message.user_id === get(user_id)) {
-          console.log(`${message.user_id} has joined`)
+        console.log(`${message.user_id} has joined`)
       }
       lobby_id.set(message.lobby_id)
-    } else if (message.type === "game_started"){
-        game_info.set({
-            sides: message.sides,
-            my_player_number: message.your_player_number,
-        });
-        router.goto("/game");
+    } else if (message.type === "game_started") {
+      game_info.set({
+        sides: message.sides,
+        my_player_number: message.your_player_number,
+      });
+      router.goto("/game");
     } else if (message.type === "server_update") {
-      const {event, player_number} = message;
+      const { event, player_number } = message;
       console.log(get(game));
       get(game).mergeState(event, player_number);
+
+      if (message.message === "game_start"){
+        game_active.set(true);
+      }
     } else if (message.type === "check_exists") {
       // If email already exists in the database, redirect to login.svelte
       // Otherwise redirect to the sign up page and allow the user to choose a username
-      if (message.field === "email"){
-        if (message.exists){
+      if (message.field === "email") {
+        if (message.exists) {
           router.goto("/login");
         } else {
           router.goto("/signup");
         }
-      } else if (message.field === "username"){
-        if (message.exists){
+      } else if (message.field === "username") {
+        if (message.exists) {
           console.log("Username already exists");
           usernameExists.set(true);
         } else {
@@ -89,7 +93,9 @@ const gotMessage = async (m: MessageEvent) => {
           console.log("Request to create user has been sent");
           router.goto("/login");
         }
-      } else {
+      }
+
+      else {
         console.log("Error. Unrecognized field")
       }
     }

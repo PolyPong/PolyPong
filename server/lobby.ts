@@ -14,6 +14,8 @@ import {
   ServerEvent,
   ServerExistsResponse,
   Game,
+  ServerUpdate,
+  Ball
 } from "../PolyPong-Common/src/Game.ts";
 
 import {GameServer} from "./Game.ts"
@@ -24,6 +26,7 @@ class Lobby {
   userlist: Map<string, WebSocket>;
   lobby_id: string;
   game: GameServer;
+  ready_count = 0;
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
@@ -47,6 +50,7 @@ class Lobby {
   }
 
   broadcast(message: string, ignore: string | undefined) {
+    //console.log("broadcasting message", message)
     for (const [k, v] of this.userlist.entries()) {
       if (k === ignore) {
         continue;
@@ -57,6 +61,29 @@ class Lobby {
 
   mergeGameState(game: Game, player_number: number) {
     this.game!.mergeState(game, player_number);
+  }
+
+  incrementReady() {
+    this.ready_count += 1;
+  }
+  checkReady(){
+
+    if (this.ready_count < this.userlist.size){
+      return
+    }
+
+    this.startGame();
+  }
+
+  startGame(){
+    const payload: ServerUpdate = {
+      
+      type: "server_update",
+      event: this.game,
+      player_number: undefined,
+      message: "game_start",
+    }
+    this.broadcast(JSON.stringify(payload), undefined)
   }
 }
 
@@ -116,7 +143,7 @@ const doStuff = async (ws: any) => {
         if (!lobby) {
           const response: ErrorPayload = {
             type: "error",
-            message: "lobby not found",
+        message: "lobby not found",
           };
           ws.send(JSON.stringify(response));
           continue;
@@ -128,9 +155,10 @@ const doStuff = async (ws: any) => {
           type: "server_update",
           event: lobby!.game,
           player_number,
+          message: undefined,
         };
         lobby!.broadcast(JSON.stringify(payload), player_id);
-      } else if (message.type === "check_exists") {
+} else if (message.type === "check_exists") {
         const field = message.field;
         const str = message.str;
         const strExists = await dbHelper.checkExists(field, str);
@@ -147,6 +175,19 @@ const doStuff = async (ws: any) => {
         ws.send(JSON.stringify(response));
       } else if (message.type === "create_user") {
         dbHelper.addUser(message.username, message.email);
+      } else if (message.type === "client_ready") {
+        const { lobby_id } = message;
+        const lobby = LOBBIES.get(lobby_id);
+        if (!lobby) {
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          ws.send(JSON.stringify(response));
+          continue;
+        }
+        lobby.incrementReady();
+        lobby.checkReady();
       }
     } catch (e) {
       console.error(

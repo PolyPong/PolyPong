@@ -26,7 +26,6 @@ export abstract class Game {
   abstract mergeState(game: Game, player_number: number): void;
 }
 
-
 export enum Shape {
   Regular = 0,
   CurvedInwards,
@@ -97,15 +96,23 @@ export class Player {
   // misc. stats (win/loss, games won, etc.)
 }
 
+
+const getRandom = (min: number, max: number) => Math.random() * (max - min) + min;
+
 export class Ball {
   x: number = 0;
   y: number = 0;
-  dx: number = -1;
-  dy: number = 2;
+  dx: number;
+  dy: number;
 
   velocity: number = 2;
 
   radius: number = 10;
+
+  constructor(){
+    this.dx = getRandom(-1, 1);
+    this.dy = getRandom(-1, 1);
+  }
 }
 
 // Note: Powerups may be better implemented as functions in the paddle or ball or player classes instead
@@ -208,7 +215,6 @@ export class TraceBallPath implements Powerup {
   }
 }
 
-
 export interface CheckExists {
   type: "check_exists";
   field: string;
@@ -275,8 +281,12 @@ type ServerEvent =
   | LobbyJoinedPayload
   | SomeoneElseJoined
   | LobbyCreatedPayload
-  | ServerUpdate;
-type ClientAction = JoinGamePayload | CreateLobbyRequest | ClientUpdate;
+  | ServerUpdate
+type ClientAction =
+  | JoinGamePayload
+  | CreateLobbyRequest
+  | ClientUpdate
+  | ClientReady
 
 export type { ClientAction, ServerEvent };
 
@@ -289,7 +299,14 @@ export interface ClientUpdate {
 }
 
 export interface ServerUpdate {
-  type: "server_update",
-  event: Game,
-  player_number: number
+  type: "server_update";
+  event: Game;
+  player_number: number | undefined;
+  message: "game_start" | undefined;
 }
+
+export interface ClientReady {
+  type: "client_ready";
+  lobby_id: string;
+}
+

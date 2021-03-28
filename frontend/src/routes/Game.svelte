@@ -6,6 +6,7 @@
         user_id,
         lobby_id,
         game,
+        game_active,
     } from "../store";
     import { onMount, tick } from "svelte";
     import { Paddle } from "@polypong/polypong-common";
@@ -13,6 +14,7 @@
         ClientUpdate,
         KeyDownEvent,
         KeyUpEvent,
+        ClientReady,
     } from "@polypong/polypong-common";
     import { GameClient } from "../Game";
     let w: number;
@@ -46,6 +48,14 @@
         console.log($game_info);
     });
 
+    setInterval(async () => {
+        if ($game_active) {
+            setInterval(gameLoop, 1000 / 10); // 60 fps is 1000/60
+            $game_active = false;
+        }
+        await tick();
+    });
+
     function load() {
         w = document.documentElement.clientWidth;
         h = document.documentElement.clientHeight;
@@ -60,10 +70,15 @@
         // Create new games with 'sides' number of players
         $game = new GameClient(sides);
         // Starts the game loop
-        setInterval(gameLoop, frameRate);
+        const payload: ClientReady = {
+            type: "client_ready",
+            lobby_id: $lobby_id,
+        };
+
+        $ws.send(JSON.stringify(payload));
     }
 
-    function gameLoop() {
+    export function gameLoop() {
         adjustSize(); // For when users change the size of their window, the game board and the paddles change size
         update(); // For updating the state of the game
         render(); // For rendering the updated state of the game (ie. clears the screen and draws the new state onto the canvas)
@@ -130,16 +145,21 @@
         // Need to rotate BEFORE paddles are drawn to the screen, need to rotate around center of canvas
         ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
         drawPaddles();
+
+        drawBall();
+
         // Undo the spell we cast
         ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
+
+        ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.translate(canvas.width / 2, canvas.height / 2);
 
         // Later on, when the ball information is coming in from the server, we will want to include
         // drawBall() in between the two rotations. For now, the ball information is not rotated because
         // right now the ball information is from player 0's perspective, not from player playerNumber's perspective
 
         // TLDR: drawBall() stays outside the rotations until we are synchronizing ball information across clients
-
-        drawBall();
     }
 
     function drawPolygon(
@@ -274,6 +294,12 @@
         var rightOfBall = $game.ball.x + $game.ball.radius;
         var bottomOfBall = $game.ball.y + $game.ball.radius;
         var leftOfBall = $game.ball.x - $game.ball.radius;
+
+        ctx.beginPath();
+        ctx.moveTo(left, top);
+        ctx.lineTo(right, bottom);
+        ctx.stroke();
+        ctx.closePath();
 
         return (
             leftOfBall < right &&
