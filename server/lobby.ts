@@ -161,7 +161,7 @@ const doStuff = async (ws: any) => {
           // @ts-ignore
           event: lobby!.game.jsonify(),
           player_number,
-          message: undefined,
+          message: message.message,
         };
         lobby!.broadcast(JSON.stringify(payload), player_id);
       } else if (message.type === "check_exists") {

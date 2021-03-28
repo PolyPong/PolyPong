@@ -27,7 +27,7 @@
     const paddleCoverageRatio: number = 1 / 4;
     const ballScaleFactor: number = 1 / 30;
     // const frameRate = 1000/60;  // 60 FPS
-    const frameRate = 1000/20;
+    const frameRate = 1000/5;
 
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -61,8 +61,10 @@
         h = document.documentElement.clientHeight;
         canvas = document.getElementById("drawing") as HTMLCanvasElement;
 
-        canvas.width = w - 100;
-        canvas.height = h - 150;
+        // canvas.width = w - 100;
+        // canvas.height = h - 150;
+        canvas.width = 400;
+        canvas.height = 400;
         ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;
     }
 
@@ -81,6 +83,7 @@
     export function gameLoop() {
         adjustSize(); // For when users change the size of their window, the game board and the paddles change size
         update(); // For updating the state of the game
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         render(); // For rendering the updated state of the game (ie. clears the screen and draws the new state onto the canvas)
     }
 
@@ -90,10 +93,11 @@
     function adjustSize() {
         w = document.documentElement.clientWidth;
         h = document.documentElement.clientHeight;
-        canvas.width = w - 100;
-        canvas.height = h - 150;
+        // canvas.width = w - 100;
+        // canvas.height = h - 150;
+        // ctx.scale(w/canvas.width, h/canvas.height)
 
-        drawPolygon((h - 200) / 2, (w - 150) / 2, $game.sides, 255, 255, 255);
+        drawPolygon($game.sides, 255, 255, 255);
 
         // Get the length of each side
         $game.sideLength = 2 * $game.radius * Math.sin(Math.PI / $game.sides);
@@ -143,13 +147,13 @@
 
         // Rotate so that the player which has '$game_info.my_player_number' number is at the bottom
         // Need to rotate BEFORE paddles are drawn to the screen, need to rotate around center of canvas
-        //ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
+        ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
         drawPaddles();
 
         drawBall();
 
         // Undo the spell we cast
-        //ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
+        ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
 
         // Later on, when the ball information is coming in from the server, we will want to include
         // drawBall() in between the two rotations. For now, the ball information is not rotated because
@@ -159,17 +163,17 @@
     }
 
     function drawPolygon(
-        shapeHeight: number,
-        shapeWidth: number,
         sides: number,
         red: string | number,
         green: string | number,
         blue: string | number
     ) {
         // Determine whether height or width is the limiting factor on the screen right now
-        shapeHeight > shapeWidth
-            ? ($game.radius = shapeWidth)
-            : ($game.radius = shapeHeight);
+        // shapeHeight > shapeWidth
+        //     ? ($game.radius = shapeWidth)
+        //     : ($game.radius = shapeHeight);
+
+        $game.radius = 175;
 
         // Clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
