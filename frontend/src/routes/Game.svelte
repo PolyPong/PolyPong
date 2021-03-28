@@ -50,7 +50,7 @@
 
     setInterval(async () => {
         if ($game_active) {
-            setInterval(gameLoop, 1000 / 10); // 60 fps is 1000/60
+            setInterval(gameLoop, 1000 / 20); // 60 fps is 1000/60
             $game_active = false;
         }
         await tick();
@@ -150,10 +150,6 @@
 
         // Undo the spell we cast
         ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
-
-        ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.translate(canvas.width / 2, canvas.height / 2);
 
         // Later on, when the ball information is coming in from the server, we will want to include
         // drawBall() in between the two rotations. For now, the ball information is not rotated because
