@@ -23,6 +23,18 @@ export abstract class Game {
 
   // constructor(sides: number, player_number: number) {
   abstract mergeState(game: Game, player_number: number, message: ClientUpdateMessage): void;
+  
+  jsonify() {
+    const { ball, activePowerups, players } = this;
+    for (const p of players) {
+      p.websocketConnection = null;
+    }
+    return {
+      ball,
+      activePowerups,
+      players
+    }
+  }
 }
 
 export enum Shape {

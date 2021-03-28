@@ -55,8 +55,8 @@ export class GameServer extends Game {
 
   mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage ) {
 
-    if (player_number) {
-      this.players[player_number] = game.players[player_number];
+    if (player_number || player_number === 0) {
+      this.players[player_number].paddle.x = game.players[player_number].paddle.x;
     }
     
     if (message === "ball_update"){
@@ -68,8 +68,4 @@ export class GameServer extends Game {
     
     
   }
-
-  // update(messageFromServer){  // array of updated positions for each players, optional array of powers ups, what kind of powerups and initiated by who, optional event of this player died (or something)
-  //     paddles[playerX].update(messageFromServer.powerup)
-  // }
 }
