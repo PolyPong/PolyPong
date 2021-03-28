@@ -367,7 +367,7 @@
         
         const payload: ClientUpdate = {
             type: "client_update",
-            event: $game,
+            event: $game.jsonify(),
             player_number: $game_info.my_player_number,
             lobby_id: $lobby_id,
             player_id: $user_id,
@@ -429,7 +429,7 @@
             player_id: $user_id,
             lobby_id: $lobby_id,
             player_number: $game_info.my_player_number,
-            event: $game,
+            event: $game.jsonify(),
             message: "paddle_movement",
         };
         $ws.send(JSON.stringify(payload));

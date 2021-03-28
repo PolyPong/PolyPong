@@ -6,7 +6,7 @@ export class GameClient extends Game {
     super();
     this.sides = sides;
     // this.player_number = player_number;
-    this.sideLength  = 2 * this.radius * Math.sin(Math.PI / sides);
+    this.sideLength = 2 * this.radius * Math.sin(Math.PI / sides);
 
     for (var i = 0; i < sides; i++) {
       // Note width of each paddle is set to the radius of the shape divided by the number of sides
@@ -52,5 +52,17 @@ export class GameClient extends Game {
     }
     this.ball.dx = state.ball.dx;
     this.ball.dy = state.ball.dy;
+  }
+
+  jsonify() {
+    const { ball, activePowerups, players } = this;
+    for (const p of players) {
+      p.websocketConnection = null;
+    }
+    return {
+      ball,
+      activePowerups,
+      players
+    }
   }
 }
