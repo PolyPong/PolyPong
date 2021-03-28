@@ -27,7 +27,7 @@
     const paddleCoverageRatio: number = 1 / 4;
     const ballScaleFactor: number = 1 / 30;
     // const frameRate = 1000/60;  // 60 FPS
-    const frameRate = 1000/10;
+    const frameRate = 1000/20;
 
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -143,13 +143,13 @@
 
         // Rotate so that the player which has '$game_info.my_player_number' number is at the bottom
         // Need to rotate BEFORE paddles are drawn to the screen, need to rotate around center of canvas
-        ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
+        //ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
         drawPaddles();
 
         drawBall();
 
         // Undo the spell we cast
-        ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
+        //ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
 
         // Later on, when the ball information is coming in from the server, we will want to include
         // drawBall() in between the two rotations. For now, the ball information is not rotated because
@@ -278,7 +278,7 @@
     // collision Detect function
     function collisionDetect() {
         // returns true or false
-        console.log("Player number: " + $game_info.my_player_number);
+        //console.log("Player number: " + $game_info.my_player_number);
 
         const theta = 2*Math.PI*$game_info.my_player_number/$game.sides;
         const transformedBallX = $game.ball.x*Math.cos(theta) + $game.ball.y*Math.sin(theta);

@@ -46,23 +46,10 @@ export class GameClient extends Game {
     }
   }
   mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
-    // using one equal here instead of 2. if it's not null OR if it's not undefined, then it must be a number
-    if (player_number != null) {
+    if (player_number || player_number === 0) {
       this.players[player_number] = state.players[player_number];
     }
     this.ball.dx = state.ball.dx;
     this.ball.dy = state.ball.dy;
-  }
-
-  jsonify() {
-    const { ball, activePowerups, players } = this;
-    for (const p of players) {
-      p.websocketConnection = null;
-    }
-    return {
-      ball,
-      activePowerups,
-      players
-    }
   }
 }

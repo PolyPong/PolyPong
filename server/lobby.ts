@@ -83,6 +83,10 @@ class Lobby {
       player_number: undefined,
       message: "game_start",
     }
+    
+    for (const p of payload.event.players){
+      p.websocketConnection = null;
+    }
     this.broadcast(JSON.stringify(payload), undefined)
   }
 }
@@ -153,7 +157,8 @@ const doStuff = async (ws: any) => {
 
         const payload: ServerEvent = {
           type: "server_update",
-          event: lobby!.game,
+          // @ts-ignore
+          event: lobby!.game.jsonify(),
           player_number,
           message: undefined,
         };
