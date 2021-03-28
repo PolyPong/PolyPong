@@ -361,9 +361,15 @@
         // Update X and Y velocity of the ball
         let dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
         let dx = $game.ball.velocity * Math.sin(angle);
+
+        console.log("Dy on server: " + dy);
+        console.log("Dx on server: " + dx);
     
-        $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-        $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+        // $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+        // $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+
+        $game.ball.dy = -$game.ball.dy; // -1 to reverse the direction of the ball
+        $game.ball.dx = -$game.ball.dx;
     
         const payload: ClientUpdate = {
             type: "client_update",
@@ -376,8 +382,12 @@
         $ws.send(JSON.stringify(payload));
 
         // Increase ball's velocity (optional)
-        $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta); 
-        $game.ball.dx = dx*Math.cos(theta) + dy*Math.sin(theta);
+        // $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta); 
+        // $game.ball.dx = dx*Math.cos(theta) + dy*Math.sin(theta);
+
+        console.log("Transformed Dy: " + $game.ball.dy);
+        console.log("Transformed Dx: " + $game.ball.dx);
+
         $game.ball.velocity += 0.2;
     }
 
