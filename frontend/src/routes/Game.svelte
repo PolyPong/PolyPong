@@ -362,9 +362,9 @@
         let dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
         let dx = $game.ball.velocity * Math.sin(angle);
     
-        $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta); 
-        $game.ball.dx = dx*Math.cos(theta) + dy*Math.sin(theta);
-        
+        $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+        $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+    
         const payload: ClientUpdate = {
             type: "client_update",
             event: $game.jsonify(),
@@ -376,6 +376,8 @@
         $ws.send(JSON.stringify(payload));
 
         // Increase ball's velocity (optional)
+        $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta); 
+        $game.ball.dx = dx*Math.cos(theta) + dy*Math.sin(theta);
         $game.ball.velocity += 0.2;
     }
 
