@@ -143,13 +143,13 @@
 
         // Rotate so that the player which has '$game_info.my_player_number' number is at the bottom
         // Need to rotate BEFORE paddles are drawn to the screen, need to rotate around center of canvas
-        //ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
+        ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
         drawPaddles();
 
         drawBall();
 
         // Undo the spell we cast
-        //ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
+        ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
 
         // Later on, when the ball information is coming in from the server, we will want to include
         // drawBall() in between the two rotations. For now, the ball information is not rotated because
