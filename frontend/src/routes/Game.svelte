@@ -27,7 +27,7 @@
     const paddleCoverageRatio: number = 1 / 4;
     const ballScaleFactor: number = 1 / 30;
     // const frameRate = 1000/60;  // 60 FPS
-    const frameRate = 1000 / 20;
+    const frameRate = 1000/10;
 
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -50,7 +50,7 @@
 
     setInterval(async () => {
         if ($game_active) {
-            setInterval(gameLoop, 1000 / 20); // 60 fps is 1000/60
+            setInterval(gameLoop, frameRate);
             $game_active = false;
         }
         await tick();
@@ -279,6 +279,12 @@
     function collisionDetect() {
         // returns true or false
         console.log("Player number: " + $game_info.my_player_number);
+
+        const theta = 2*Math.PI*$game_info.my_player_number/$game.sides;
+        const transformedBallX = $game.ball.x*Math.cos(theta) + $game.ball.y*Math.sin(theta);
+        const transformedBallY = -$game.ball.x*Math.sin(theta) + $game.ball.y*Math.cos(theta);
+
+
         var top = getPaddleY() - Paddle.height / 2;
         var right = $game.players[$game_info.my_player_number].paddle.x;
         var bottom = getPaddleY() + Paddle.height / 2;
@@ -286,16 +292,37 @@
             $game.players[$game_info.my_player_number].paddle.x -
             $game.players[$game_info.my_player_number].paddle.width;
 
-        var topOfBall = $game.ball.y - $game.ball.radius;
-        var rightOfBall = $game.ball.x + $game.ball.radius;
-        var bottomOfBall = $game.ball.y + $game.ball.radius;
-        var leftOfBall = $game.ball.x - $game.ball.radius;
+        var topOfBall = transformedBallY - $game.ball.radius;
+        var rightOfBall = transformedBallX + $game.ball.radius;
+        var bottomOfBall = transformedBallY + $game.ball.radius;
+        var leftOfBall = transformedBallX - $game.ball.radius;
 
-        ctx.beginPath();
-        ctx.moveTo(left, top);
-        ctx.lineTo(right, bottom);
-        ctx.stroke();
-        ctx.closePath();
+        
+
+        // console.log("Ball, Y Position: " + transformedBallY);
+        // console.log("Ball, X Position: " + transformedBallX);
+        // console.log("Paddle, Y Position: " + getPaddleY());
+        // console.log("Paddle, X Position: " + $game.players[$game_info.my_player_number].paddle.x);
+
+
+        // The issue wasn't drawing, it was actually to do with the stored coordinates
+        // For collision detection, we now transform the X and Y ball co'ords received
+        // from the server (since the server ball co'ords are with respect to Player 0)
+        // This is why collision detection was only working for Player 0: the server's 
+        // ball co'ords needed to be rotated to get the actual place where the ball is 
+        // drawn on the screen. Right now, we still are just drawing the server ball co'ords,
+        // then rotating the canvas, then transforming the co'ords for collision detection.
+        // To simplify, we could just transform the server co'ords right away, then 
+        // draw the ball to the screen without rotation! Let's talk about it
+        // In hindsight, we maybe could have just transformed the paddle co'ords too 
+        // instead of rotating the canvas; not 100% sure but it may also work
+        // For the coordinate rotation: https://en.wikipedia.org/wiki/Rotation_of_axes
+        // ctx.beginPath();
+        // ctx.moveTo(left, top);
+        // ctx.lineTo(right, bottom);
+        // ctx.strokeStyle = "rgb(0,0,255)";
+        // ctx.stroke();
+        // ctx.closePath();
 
         return (
             leftOfBall < right &&
@@ -307,9 +334,14 @@
 
     function handleCollision() {
         let angle = 0;
+        const theta = 2*Math.PI*$game_info.my_player_number/$game.sides;
+        const transformedBallX = $game.ball.x*Math.cos(theta) + $game.ball.y*Math.sin(theta);
+        const transformedBallY = -$game.ball.x*Math.sin(theta) + $game.ball.y*Math.cos(theta);
+
+
         // If the ball hits the left quarter of the paddle, make the ball go left
         if (
-            $game.ball.x <
+            transformedBallX <
             $game.players[$game_info.my_player_number].paddle.x -
                 (3 * $game.players[$game_info.my_player_number].paddle.width) /
                     4
@@ -318,7 +350,7 @@
         }
         // Else If the ball hits the right quarter of the paddle, make the ball go right
         else if (
-            $game.ball.x >
+            transformedBallX >
             $game.players[$game_info.my_player_number].paddle.x -
                 $game.players[$game_info.my_player_number].paddle.width / 4
         ) {
@@ -327,8 +359,11 @@
         // Else Angle = 0
 
         // Update X and Y velocity of the ball
-        $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-        $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+        let dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+        let dx = $game.ball.velocity * Math.sin(angle);
+    
+        $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta); 
+        $game.ball.dx = dx*Math.cos(theta) + dy*Math.sin(theta);
         
         const payload: ClientUpdate = {
             type: "client_update",
