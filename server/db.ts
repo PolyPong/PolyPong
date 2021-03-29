@@ -3,7 +3,7 @@ import {
   Document,
   MongoClient,
 } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
-import { Color } from "../PolyPong-Common/src/Game.ts";
+import { Color, ColorLevels } from "../PolyPong-Common/src/Game.ts";
 
 const client = new MongoClient();
 
@@ -35,15 +35,52 @@ await users.createIndexes(
         unique: true
       },
       {
-          key: {
-              email: 1,
-          },
-          name: "emails",
-          unique: true
+        key: {
+          email: 1,
+        },
+        name: "emails",
+        unique: true
       }
     ],
   },
 );
+
+const getAvailableSkins: (username: string) => Promise<Color[]> = async (username: string) => {
+  const user = await getUser(username);
+  if (!user) {
+    return []
+  }
+
+  const colours = [Color.White];
+
+  for (const [colour, level] of Object.entries(ColorLevels)) {
+    if (level <= user.xp) {
+      colours.push(colour);
+    }
+  }
+
+  return colours;
+
+}
+
+const setSkin = async (username: string, skin: Color) => {
+  const user = await getUser(username);
+  if (!user) {
+    return "error";
+  }
+
+  if (user.xp < ColorLevels[skin]) {
+    return "error"
+  }
+
+  return await users.updateOne({ username: { $eq: username } }, { $set: { paddleColor: skin } });
+}
+
+// this should be determined by the server, not the game client
+const levelUp = async (username: string, levels: number) => {
+  return await users.updateOne({ username: { $eq: username } }, { $inc: { xp: levels } });
+}
+
 
 const addUser: (username: string, email: string) => Document = async (
   username: string,
@@ -61,21 +98,21 @@ const addUser: (username: string, email: string) => Document = async (
 };
 
 const checkExists = async (field: string, str: string) => {
-  const query = {[field]: str};
+  const query = { [field]: str };
   console.log(query);
-  console.log(await users.findOne({[field]: str}));
+  console.log(await users.findOne({ [field]: str }));
 
-  return !!(await users.findOne({[field]: str}));
+  return !!(await users.findOne({ [field]: str }));
 };
 
 
 const getUser = async (username: string) => {
-  return await users.findOne({username: {$eq: username}}, {projection: {_id: 0}});
+  return await users.findOne({ username: { $eq: username } }, { projection: { _id: 0 } });
 };
 
 const getXP = async (username: string) => {
-    const result = await users.findOne({username: {$eq: username}}, {projection: {_id: 0, xp: 1}})
-    return result ? result.xp : -1
+  const result = await users.findOne({ username: { $eq: username } }, { projection: { _id: 0, xp: 1 } })
+  return result ? result.xp : -1
 }
 
 addUser("arun", "test@example.com");
