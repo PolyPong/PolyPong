@@ -21,8 +21,9 @@ export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);
 
-const SERVER_URL = import.meta.env.MODE === "production" ? "ws://polyserver.polypong.ca:5000/ws" : "ws://localhost:5000/ws"
+const SERVER_URL = import.meta.env.MODE === "production" ? "wss://polyserver.polypong.ca:8443/ws" : "ws://localhost:5000/ws"
 export const ws = writable(new WebSocket(SERVER_URL));
+//export const ws = writable(new WebSocket("ws://204.209.76.205:5000/ws"));
 
 export const lobby = writable(null);
 
