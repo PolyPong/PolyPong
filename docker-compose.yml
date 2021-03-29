@@ -4,7 +4,7 @@ services:
 ################################################################################
   mongo:
       image: mongo
-      container_name: mongo
+      container_name: mongoo
       restart: unless-stopped
       ports:
        - 27017:27017
@@ -16,7 +16,7 @@ services:
     ports:
       - 5000:5000
     environment:
-      MONGOURL: "mongodb://mongo:27017"
+      MONGOURL: "mongodb://mongoo:27017"
     restart: unless-stopped
     depends_on: 
       - mongo

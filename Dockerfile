@@ -1,4 +1,4 @@
-FROM hayd/deno-alpine:1.8.2
+FROM hayd/alpine-deno:1.8.2
 #ENV DB_URL=mongodb://mongo:27017
 
 WORKDIR /app
