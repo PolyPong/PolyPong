@@ -17,7 +17,12 @@ interface UserSchema {
   paddleColor: Color;
   xp: number;
 }
-await client.connect("mongodb://0.0.0.0:27017");
+
+const DB_URL = Deno.env.get("MONGOURL") ?? "mongodb://0.0.0.0:27017";
+  
+console.log("mongo is at: ", DB_URL);
+
+await client.connect(DB_URL);
 
 const db = client.database("polypong");
 const users = db.collection<UserSchema>("users");
