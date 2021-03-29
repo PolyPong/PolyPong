@@ -13,7 +13,7 @@ const port: number = 5000;
 app.addEventListener("listen", ({ secure, hostname, port }) => {
   const protocol = secure ? "https://" : "http://";
   const url = `${protocol}${hostname ?? "localhost"}:${port}`;
-  console.log(`Listening on: ${port}`);
+  console.log(`Listening on: ${url}`);
 });
 
 const router = new Router();
@@ -26,4 +26,4 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 router.get("/ws", handleSocket);
-await app.listen({port})
+await app.listen({port, hostname: "0.0.0.0"})
