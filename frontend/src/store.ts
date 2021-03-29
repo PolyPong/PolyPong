@@ -1,11 +1,13 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
-import type { Game, JoinGamePayload, CreateUser } from "@polypong/polypong-common";
+import { Ball } from "@polypong/polypong-common";
+import type { JoinGamePayload, CreateUser } from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import { router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import config from "./auth_config";
 import { GameClient } from "./Game";
+import { binding_callbacks } from "svelte/internal";
 
 export const game_active = writable(false);
 export const isAuthenticated = writable(false);
@@ -28,7 +30,7 @@ export const user_id = writable<string>("");
 
 export const game_info = writable<any>({});
 
-export const game = writable<GameClient>(new GameClient(0));
+export const game = writable<GameClient>(new GameClient(0, new Ball()));
 
 export const usernameExists = writable<boolean>(false);
 
@@ -59,6 +61,7 @@ const gotMessage = async (m: MessageEvent) => {
       game_info.set({
         sides: message.sides,
         my_player_number: message.your_player_number,
+        ball: message.ball
       });
       router.goto("/game");
     } else if (message.type === "server_update") {

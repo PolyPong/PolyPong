@@ -9,8 +9,9 @@ export class Lobby {
 }
 
 export abstract class Game {
-  radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
+  radius: number = 175; // Size of the game board, determined at runtime but set to default of 400
   sides: number = 0;
+  paddleCoverageRatio: number = 0.25;
   // hey Michael, I commented this out because
   //index.ts:14:5 - error TS2564: Property 'sideLength' has no initializer and is not definitely assigned in the constructor.
   ball: Ball = new Ball();
@@ -56,7 +57,7 @@ export class Paddle {
   width: number = 100;
   static readonly height: number = 10;
 
-  static velocity: number = 10;
+  static velocity: number = 0.2;
 
   x: number;
   invisible: boolean;
@@ -116,13 +117,13 @@ export class Ball {
   dx: number;
   dy: number;
 
-  velocity: number = 2;
+  velocity: number = 1;
 
   radius: number = 10;
 
   constructor(){
-    this.dx = getRandom(-1, 1);
-    this.dy = getRandom(-1, 1);
+    this.dx = getRandom(-0.5, 0.5);
+    this.dy = getRandom(-0.5, 0.5);
   }
 }
 
@@ -285,6 +286,7 @@ export interface ServerSaysGameStarted {
   type: "game_started";
   sides: number;
   your_player_number: number;
+  ball: Ball;
 }
 
 type ServerEvent =

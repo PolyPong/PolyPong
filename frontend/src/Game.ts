@@ -1,10 +1,16 @@
 import { Game, Paddle, Player, Ball, Shape, Color, ClientUpdateMessage } from "@polypong/polypong-common";
 
 export class GameClient extends Game {
+  radius: number = 175; // Size of the game board, determined at runtime but set to default of 400
+  sides: number;
+  paddleCoverageRatio: number = 0.25;
   sideLength: number;
-  constructor(sides: number) {
+  ball: Ball;
+
+  constructor(sides: number, ball: Ball) {
     super();
     this.sides = sides;
+    this.ball = ball;
     // this.player_number = player_number;
     this.sideLength = 2 * this.radius * Math.sin(Math.PI / sides);
 
@@ -16,7 +22,7 @@ export class GameClient extends Game {
           "",
           new Paddle(
             0,
-            this.radius / this.sides,
+            this.sideLength * this.paddleCoverageRatio,
             true,
             Shape.Regular,
             Color.Red,
@@ -31,7 +37,7 @@ export class GameClient extends Game {
           "",
           new Paddle(
             0,
-            this.radius / this.sides,
+            this.sideLength * this.paddleCoverageRatio,
             true,
             Shape.Regular,
             Color.White,

@@ -9,7 +9,7 @@
         game_active,
     } from "../store";
     import { onMount, tick } from "svelte";
-    import { Paddle } from "@polypong/polypong-common";
+    import { Ball, Paddle } from "@polypong/polypong-common";
     import type {
         ClientUpdate,
         KeyDownEvent,
@@ -27,7 +27,9 @@
     const paddleCoverageRatio: number = 1 / 4;
     const ballScaleFactor: number = 1 / 30;
     // const frameRate = 1000/60;  // 60 FPS
-    const frameRate = 1000/5;
+    const frameRate = 1000/30;
+
+    let gameLoopRunning: Timeout;
 
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -44,13 +46,14 @@
 
     onMount(async () => {
         load();
-        startGame($game_info.sides, $game_info.my_player_number);
+        startGame($game_info.sides, $game_info.my_player_number, $game_info.ball);
         console.log($game_info);
     });
 
     setInterval(async () => {
         if ($game_active) {
-            setInterval(gameLoop, frameRate);
+            adjustSize();
+            gameLoopRunning = setInterval(gameLoop, frameRate);
             $game_active = false;
         }
         await tick();
@@ -68,9 +71,9 @@
         ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;
     }
 
-    function startGame(sides: number, player_number: number) {
+    function startGame(sides: number, player_number: number, ball: Ball) {
         // Create new games with 'sides' number of players
-        $game = new GameClient(sides);
+        $game = new GameClient(sides, ball);
         // Starts the game loop
         const payload: ClientReady = {
             type: "client_ready",
@@ -81,9 +84,7 @@
     }
 
     export function gameLoop() {
-        adjustSize(); // For when users change the size of their window, the game board and the paddles change size
         update(); // For updating the state of the game
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         render(); // For rendering the updated state of the game (ie. clears the screen and draws the new state onto the canvas)
     }
 
@@ -97,7 +98,7 @@
         // canvas.height = h - 150;
         // ctx.scale(w/canvas.width, h/canvas.height)
 
-        drawPolygon($game.sides, 255, 255, 255);
+        $game.radius = 175; // Set the radius of the game
 
         // Get the length of each side
         $game.sideLength = 2 * $game.radius * Math.sin(Math.PI / $game.sides);
@@ -119,29 +120,36 @@
         // only lets the paddle move along the length of its respective side (bounded by the side length)
         if (
             leftArrowPressed &&
-            $game.players[$game_info.my_player_number].paddle.x -
-                $game.players[$game_info.my_player_number].paddle.width >
+            ($game.players[$game_info.my_player_number].paddle.x -
+                $game.players[$game_info.my_player_number].paddle.width - 
+                Paddle.velocity) >
                 -$game.sideLength / 2
         ) {
-            $game.players[$game_info.my_player_number].paddle.x -=
-                Paddle.velocity;
+            $game.players[$game_info.my_player_number].paddle.x -= Paddle.velocity;
         } else if (
             rightArrowPressed &&
-            $game.players[$game_info.my_player_number].paddle.x <
+            ($game.players[$game_info.my_player_number].paddle.x + Paddle.velocity) <
                 $game.sideLength / 2
         ) {
-            $game.players[$game_info.my_player_number].paddle.x +=
-                Paddle.velocity;
+            $game.players[$game_info.my_player_number].paddle.x += Paddle.velocity;
         }
         moveBall();
 
         if (collisionDetect()) {
             handleCollision();
         }
+
+        if (gameOver()){
+            handleGameOver();
+        }
     }
 
     // Re-render the game according to the new state
     function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        drawPolygon($game.sides, 255, 255, 255);
+
         //Move the origin to the exact center of the canvas
         ctx.translate(canvas.width / 2, canvas.height / 2);
 
@@ -151,6 +159,10 @@
         drawPaddles();
 
         drawBall();
+
+        if (gameOver()){
+            drawGameOver();
+        }
 
         // Undo the spell we cast
         ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
@@ -168,13 +180,8 @@
         green: string | number,
         blue: string | number
     ) {
-        // Determine whether height or width is the limiting factor on the screen right now
-        // shapeHeight > shapeWidth
-        //     ? ($game.radius = shapeWidth)
-        //     : ($game.radius = shapeHeight);
 
-        $game.radius = 175;
-
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         // Clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -262,7 +269,8 @@
                 return $game.radius - 450 / $game.sides - 10;
             }
         } else {
-            return $game.radius - 450 / $game.sides + $game.sides;
+            return ($game.radius-100) + 8*$game.sides;
+            // $game.radius - 450 / $game.sides + $game.sides;
         }
     }
 
@@ -289,10 +297,10 @@
         const transformedBallY = -$game.ball.x*Math.sin(theta) + $game.ball.y*Math.cos(theta);
 
 
-        var top = getPaddleY() - Paddle.height / 2;
-        var right = $game.players[$game_info.my_player_number].paddle.x;
-        var bottom = getPaddleY() + Paddle.height / 2;
-        var left =
+        var topOfPaddle = getPaddleY() - Paddle.height / 2;
+        var rightOfPaddle = $game.players[$game_info.my_player_number].paddle.x;
+        var bottomOfPaddle = getPaddleY() + Paddle.height / 2;
+        var leftOfPaddle =
             $game.players[$game_info.my_player_number].paddle.x -
             $game.players[$game_info.my_player_number].paddle.width;
 
@@ -322,17 +330,17 @@
         // instead of rotating the canvas; not 100% sure but it may also work
         // For the coordinate rotation: https://en.wikipedia.org/wiki/Rotation_of_axes
         // ctx.beginPath();
-        // ctx.moveTo(left, top);
-        // ctx.lineTo(right, bottom);
+        // ctx.moveTo(leftOfPaddle, topOfPaddle);
+        // ctx.lineTo(rightOfPaddle, bottomOfPaddle);
         // ctx.strokeStyle = "rgb(0,0,255)";
         // ctx.stroke();
         // ctx.closePath();
 
         return (
-            leftOfBall < right &&
-            topOfBall < bottom &&
-            rightOfBall > left &&
-            bottomOfBall > top
+            leftOfBall < rightOfPaddle &&
+            topOfBall < bottomOfPaddle &&
+            rightOfBall > leftOfPaddle &&
+            bottomOfBall > topOfPaddle
         );
     }
 
@@ -397,6 +405,33 @@
         console.log("Transformed Dx: " + $game.ball.dx);
 
         $game.ball.velocity += 0.2;
+    }
+
+    function gameOver(){
+        const theta = 2*Math.PI*$game_info.my_player_number/$game.sides;
+        const transformedBallY = -$game.ball.x*Math.sin(theta) + $game.ball.y*Math.cos(theta);
+        const topOfBall = transformedBallY - $game.ball.radius;
+        const bottomOfPaddle = getPaddleY() + Paddle.height / 2;
+        return topOfBall > bottomOfPaddle;
+    }
+
+    function handleGameOver(){
+        console.log("Game Over");
+        console.log("Player " + $game_info.my_player_number + " has been eliminated");
+        clearInterval(gameLoopRunning);
+    }
+
+    function drawGameOver(){
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //Move the origin to the exact center of the canvas
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+
+        ctx.font = 'normal 22px SuperLegendBoy';
+        ctx.fillStyle = 'orangered';
+        ctx.textAlign = 'center'; 
+        ctx.textBaseline = 'middle'; 
+        ctx.fillText('Game Over', 0, 0);
+        
     }
 
     function drawTriangle() {

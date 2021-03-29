@@ -12,9 +12,12 @@ import {
 
 
 export class GameServer extends Game {
-  radius: number = 400; // Size of the game board, determined at runtime but set to default of 400
+  radius: number = 175; // Size of the game board, determined at runtime but set to default of 400
   sides: number;
+  paddleCoverageRatio: number = 0.25;
+  sideLength: number;
   ball: Ball = new Ball();
+
   ballVisible: boolean = true;
   numBalls: number = 1;
   backgroundColor: Color = Color.Grey;
@@ -24,6 +27,7 @@ export class GameServer extends Game {
   constructor(userlist: Map<string, WebSocket>) {
     super();
     this.sides = userlist.size;
+    this.sideLength = 2 * this.radius * Math.sin(Math.PI / this.sides);
 
     for (const [user_id, ws] of userlist.entries()) {
       const player = new Player(
@@ -31,7 +35,7 @@ export class GameServer extends Game {
         "",
         new Paddle(
           0,
-          this.radius / this.sides,
+          this.sideLength * this.paddleCoverageRatio,
           true,
           Shape.Regular,
           Color.White,
@@ -48,6 +52,7 @@ export class GameServer extends Game {
         type: "game_started",
         sides: this.sides,
         your_player_number: this.players.indexOf(player),
+        ball: this.ball,
       };
       player.websocketConnection!.send(JSON.stringify(payload));
     }
