@@ -21,7 +21,7 @@ export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);
 
-const SERVER_URL = process.env.SERVER_URL ?? "ws://localhost:5000/ws"
+const SERVER_URL = import.meta.env.MODE === "production" ? "ws://polyserver.polypong.ca:5000/ws" : "ws://localhost:5000/ws"
 export const ws = writable(new WebSocket(SERVER_URL));
 
 export const lobby = writable(null);
@@ -70,7 +70,7 @@ const gotMessage = async (m: MessageEvent) => {
       console.log(get(game));
       get(game).mergeState(event, player_number, message.message);
 
-      if (message.message === "game_start"){
+      if (message.message === "game_start") {
         game_active.set(true);
       }
     } else if (message.type === "check_exists") {
