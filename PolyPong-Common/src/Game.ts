@@ -44,12 +44,19 @@ export enum Shape {
   Bumpy,
 }
 
+// base16 chalk
 export enum Color {
-  White = "#FFFFFF",
-  Red = "#FF0000",
-  Green = "#00FF00",
-  Blue = "#0000FF",
-  Grey = "#353839",
+  DarkDarkGrey = "#303030", // more like a grey, so it's still visible
+  White = "#f5f5f5",
+  Black = "#151515",
+  Pink = "#fb9fb1",
+  Green = "#acc267"
+  Yellow = "#ddb26f",
+  Blue = "#6fc2ef",
+  Purple = "#e1a3ee",
+  Teal = "#12cfc0",
+  Grey = "#d0d0d0",
+  DarkGrey = "#505050",
 }
 
 export class Paddle {
