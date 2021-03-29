@@ -45,12 +45,53 @@ export enum Shape {
   Bumpy,
 }
 
+// material colours
 export enum Color {
-  White = "#FFFFFF",
-  Red = "#FF0000",
-  Green = "#00FF00",
-  Blue = "#0000FF",
-  Grey = "#353839",
+  White = "#fafafa",
+  BlueGrey = "#607D8B",
+  Grey = "#9E9E9E",
+  Brown = "#795548",
+  DeepOrange = "#FF5722",
+  Orange = "#FF9800",
+  Amber = "#FFC107",
+  Yellow = "#FFEB3B",
+  Lime = "#CDDC39",
+  LightGreen = "#8BC34A",
+  Green = "#4CAF50",
+  Teal = "#009688",
+  Cyan = "#00BCD4",
+  LightBlue = "#03A9F4",
+  Blue = "#2196F3",
+  Indigo = "#3F51B5",
+  DeepPurple = "#673AB7",
+  Purple = "#9C27B0",
+  Pink = "#E91E63",
+  Red = "#f44336",
+  Black = "#212121"
+}
+  // Lucas numbers, starting at 7
+export const ColorLevels = {
+  [Color.White]: 0,
+  [Color.BlueGrey]: 7,
+  [Color.Grey]: 11,
+  [Color.Brown]: 18,
+  [Color.DeepOrange]: 29,
+  [Color.Orange]: 47,
+  [Color.Amber]: 76,
+  [Color.Yellow]: 123,
+  [Color.Lime]: 199,
+  [Color.LightGreen]: 322,
+  [Color.Green]: 521,
+  [Color.Teal]: 843,
+  [Color.Cyan]: 1364,
+  [Color.LightBlue]: 2207,
+  [Color.Blue]: 3571,
+  [Color.Indigo]: 5778,
+  [Color.DeepPurple]: 9349,
+  [Color.Purple]: 15127,
+  [Color.Pink]: 24476,
+  [Color.Red]: 39603,
+  [Color.Black]: 64079,
 }
 
 export class Paddle {
