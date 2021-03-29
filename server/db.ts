@@ -45,21 +45,16 @@ await users.createIndexes(
   },
 );
 
-const getAvailableSkins: (username: string) => Promise<Color[]> = async (username: string) => {
+const getAvailableSkins = async (username: string) => {
   const user = await getUser(username);
   if (!user) {
     return []
   }
 
-  const colours = [Color.White];
-
-  for (const [colour, level] of Object.entries(ColorLevels)) {
-    if (level <= user.xp) {
-      colours.push(colour);
-    }
-  }
-
-  return colours;
+  return Object
+    .entries(ColorLevels)
+    .filter(([k, v]) => v <= user.xp)
+    .map(([k, v]) => k);
 
 }
 
