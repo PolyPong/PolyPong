@@ -21,7 +21,8 @@ export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);
 
-export const ws = writable(new WebSocket("ws://localhost:5000/ws"));
+const SERVER_URL = process.env.SERVER_URL ?? "ws://localhost:5000/ws"
+export const ws = writable(new WebSocket(SERVER_URL));
 
 export const lobby = writable(null);
 
