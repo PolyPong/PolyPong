@@ -98,7 +98,7 @@ export class Paddle {
   width: number = 100;
   static readonly height: number = 10;
 
-  static velocity: number = 0.2;
+  static velocity: number = 0.5;
 
   x: number;
   invisible: boolean;
