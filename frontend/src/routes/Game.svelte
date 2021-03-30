@@ -172,6 +172,9 @@
         
         // We want Game Over drawn correctly without rotation
         if (gameOver()){
+            ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
+            ctx.transform(1,0,0,1,0,0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawGameOver();
         }
     }
@@ -435,14 +438,14 @@
         ctx.font = 'normal 22px SuperLegendBoy';
         ctx.textAlign = 'center'; 
         ctx.textBaseline = 'middle'; 
-        animationInterval = setInterval(function() { drawText(text); }, 500);
+        animationInterval = setInterval(function() { drawText(text); }, 25);
     }
 
     function drawText(text: string){
-        textAlpha += 0.1;
+        textAlpha += 0.01;
         ctx.fillStyle = 'rgba(255,69,0, ' + textAlpha + ')'; // CSS: orangered, hex value is #ff4500
         ctx.fillText(text, 0, 0);
-        if (Math.round(textAlpha*10)/10 == 1){
+        if (Math.round(textAlpha*100)/100 == 1){
             clearInterval(animationInterval);
             ctx.setTransform(1, 0, 0, 1, 0, 0);
         }
