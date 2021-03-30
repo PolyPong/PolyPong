@@ -34,4 +34,11 @@ router.get("/test", ({ response }: { response: any }) => {
 app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
-await app.listen({ port, hostname: "0.0.0.0", certFile: "/app/server/cert.pem", keyFile: "/app/server/key.pem", secure: true})
+
+const MODE = Deno.env.get("MODE") ?? "development";
+
+if (MODE === "production") {
+  await app.listen({ port, hostname: "0.0.0.0", certFile: "/app/server/cert.pem", keyFile: "/app/server/key.pem", secure: true });
+} else {
+  await app.listen({ port });
+}
