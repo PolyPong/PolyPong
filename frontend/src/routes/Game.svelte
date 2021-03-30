@@ -24,12 +24,14 @@
     let leftArrowPressed = false;
     let rightArrowPressed = false;
 
+    let gameLoopRunning: Timeout;
+    let animationInterval: Timeout;
+    let textAlpha: number = 0;
+
     const paddleCoverageRatio: number = 1 / 4;
     const ballScaleFactor: number = 1 / 30;
     // const frameRate = 1000/60;  // 60 FPS
     const frameRate = 1000/30;
-
-    let gameLoopRunning: Timeout;
 
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -159,11 +161,6 @@
         drawPaddles();
 
         drawBall();
-
-        if (gameOver()){
-            drawGameOver();
-        }
-
         // Undo the spell we cast
         ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
 
@@ -172,6 +169,11 @@
         // right now the ball information is from player 0's perspective, not from player playerNumber's perspective
 
         // TLDR: drawBall() stays outside the rotations until we are synchronizing ball information across clients
+        
+        // We want Game Over drawn correctly without rotation
+        if (gameOver()){
+            drawGameOver();
+        }
     }
 
     function drawPolygon(
@@ -263,11 +265,12 @@
     function getPaddleY() {
         // Attempting to get the paddles to resize well, still not a great solution but handles about 85% of cases well
         if ($game.sides == 3) {
-            if ($game.radius < 200) {
-                return 200 - 450 / $game.sides - 10;
-            } else {
-                return $game.radius - 450 / $game.sides - 10;
-            }
+            return ($game.radius-98) + 5*$game.sides;
+        //     if ($game.radius < 200) {
+        //         return 200 - 450 / $game.sides - 10;
+        //     } else {
+        //         return $game.radius - 450 / $game.sides - 10;
+        //     }
         } else {
             return ($game.radius-100) + 8*$game.sides;
             // $game.radius - 450 / $game.sides + $game.sides;
@@ -425,13 +428,25 @@
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         //Move the origin to the exact center of the canvas
         ctx.translate(canvas.width / 2, canvas.height / 2);
+        animateText("Game Over");
+    }
 
+    function animateText(text: string){
         ctx.font = 'normal 22px SuperLegendBoy';
-        ctx.fillStyle = 'orangered';
         ctx.textAlign = 'center'; 
         ctx.textBaseline = 'middle'; 
-        ctx.fillText('Game Over', 0, 0);
-        
+        animationInterval = setInterval(function() { drawText(text); }, 500);
+    }
+
+    function drawText(text: string){
+        textAlpha += 0.1;
+        ctx.fillStyle = 'rgba(255,69,0, ' + textAlpha + ')'; // CSS: orangered, hex value is #ff4500
+        ctx.fillText(text, 0, 0);
+        if (Math.round(textAlpha*10)/10 == 1){
+            clearInterval(animationInterval);
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+        }
+
     }
 
     function drawTriangle() {
