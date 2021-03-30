@@ -22,9 +22,16 @@ const router = new Router();
 //     origin: "http://localhost:5000"
 //   }),
 // );
+
+
+router.get("/ws", handleSocket);
+router.get("/test", ({ response }: { response: any }) => {
+  response.body = {
+    message: "https://xkcd.com/1739/",
+  };
+});
+
 app.use(oakCors());
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-router.get("/ws", handleSocket);
-await app.listen({ port, hostname: "0.0.0.0" })
+await app.listen({ port, hostname: "0.0.0.0", certFile: "/app/server/cert.pem", keyFile: "/app/server/key.pem", secure: true})

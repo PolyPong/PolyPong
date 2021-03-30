@@ -207,17 +207,8 @@ const doStuff = async (ws: any) => {
 
 const handleSocket = async (ctx: Context) => {
   console.log(ctx);
-  if (acceptable(ctx.request.serverRequest)) {
-    const { conn, r: bufReader, w: bufWriter, headers } =
-      ctx.request.serverRequest;
-    const socket = await acceptWebSocket({
-      conn,
-      bufReader,
-      bufWriter,
-      headers,
-    });
-    await doStuff(socket);
-  }
+  const socket = await ctx.upgrade();  
+  await doStuff(socket);
 };
 
 export { handleSocket };

@@ -6,4 +6,4 @@ WORKDIR /app
 ADD . .
 RUN deno cache server/server.ts
 EXPOSE 5000
-CMD ["run", "--allow-net", "--allow-env", "server/server.ts"]
+CMD ["run", "--allow-net", "--allow-env", "--allow-read", "server/server.ts"]
