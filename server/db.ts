@@ -11,6 +11,10 @@ import {
   assertThrows
 } from "https://deno.land/std/testing/asserts.ts";
 
+import { verify } from "https://deno.land/x/djwt@v2.2/mod.ts"
+
+const SECRET = Deno.env.get("SECRET")?? "secret was not set";
+
 const client = new MongoClient();
 
 // Defining schema interface
@@ -56,23 +60,23 @@ await users.createIndexes(
 
 
 export const getGlobalLeaderboard = async (limit = 10) => {
-  const top10 = await users.find({}, { projection: { _id: 0, username: 1, xp: 1 } }).sort({xp: -1}).limit(limit).toArray()
+  const top10 = await users.find({}, { projection: { _id: 0, username: 1, xp: 1 } }).sort({ xp: -1 }).limit(limit).toArray()
   return top10;
 }
 
 export const getLocalLeaderboard = async (username: string, plusminus = 5) => {
   const xp = await getXP(username);
-  if (!xp){
+  if (!xp) {
     return []
   }
-  const lessthanPromise = users.find({xp: {$lt: xp}}, {projection: {_id: 0, username: 1, xp: 1}}).limit(plusminus).toArray();
-  const greaterthanProm = users.find({xp: {$gt: xp}}, {projection: {_id: 0, username: 1, xp: 1}}).limit(plusminus).toArray();
+  const lessthanPromise = users.find({ xp: { $lt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).limit(plusminus).toArray();
+  const greaterthanProm = users.find({ xp: { $gt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).limit(plusminus).toArray();
 
   const [lessthan, greaterthan] = await Promise.all([lessthanPromise, greaterthanProm])
-  return [...greaterthan, {username, xp}, ...lessthan];
+  return [...greaterthan, { username, xp }, ...lessthan];
 }
 
-export const getAvailableSkins = async (username: string) => {
+export const getAvailableSkins: (username: string) => Promise<Color[]> = async (username: string) => {
   const user = await getUser(username);
   if (!user) {
     return []
@@ -81,20 +85,38 @@ export const getAvailableSkins = async (username: string) => {
   return Object
     .entries(ColorLevels)
     .filter(([k, v]) => v <= user.xp)
-    .map(([k, v]) => k);
+    .map(([k, v]) => k as Color);
 }
 
-export const setSkin = async (username: string, skin: Color) => {
-  const user = await getUser(username);
+const setSkin = async (email: string, skin: Color) => {
+  const user = await getUserbyEmail(email)
   if (!user) {
-    return false;
+    return Color.White;
   }
 
   if (user.xp < ColorLevels[skin]) {
-    return false
+    return user.paddleColor
   }
 
-  return await users.updateOne({ username: { $eq: username } }, { $set: { paddleColor: skin } });
+  const result = users.updateOne({ email: { $eq: email } }, { $set: { paddleColor: skin } });
+  if (result){
+    return skin;
+  }
+
+  return user.paddleColor
+}
+
+export const setSkinAuthenticated = async (skin: Color, jwt: string) => {
+
+  try {
+    const payload = await verify(jwt, SECRET, "RS256");
+    return setSkin(payload.email as string, skin);
+  } catch {
+    // token is not valid
+    return Color.White
+  }
+
+
 }
 
 // this should be determined by the server, not the game client
@@ -126,6 +148,10 @@ export const checkExists = async (field: "username" | "email", str: string) => {
 export const getUser = async (username: string) => {
   return await users.findOne({ username: { $eq: username } }, { projection: { _id: 0 } });
 };
+
+export const getUserbyEmail = async (email: string) => {
+  return await users.findOne({ email: { $eq: email } }, { projection: { _id: 0 } });
+}
 
 export const getXP: (username: string) => Promise<number | undefined> = async (username: string) => {
   const result = await users.findOne({ username: { $eq: username } }, { projection: { _id: 0, xp: 1 } })
@@ -183,14 +209,14 @@ Deno.test("database test", async () => {
   assertEquals(available, [Color.White, Color.BlueGrey, Color.Grey, Color.Brown, Color.DeepOrange, Color.Orange, Color.Amber, Color.Yellow, Color.Lime, Color.LightGreen, Color.Green, Color.Teal])
 
   // set skin
-  const newskin = await setSkin("arun", Color.DeepOrange);
-  assertEquals(!!newskin, true);
+  const newskin = await setSkin("test@example.com", Color.DeepOrange);
+  assertEquals(newskin, Color.DeepOrange);
 
   // set skin that's not allowed yet because low xp
-  const newskin2 = await setSkin("arun", Color.Red);
-  assertEquals(newskin2, false);
+  const newskin2 = await setSkin("test@example.com", Color.Red);
+  assertEquals(newskin2, Color.DeepOrange);
 
-  
+
   // global leaderboard
   await addUser("first", "first@example.com")
   await addUser("second", "second@example.com")
@@ -223,7 +249,7 @@ Deno.test("database test", async () => {
   await levelUp("13", 883)
   await levelUp("14", 882)
   await levelUp("15", 881)
-  
+
 
   const leaderboard = await getGlobalLeaderboard();
   const expectedgloballeaderboard = [
@@ -239,7 +265,7 @@ Deno.test("database test", async () => {
     { username: "tenth", xp: 886 }
   ];
   assertEquals(leaderboard, expectedgloballeaderboard);
-  
+
   const localleaderboard = await getLocalLeaderboard("seventh");
   const expectedlocalleaderboard = [
     { username: "first", xp: 1111111111 },
@@ -265,7 +291,7 @@ export default {
   checkExists,
   addUser,
   levelUp,
-  setSkin,
+  setSkinAuthenticated,
   getAvailableSkins,
   getGlobalLeaderboard,
   getLocalLeaderboard,

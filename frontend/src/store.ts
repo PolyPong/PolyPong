@@ -1,7 +1,7 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
-import { Ball } from "@polypong/polypong-common";
-import type { JoinGamePayload, CreateUser } from "@polypong/polypong-common";
+import { Ball, Color } from "@polypong/polypong-common";
+import type{ JoinGamePayload, CreateUser} from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import { router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
@@ -20,6 +20,8 @@ export const auth0Client = writable<Promise<Auth0Client>>(
 export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);
+export const skins = writable<[Color]>([Color.White])
+export const selectedskin = writable<Color>(Color.White);
 
 const SERVER_URL = import.meta.env.MODE === "production" ? "wss://polyserver.polypong.ca:8443/ws" : "ws://localhost:5000/ws"
 export const ws = writable(new WebSocket(SERVER_URL));
@@ -103,6 +105,12 @@ const gotMessage = async (m: MessageEvent) => {
       else {
         console.log("Error. Unrecognized field")
       }
+    } else if (message.type === "available_skins") {
+      skins.set(message.skins)
+    } else if (message.type === "set_skin_response"){
+      selectedskin.set(message.skin)
+    } else {
+      console.log("unrecognized message from server", message)
     }
   } catch (e) {
     console.error(

@@ -18,6 +18,7 @@ services:
     environment:
       MONGOURL: "mongodb://mongoo:27017"
       MODE: "production"
+      SECRET: $SECRET
     restart: unless-stopped
     depends_on: 
       - mongo

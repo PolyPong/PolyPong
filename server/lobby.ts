@@ -17,6 +17,8 @@ import {
   ServerUpdate,
   Ball,
   ClientUpdateMessage,
+  SetSkinResponse,
+  GetAvailableSkinsResponse
 } from "../PolyPong-Common/src/Game.ts";
 
 import { GameServer } from "./Game.ts"
@@ -194,6 +196,26 @@ const doStuff = async (ws: any) => {
         }
         lobby.incrementReady();
         lobby.checkReady();
+      } else if (message.type === "set_skin"){
+        const {token, skin} = message;
+        const newskin = await dbHelper.setSkinAuthenticated(skin, token);
+
+        const payload: SetSkinResponse = {
+          type: "set_skin_response",
+          skin,
+        }
+        ws.send(JSON.stringify(payload))
+      } else if (message.type === "get_available_skins"){
+        const {username} = message;
+        const skins = await dbHelper.getAvailableSkins(username);
+        const payload: GetAvailableSkinsResponse = {
+          type: "available_skins",
+          skins,
+        }
+        ws.send(JSON.stringify(payload));
+      }
+      else {
+        console.log("unrecognized message", message)
       }
     } catch (e) {
       console.error(
