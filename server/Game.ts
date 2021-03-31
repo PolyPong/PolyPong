@@ -20,7 +20,7 @@ export class GameServer extends Game {
 
   ballVisible: boolean = true;
   numBalls: number = 1;
-  backgroundColor: Color = Color.Grey;
+  backgroundColor: Color = Color.BackgroundColor;
   activePowerups: Powerup[] = [];
   players: Player[] = [];
 

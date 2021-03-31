@@ -93,13 +93,14 @@ export const ColorLevels = {
   [Color.Pink]: 24476,
   [Color.Red]: 39603,
   [Color.Black]: 64079,
+  [Color.BackgroundColor]: 103682
 }
 
 export class Paddle {
   width: number = 100;
   static readonly height: number = 10;
 
-  static velocity: number = 0.5;
+  static velocity: number = 2;
 
   x: number;
   invisible: boolean;
