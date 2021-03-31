@@ -268,6 +268,24 @@ export class TraceBallPath implements Powerup {
   }
 }
 
+export interface ClientSaysGameOver {
+  type: "game_over";
+  lobby_id: string;
+  player_number: number;
+  user_id: string;
+}
+
+export interface ServerSaysStopGame {
+  type: "stop_game";                      // Note: the client that receives this message is still part of the new game,
+  player_number: number;   // The client that is actually eliminated will not receive this message
+  user_id: string;                   
+}
+
+export interface ClientStopped {
+  type: "client_stopped";
+  lobby_id: string;
+}
+
 export interface CheckExists {
   type: "check_exists";
   field: string;

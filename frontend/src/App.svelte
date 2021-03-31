@@ -54,6 +54,8 @@
 		<Game />
 	</Route>
 
+	<Route path="/eliminated" redirect="/game"/>
+
 	<Route path="/leaderboard">
 		<Leaderboard />
 	</Route>

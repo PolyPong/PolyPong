@@ -7,6 +7,9 @@
         lobby_id,
         game,
         game_active,
+        all_clients_ready,
+        stop_game_loop,
+        loss_info,
     } from "../store";
     import { onMount, tick } from "svelte";
     import { Ball, Paddle } from "@polypong/polypong-common";
@@ -15,8 +18,12 @@
         KeyDownEvent,
         KeyUpEvent,
         ClientReady,
+        ClientSaysGameOver,
+        ClientStopped,
+        GameWon,
     } from "@polypong/polypong-common";
     import { GameClient } from "../Game";
+import { router } from "tinro";
     let w: number;
     let h: number;
     let canvas: HTMLCanvasElement;
@@ -25,7 +32,10 @@
     let rightArrowPressed = false;
 
     let gameLoopRunning: Timeout;
-    let animationInterval: Timeout;
+    let animationInterval: Timeout[] = [];
+    let gameActiveInterval: Timeout;
+    let allClientsReadyInterval: Timeout;
+    let serverSaysStopGameInterval: Timeout;
     let textAlpha: number = 0;
 
     const paddleCoverageRatio: number = 1 / 4;
@@ -48,20 +58,9 @@
 
     onMount(async () => {
         load();
-        startGame($game_info.sides, $game_info.my_player_number, $game_info.ball);
-        console.log($game_info);
     });
 
-    setInterval(async () => {
-        if ($game_active) {
-            adjustSize();
-            gameLoopRunning = setInterval(gameLoop, frameRate);
-            $game_active = false;
-        }
-        await tick();
-    });
-
-    function load() {
+    async function load() {
         w = document.documentElement.clientWidth;
         h = document.documentElement.clientHeight;
         canvas = document.getElementById("drawing") as HTMLCanvasElement;
@@ -71,6 +70,96 @@
         canvas.width = 400;
         canvas.height = 400;
         ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;
+
+        // First we send a game_over message from Game.svelte to lobby.ts
+        // Then, lobby.ts sends over a game_started message, which is processed in store.ts
+        // In store.ts, when we receive game_started message, we update game_info and set game_active to true
+        // This is a problem because the gameLoop in Game.svelte is still running 
+        // (this client is unaware another client has game over'ed)
+
+        // For example, assume player 2 is eliminated, and that there is also a player 3,4,5,6,7...
+        // Since the gameLoop in this client is still running, when game_info is updated,
+        // the player number is updated (for example, player 3 now becomes player 2) but ALL the 
+        // other game information is still based on the previous game
+        // So when the gameLoop runs, player 3 is now essentially the old game's player 2, and 
+        // the ball is below the old game's player 2 paddle
+        // Hence, player 3 (as well as player 4, 5, 6, 7, ...) is immediately eliminated since gameOver() 
+        // returns true. This all happens because we change the player number without the client 
+        // knowing that another client has already lost the current game.
+        // We can fix this by adding a gameLost boolean to the store perhaps, and 
+        // when we handle gameOver() on the client that lost, we send over a server message which is 
+        // broadcast to all the other clients to say "Hey, this game has already been lost - you've made it 
+        // to the next round. Stop the game loop and wait for more info from the server."
+
+        // So the new protocol will be:
+        // Send game_over from Game.svelte to lobby.ts
+        // Broadcast game over from lobby.svelte to the other clients, received in store.ts
+        // Get all the other clients to send a payload saying they have stopped their gameLoop
+        // Then, in lobby.ts, once all the clients have send back a ready message, send a game_started message
+
+        gameActiveInterval = setInterval(async () => {
+            if ($game_active) {
+                $game_active = false;
+
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                clearScreenOriginCentered();
+                animateText("3", 1000);
+                await sleep(1500);
+                
+                animateText("2", 1000);
+                await sleep(1500);
+                
+                animateText("1", 1000);
+                await sleep(1500);
+
+                ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
+                // ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+                startGame($game_info.sides, $game_info.my_player_number, $game_info.ball);
+                adjustSize();
+            
+            }
+            await tick();
+        }, 50);
+
+        allClientsReadyInterval = setInterval(async () => {
+            if ($all_clients_ready) {
+                $all_clients_ready = false;
+
+                console.log("We are setting the interval for gameLoop");
+                gameLoopRunning = setInterval(gameLoop, frameRate);
+            }
+            await tick();
+        }, 50);
+
+        serverSaysStopGameInterval = setInterval(async () => {
+            if ($stop_game_loop) {
+                $stop_game_loop = false;
+
+                clearInterval(gameLoopRunning);
+                // animateText("Player " + $loss_info.player_number + ", " + $loss_info.user_id + ", has lost", 8000);
+                // await sleep(8000);
+
+                if ($game_info.sides === 2){
+                    clearScreenOriginCentered();
+                    animateText("You Win!", 8000);
+                    // clearInterval(gameActiveInterval);
+                    await sleep(8000);
+                    if ($isAuthenticated) {
+                        router.goto("/login");
+                    }
+                    router.goto("/home");
+                }
+
+                const payload: ClientStopped = {
+                    type: "client_stopped",
+                    lobby_id: $lobby_id,
+                };
+                $ws.send(JSON.stringify(payload));
+                ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
+            }
+            await tick();
+        }, 50);
     }
 
     function startGame(sides: number, player_number: number, ball: Ball) {
@@ -83,11 +172,6 @@
         };
 
         $ws.send(JSON.stringify(payload));
-    }
-
-    export function gameLoop() {
-        update(); // For updating the state of the game
-        render(); // For rendering the updated state of the game (ie. clears the screen and draws the new state onto the canvas)
     }
 
     // Draw the current game board or polygon according to the size of the client's window
@@ -114,6 +198,11 @@
 
         // TODO adjust the ball size based on $game.radius
         $game.ball.radius = $game.radius * ballScaleFactor;
+    }
+
+    export function gameLoop() {
+        update(); // For updating the state of the game
+        render(); // For rendering the updated state of the game (ie. clears the screen and draws the new state onto the canvas)
     }
 
     // Update the state of the game, using what the server sends us
@@ -172,11 +261,18 @@
         
         // We want Game Over drawn correctly without rotation
         if (gameOver()){
-            ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
-            ctx.transform(1,0,0,1,0,0);
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawGameOver();
         }
+    }
+
+    async function drawGameOver() {
+        clearScreenOriginCentered();
+        animateText("Game Over", 8000);
+        await sleep(8000);
+        if ($isAuthenticated){
+            router.goto("/login");
+        }
+        router.goto("/home");
     }
 
     function drawPolygon(
@@ -235,10 +331,6 @@
 
     function rotationAngle(sides: number) {
         return (360 / sides) * (((sides + 2) % 4) / 4);
-        // for(let i = 3; i <= 12; i++){
-        //   console.log("Number of Sides: " + i + " Rotation Angle: " + (360/i)*((i+2)%4 / 4));
-        //   //console.log("Rotation Angle: "(360/i)*((sides+2)%4 / 4));
-        // }
     }
 
     function drawPaddles() {
@@ -293,11 +385,8 @@
         ctx.closePath();
     }
 
-    // collision Detect function
+    // Collision detection function, returns true or false
     function collisionDetect() {
-        // returns true or false
-        //console.log("Player number: " + $game_info.my_player_number);
-
         const theta = 2*Math.PI*$game_info.my_player_number/$game.sides;
         const transformedBallX = $game.ball.x*Math.cos(theta) + $game.ball.y*Math.sin(theta);
         const transformedBallY = -$game.ball.x*Math.sin(theta) + $game.ball.y*Math.cos(theta);
@@ -314,14 +403,6 @@
         var rightOfBall = transformedBallX + $game.ball.radius;
         var bottomOfBall = transformedBallY + $game.ball.radius;
         var leftOfBall = transformedBallX - $game.ball.radius;
-
-        
-
-        // console.log("Ball, Y Position: " + transformedBallY);
-        // console.log("Ball, X Position: " + transformedBallX);
-        // console.log("Paddle, Y Position: " + getPaddleY());
-        // console.log("Paddle, X Position: " + $game.players[$game_info.my_player_number].paddle.x);
-
 
         // The issue wasn't drawing, it was actually to do with the stored coordinates
         // For collision detection, we now transform the X and Y ball co'ords received
@@ -380,8 +461,8 @@
         let dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
         let dx = $game.ball.velocity * Math.sin(angle);
 
-        console.log("Dy on server: " + dy);
-        console.log("Dx on server: " + dx);
+        // console.log("Dy on server: " + dy);
+        // console.log("Dx on server: " + dx);
     
         // $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
         // $game.ball.dx = $game.ball.velocity * Math.sin(angle);
@@ -407,8 +488,8 @@
         // $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta); 
         // $game.ball.dx = dx*Math.cos(theta) + dy*Math.sin(theta);
 
-        console.log("Transformed Dy: " + $game.ball.dy);
-        console.log("Transformed Dx: " + $game.ball.dx);
+        // console.log("Transformed Dy: " + $game.ball.dy);
+        // console.log("Transformed Dx: " + $game.ball.dx);
 
         $game.ball.velocity += 0.2;
     }
@@ -422,23 +503,35 @@
     }
 
     function handleGameOver(){
-        console.log("Game Over");
-        console.log("Player " + $game_info.my_player_number + " has been eliminated");
         clearInterval(gameLoopRunning);
+
+
+        if ($game_info.sides < 2) {
+            // The current player has come second in the entire game
+            return
+        } else{
+            // The current player has been eliminated and other players will continue to battle it out,
+            // sans the current player
+            const payload: ClientSaysGameOver = {
+                type: "game_over",
+                lobby_id: $lobby_id,
+                player_number: $game_info.my_player_number,
+                user_id: $user_id,
+            }
+            $ws.send(JSON.stringify(payload));
+        }
+
     }
 
-    function drawGameOver(){
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        //Move the origin to the exact center of the canvas
-        ctx.translate(canvas.width / 2, canvas.height / 2);
-        animateText("Game Over");
-    }
-
-    function animateText(text: string){
+    // Note that when calling animateText, the origin must be set to the center of the canvas
+    // (ie. (x,y) = (canvas.width/2, canvas.height/2) )
+    function animateText(text: string, duration: number){
         ctx.font = 'normal 22px SuperLegendBoy';
         ctx.textAlign = 'center'; 
         ctx.textBaseline = 'middle'; 
-        animationInterval = setInterval(function() { drawText(text); }, 25);
+        var aI = setInterval(function() { drawText(text); }, duration/100);
+        console.log("We are setting the animation interval: " + aI);
+        animationInterval.push(aI);
     }
 
     function drawText(text: string){
@@ -446,10 +539,19 @@
         ctx.fillStyle = 'rgba(255,69,0, ' + textAlpha + ')'; // CSS: orangered, hex value is #ff4500
         ctx.fillText(text, 0, 0);
         if (Math.round(textAlpha*100)/100 == 1){
-            clearInterval(animationInterval);
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            animationInterval.forEach(clearInterval);
+            // clearInterval(animationInterval);
+            clearScreenOriginCentered();
+            textAlpha = 0;
+            // ctx.setTransform(1, 0, 0, 1, 0, 0);
         }
 
+    }
+
+    function clearScreenOriginCentered(){
+        ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.translate(canvas.width / 2, canvas.height / 2);
     }
 
     function drawTriangle() {
@@ -535,6 +637,10 @@
                 break;
         }
     }
+
+    function sleep(ms: number) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   }
 </script>
 
 <!-- <body onload="load()" onresize="getSize()"> -->

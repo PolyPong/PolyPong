@@ -10,6 +10,8 @@ import { GameClient } from "./Game";
 import { binding_callbacks } from "svelte/internal";
 
 export const game_active = writable(false);
+export const all_clients_ready = writable(false);
+export const stop_game_loop = writable(false);
 export const isAuthenticated = writable(false);
 export const auth0Client = writable<Promise<Auth0Client>>(
   createAuth0Client({
@@ -31,6 +33,7 @@ export const lobby_id = writable<string>("");
 export const user_id = writable<string>("");
 
 export const game_info = writable<any>({});
+export const loss_info = writable<any>({});
 
 export const game = writable<GameClient>(new GameClient(0, new Ball()));
 
@@ -65,14 +68,16 @@ const gotMessage = async (m: MessageEvent) => {
         my_player_number: message.your_player_number,
         ball: message.ball
       });
+      game_active.set(true);
       router.goto("/game");
     } else if (message.type === "server_update") {
+
       const { event, player_number } = message;
       console.log(get(game));
       get(game).mergeState(event, player_number, message.message);
 
       if (message.message === "game_start") {
-        game_active.set(true);
+        all_clients_ready.set(true);
       }
     } else if (message.type === "check_exists") {
       // If email already exists in the database, redirect to login.svelte
@@ -85,10 +90,10 @@ const gotMessage = async (m: MessageEvent) => {
         }
       } else if (message.field === "username") {
         if (message.exists) {
-          console.log("Username already exists");
+          // Username already exists
           usernameExists.set(true);
         } else {
-          console.log("Username does not exist yet");
+          // Username does not exist yet
           const request: CreateUser = {
             type: "create_user",
             username: message.str,
@@ -98,12 +103,16 @@ const gotMessage = async (m: MessageEvent) => {
           console.log("Request to create user has been sent");
           router.goto("/login");
         }
-      }
-
-      else {
+      } else {
         console.log("Error. Unrecognized field")
       }
-    }
+    } else if (message.type === "stop_game") {
+      loss_info.set({
+        player_number: message.player_number,
+        user_id: message.user_id,
+      });
+      stop_game_loop.set(true);
+    } 
   } catch (e) {
     console.error(
       `got message: ${m.data} failed to parse it as json, so ignoring...`,

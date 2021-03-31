@@ -17,6 +17,7 @@ import {
   ServerUpdate,
   Ball,
   ClientUpdateMessage,
+  ServerSaysStopGame,
 } from "../PolyPong-Common/src/Game.ts";
 
 import { GameServer } from "./Game.ts"
@@ -67,12 +68,11 @@ class Lobby {
   incrementReady() {
     this.ready_count += 1;
   }
-  checkReady() {
-
+  async checkReady() {
     if (this.ready_count < this.userlist.size) {
       return
     }
-
+    this.ready_count = 0;
     this.startGame();
   }
 
@@ -168,7 +168,6 @@ const doStuff = async (ws: any) => {
         const field = message.field;
         const str = message.str;
         const strExists = await dbHelper.checkExists(field, str);
-        console.log("strExists: ", strExists);
         const response: ServerExistsResponse = {
           type: "check_exists",
           field: field,
@@ -194,6 +193,53 @@ const doStuff = async (ws: any) => {
         }
         lobby.incrementReady();
         lobby.checkReady();
+      } else if (message.type === "game_over") {
+        const { lobby_id } = message;
+        const lobby = LOBBIES.get(lobby_id);
+        if (!lobby) {
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          ws.send(JSON.stringify(response));
+          continue;
+        }
+
+        lobby.userlist.delete(message.user_id);
+
+        const payload: ServerSaysStopGame = {
+          type: "stop_game",
+          player_number: message.player_number,
+          user_id: message.user_id, 
+        }
+
+        lobby.broadcast( JSON.stringify(payload), undefined)
+        lobby.ready_count = 0;
+      } else if (message.type === "client_stopped") {
+
+        const { lobby_id } = message;
+        const lobby = LOBBIES.get(lobby_id);
+        if (!lobby) {
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          ws.send(JSON.stringify(response));
+          continue;
+        }
+        lobby.ready_count += 1;
+  
+        if (lobby.ready_count < lobby.userlist.size) {
+          continue;
+        }
+        if (lobby.userlist.size < 2){
+          continue;
+        }
+        
+        lobby.ready_count = 0;
+
+        const game = new GameServer(lobby.userlist);
+        lobby.setGame(game);
       }
     } catch (e) {
       console.error(

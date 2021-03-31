@@ -37,6 +37,7 @@
     };
 
     const startGame = () => {
+        console.log("We are sending a start_game request on the client")
         const payload: StartGameRequest = {
             type: "start_game",
             lobby_id: $lobby_id,
