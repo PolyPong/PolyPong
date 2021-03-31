@@ -1,2 +1,4 @@
 .DS_Store
 server/server
+# private key for the SSL certificate. probably shouldn't commit this file 
+server/key.pem

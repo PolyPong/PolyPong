@@ -18,6 +18,11 @@ import {
   Ball,
   ClientUpdateMessage,
   ServerSaysStopGame,
+  SetSkinResponse,
+  GetAvailableSkinsResponse,
+  LocalLeaderboard,
+  GlobalLeaderboard
+
 } from "../PolyPong-Common/src/Game.ts";
 
 import { GameServer } from "./Game.ts"
@@ -240,6 +245,42 @@ const doStuff = async (ws: any) => {
 
         const game = new GameServer(lobby.userlist);
         lobby.setGame(game);
+
+      } else if (message.type === "set_skin"){
+        const {token, skin} = message;
+        const newskin = await dbHelper.setSkinAuthenticated(skin, token);
+
+        const payload: SetSkinResponse = {
+          type: "set_skin_response",
+          skin,
+        }
+        ws.send(JSON.stringify(payload))
+      } else if (message.type === "get_available_skins"){
+        const {username} = message;
+        const skins = await dbHelper.getAvailableSkins(username);
+        const payload: GetAvailableSkinsResponse = {
+          type: "available_skins",
+          skins,
+        }
+        ws.send(JSON.stringify(payload));
+      } else if (message.type === "get_global_leaderboard"){
+        const data = await dbHelper.getGlobalLeaderboard();
+        const payload: GlobalLeaderboard = {
+          type: "global_leaderboard",
+          data
+        }
+        ws.send(JSON.stringify(payload))
+      } else if (message.type === "get_local_leaderboard"){
+        const {username } = message
+        const data = await dbHelper.getLocalLeaderboard(username);
+        const payload: LocalLeaderboard = {
+          type: "local_leaderboard",
+          data
+        }
+        ws.send(JSON.stringify(payload))
+      }
+      else {
+        console.log("unrecognized message", message)
       }
     } catch (e) {
       console.error(
@@ -253,17 +294,8 @@ const doStuff = async (ws: any) => {
 
 const handleSocket = async (ctx: Context) => {
   console.log(ctx);
-  if (acceptable(ctx.request.serverRequest)) {
-    const { conn, r: bufReader, w: bufWriter, headers } =
-      ctx.request.serverRequest;
-    const socket = await acceptWebSocket({
-      conn,
-      bufReader,
-      bufWriter,
-      headers,
-    });
-    await doStuff(socket);
-  }
+  const socket = await ctx.upgrade();  
+  await doStuff(socket);
 };
 
 export { handleSocket };

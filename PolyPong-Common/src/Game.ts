@@ -24,7 +24,7 @@ export abstract class Game {
 
   // constructor(sides: number, player_number: number) {
   abstract mergeState(game: Game, player_number: number, message: ClientUpdateMessage): void;
-  
+
   jsonify() {
     const { ball, activePowerups, players } = this;
     for (const p of players) {
@@ -69,7 +69,7 @@ export enum Color {
   Red = "#f44336",
   Black = "#212121"
 }
-  // Lucas numbers, starting at 7
+// Lucas numbers, starting at 7
 export const ColorLevels = {
   [Color.White]: 0,
   [Color.BlueGrey]: 7,
@@ -98,7 +98,7 @@ export class Paddle {
   width: number = 100;
   static readonly height: number = 10;
 
-  static velocity: number = 0.2;
+  static velocity: number = 0.5;
 
   x: number;
   invisible: boolean;
@@ -162,7 +162,7 @@ export class Ball {
 
   radius: number = 10;
 
-  constructor(){
+  constructor() {
     this.dx = getRandom(-0.5, 0.5);
     this.dy = getRandom(-0.5, 0.5);
   }
@@ -348,17 +348,72 @@ export interface ServerSaysGameStarted {
   ball: Ball;
 }
 
+export interface GetAvailableSkinsRequest {
+  type: "get_available_skins",
+  username: string,
+}
+
+export interface GetAvailableSkinsResponse {
+  type: "available_skins",
+  skins: Color[],
+}
+
+export interface SetSkinRequest {
+  type: "set_skin",
+  skin: Color,
+  token: string,
+}
+
+export interface SetSkinResponse {
+  type: "set_skin_response",
+  skin: Color
+}
+
+export interface GetGlobalLeaderboard {
+  type: "get_global_leaderboard"
+}
+
+export interface GetLocalLeaderboard {
+  type: "get_local_leaderboard",
+  username: string,
+}
+
+export interface LeaderboardEntry {
+  username: string,
+  xp: number
+}
+
+export interface GlobalLeaderboard {
+  type: "global_leaderboard",
+  data: LeaderboardEntry[],
+}
+
+export interface LocalLeaderboard {
+  type: "local_leaderboard",
+  data: LeaderboardEntry[],
+}
+
+
+
 type ServerEvent =
   | ErrorPayload
   | LobbyJoinedPayload
   | SomeoneElseJoined
   | LobbyCreatedPayload
   | ServerUpdate
+  | GetAvailableSkinsResponse
+  | SetSkinResponse
+  | GlobalLeaderboard
+  | LocalLeaderboard
 type ClientAction =
   | JoinGamePayload
   | CreateLobbyRequest
   | ClientUpdate
   | ClientReady
+  | GetAvailableSkinsRequest
+  | SetSkinRequest
+  | GetGlobalLeaderboard
+  | GetLocalLeaderboard
 
 export type { ClientAction, ServerEvent };
 
@@ -371,7 +426,7 @@ export interface ClientUpdate {
   message: ClientUpdateMessage
 }
 
-export type ClientUpdateMessage = "paddle_movement" | "ball_update"| "i_died" | undefined;
+export type ClientUpdateMessage = "paddle_movement" | "ball_update" | "i_died" | undefined;
 
 export interface ServerUpdate {
   type: "server_update";

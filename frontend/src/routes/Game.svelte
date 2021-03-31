@@ -41,7 +41,7 @@ import { router } from "tinro";
     const paddleCoverageRatio: number = 1 / 4;
     const ballScaleFactor: number = 1 / 30;
     // const frameRate = 1000/60;  // 60 FPS
-    const frameRate = 1000/30;
+    const frameRate = 1000/60;
 
     // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
     // function getPlayerInitialX(sides: number, playerNumber: number): number{

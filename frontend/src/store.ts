@@ -1,7 +1,7 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
-import { Ball } from "@polypong/polypong-common";
-import type { JoinGamePayload, CreateUser } from "@polypong/polypong-common";
+import { Ball, Color } from "@polypong/polypong-common";
+import type { JoinGamePayload, CreateUser, LeaderboardEntry } from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import { router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
@@ -22,10 +22,12 @@ export const auth0Client = writable<Promise<Auth0Client>>(
 export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);
+export const skins = writable<[Color]>([Color.White])
+export const selectedskin = writable<Color>(Color.White);
 
-const SERVER_URL = import.meta.env.MODE === "production" ? "wss://polyserver.polypong.ca:2095/ws" : "ws://localhost:5000/ws"
+const SERVER_URL = import.meta.env.MODE === "production" ? "wss://polyserver.polypong.ca:8443/ws" : "ws://localhost:5000/ws"
 export const ws = writable(new WebSocket(SERVER_URL));
-//export const ws = writable(new WebSocket("ws://204.209.76.205:5000/ws"));
+//export const ws = writable(new WebSocket("wss://polyserver.polypong.ca:8443/ws"));
 
 export const lobby = writable(null);
 
@@ -38,6 +40,9 @@ export const loss_info = writable<any>({});
 export const game = writable<GameClient>(new GameClient(0, new Ball()));
 
 export const usernameExists = writable<boolean>(false);
+
+export const global_leaderboard = writable<LeaderboardEntry[]>([])
+export const local_leaderboard = writable<LeaderboardEntry[]>([])
 
 export const joinGame = (input: string | undefined, user_id: string) => {
   const payload: JoinGamePayload = {
@@ -112,7 +117,18 @@ const gotMessage = async (m: MessageEvent) => {
         user_id: message.user_id,
       });
       stop_game_loop.set(true);
-    } 
+    } else if (message.type === "available_skins") {
+      skins.set(message.skins)
+    } else if (message.type === "set_skin_response") {
+      selectedskin.set(message.skin)
+    } else if (message.type === "global_leaderboard") {
+      global_leaderboard.set(message.data)
+    } else if (message.type === "local_leaderboard") {
+      local_leaderboard.set(message.data)
+    }
+    else {
+      console.log("unrecognized message from server", message)
+    }
   } catch (e) {
     console.error(
       `got message: ${m.data} failed to parse it as json, so ignoring...`,
