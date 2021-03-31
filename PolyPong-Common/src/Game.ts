@@ -17,7 +17,7 @@ export abstract class Game {
   ball: Ball = new Ball();
   ballVisible: boolean = true;
   numBalls: number = 1;
-  backgroundColor: Color = Color.Grey;
+  backgroundColor: Color = Color.BackgroundColor;
   activePowerups: Powerup[] = [];
   players: Player[] = [];
   // player_number: number;
@@ -67,7 +67,8 @@ export enum Color {
   Purple = "#9C27B0",
   Pink = "#E91E63",
   Red = "#f44336",
-  Black = "#212121"
+  Black = "#212121",
+  BackgroundColor = "#353839"
 }
 // Lucas numbers, starting at 7
 export const ColorLevels = {
