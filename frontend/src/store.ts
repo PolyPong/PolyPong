@@ -1,7 +1,7 @@
 import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
 import { Ball, Color } from "@polypong/polypong-common";
-import type{ JoinGamePayload, CreateUser} from "@polypong/polypong-common";
+import type { JoinGamePayload, CreateUser, LeaderboardEntry } from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import { router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
@@ -37,6 +37,9 @@ export const game_info = writable<any>({});
 export const game = writable<GameClient>(new GameClient(0, new Ball()));
 
 export const usernameExists = writable<boolean>(false);
+
+export const global_leaderboard = writable<LeaderboardEntry[]>([])
+export const local_leaderboard = writable<LeaderboardEntry[]>([])
 
 export const joinGame = (input: string | undefined, user_id: string) => {
   const payload: JoinGamePayload = {
@@ -107,9 +110,14 @@ const gotMessage = async (m: MessageEvent) => {
       }
     } else if (message.type === "available_skins") {
       skins.set(message.skins)
-    } else if (message.type === "set_skin_response"){
+    } else if (message.type === "set_skin_response") {
       selectedskin.set(message.skin)
-    } else {
+    } else if (message.type === "global_leaderboard") {
+      global_leaderboard.set(message.data)
+    } else if (message.type === "local_leaderboard") {
+      local_leaderboard.set(message.data)
+    }
+    else {
       console.log("unrecognized message from server", message)
     }
   } catch (e) {

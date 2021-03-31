@@ -351,6 +351,32 @@ export interface SetSkinResponse {
   skin: Color
 }
 
+export interface GetGlobalLeaderboard {
+  type: "get_global_leaderboard"
+}
+
+export interface GetLocalLeaderboard {
+  type: "get_local_leaderboard",
+  username: string,
+}
+
+export interface LeaderboardEntry {
+  user: string,
+  xp: number
+}
+
+export interface GlobalLeaderboard {
+  type: "global_leaderboard",
+  data: LeaderboardEntry[],
+}
+
+export interface LocalLeaderboard {
+  type: "local_leaderboard",
+  data: LeaderboardEntry[],
+}
+
+
+
 type ServerEvent =
   | ErrorPayload
   | LobbyJoinedPayload
@@ -359,6 +385,8 @@ type ServerEvent =
   | ServerUpdate
   | GetAvailableSkinsResponse
   | SetSkinResponse
+  | GlobalLeaderboard
+  | LocalLeaderboard
 type ClientAction =
   | JoinGamePayload
   | CreateLobbyRequest
@@ -366,6 +394,8 @@ type ClientAction =
   | ClientReady
   | GetAvailableSkinsRequest
   | SetSkinRequest
+  | GetGlobalLeaderboard
+  | GetLocalLeaderboard
 
 export type { ClientAction, ServerEvent };
 
