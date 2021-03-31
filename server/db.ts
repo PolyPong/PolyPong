@@ -3,7 +3,7 @@ import {
   Document,
   MongoClient,
 } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
-import { Color, ColorLevels } from "../PolyPong-Common/src/Game.ts";
+import { Color, ColorLevels, LeaderboardEntry } from "../PolyPong-Common/src/Game.ts";
 
 import {
   assertArrayIncludes,
@@ -61,7 +61,7 @@ await users.createIndexes(
 
 export const getGlobalLeaderboard = async (limit = 10) => {
   const top10 = await users.find({}, { projection: { _id: 0, username: 1, xp: 1 } }).sort({ xp: -1 }).limit(limit).toArray()
-  return top10;
+  return top10 as LeaderboardEntry[];
 }
 
 export const getLocalLeaderboard = async (username: string, plusminus = 5) => {
@@ -73,7 +73,7 @@ export const getLocalLeaderboard = async (username: string, plusminus = 5) => {
   const greaterthanProm = users.find({ xp: { $gt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).limit(plusminus).toArray();
 
   const [lessthan, greaterthan] = await Promise.all([lessthanPromise, greaterthanProm])
-  return [...greaterthan, { username, xp }, ...lessthan];
+  return [...greaterthan, { username, xp }, ...lessthan] as LeaderboardEntry[];
 }
 
 export const getAvailableSkins: (username: string) => Promise<Color[]> = async (username: string) => {

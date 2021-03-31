@@ -4,7 +4,7 @@
     GetGlobalLeaderboard,
     GetLocalLeaderboard,
   } from "@polypong/polypong-common";
-  import { ws, global_leaderboard, local_leaderboard } from "src/store";
+  import { ws, global_leaderboard, local_leaderboard, user_id } from "../store";
   import { use } from "chai";
 
   function toggleBackground(idOfLabel, ...ids) {
@@ -26,6 +26,7 @@
     $ws.send(
       JSON.stringify({
         type: "get_local_leaderboard",
+        username: $user_id
       })
     );
   });
@@ -36,7 +37,7 @@
     <span>global leaderboard</span>
     {#each $global_leaderboard as entry}
       <div>
-        {entry}
+        {entry.username} {entry.xp}
       </div>
     {/each}
   </div>
@@ -44,7 +45,7 @@
     <span>local leaderboard</span>
     {#each $local_leaderboard as entry}
       <div>
-        {entry}
+        {entry.username}  {entry.xp}
       </div>
     {/each}
   </div>

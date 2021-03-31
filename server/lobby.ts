@@ -18,7 +18,9 @@ import {
   Ball,
   ClientUpdateMessage,
   SetSkinResponse,
-  GetAvailableSkinsResponse
+  GetAvailableSkinsResponse,
+  LocalLeaderboard,
+  GlobalLeaderboard
 } from "../PolyPong-Common/src/Game.ts";
 
 import { GameServer } from "./Game.ts"
@@ -213,6 +215,21 @@ const doStuff = async (ws: any) => {
           skins,
         }
         ws.send(JSON.stringify(payload));
+      } else if (message.type === "get_global_leaderboard"){
+        const data = await dbHelper.getGlobalLeaderboard();
+        const payload: GlobalLeaderboard = {
+          type: "global_leaderboard",
+          data
+        }
+        ws.send(JSON.stringify(payload))
+      } else if (message.type === "get_local_leaderboard"){
+        const {username } = message
+        const data = await dbHelper.getLocalLeaderboard(username);
+        const payload: LocalLeaderboard = {
+          type: "local_leaderboard",
+          data
+        }
+        ws.send(JSON.stringify(payload))
       }
       else {
         console.log("unrecognized message", message)

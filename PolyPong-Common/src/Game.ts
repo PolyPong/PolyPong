@@ -361,7 +361,7 @@ export interface GetLocalLeaderboard {
 }
 
 export interface LeaderboardEntry {
-  user: string,
+  username: string,
   xp: number
 }
 
