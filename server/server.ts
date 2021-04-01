@@ -10,7 +10,7 @@ import { getQuery } from 'https://deno.land/x/oak/helpers.ts'
 import dbHelper from "./db.ts"
 
 const app = new Application();
-const port = Deno.env.get("PORT") ? +Deno.env.get("PORT")!:  5000;
+const port = Deno.env.get("PORT") ? +Deno.env.get("PORT")! : 5000;
 
 app.addEventListener("listen", ({ secure, hostname, port }) => {
   const protocol = secure ? "https://" : "http://";
@@ -33,10 +33,15 @@ router.get("/test", ({ response }: { response: Response }) => {
   };
 });
 router.get("/getxp/:userid", async (ctx) => {
-  const {userid} = getQuery(ctx, { mergeParams: true });
-  console.log(userid);
+  const { userid } = getQuery(ctx, { mergeParams: true });
   const xp = await dbHelper.getXP(userid);
   ctx.response.body = xp;
+})
+
+router.get("/getavailableskins/:userid", async (ctx) => {
+  const { userid } = getQuery(ctx, { mergeParams: true });
+  const skins = await dbHelper.getAvailableSkins(userid);
+  ctx.response.body = skins;
 })
 
 const MODE = Deno.env.get("MODE") ?? "development";
