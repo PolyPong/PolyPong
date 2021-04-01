@@ -107,18 +107,26 @@ export class Paddle {
   shape: Shape;
   paddleColor: Color = Color.White;
 
+  moving: boolean;
+  // false for left, true for right
+  direction: boolean;
+
   constructor(
     x: number,
     width: number,
     invisible: boolean,
     shape: Shape,
     paddleColor: Color,
+    moving: boolean,
+    direction: boolean,
   ) {
     this.x = x;
     this.width = width;
     this.invisible = invisible;
     this.shape = shape;
     this.paddleColor = paddleColor;
+    this.moving = moving;
+    this.direction = direction;
   }
 }
 

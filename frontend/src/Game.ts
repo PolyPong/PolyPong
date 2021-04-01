@@ -26,6 +26,8 @@ export class GameClient extends Game {
             true,
             Shape.Regular,
             Color.Red,
+            false,
+            false,
           ),
           [],
           0,
@@ -41,6 +43,8 @@ export class GameClient extends Game {
             true,
             Shape.Regular,
             Color.White,
+            false,
+            false,
           ),
           [],
           0,
@@ -53,7 +57,10 @@ export class GameClient extends Game {
   }
   mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
     if (player_number || player_number === 0) {
-      this.players[player_number] = state.players[player_number];
+      // this.players[player_number].paddle.x = state.players[player_number].paddle.x;
+      // this.players[player_number].paddle.moving = state.players[player_number].paddle.moving;
+      // this.players[player_number].paddle.direction = state.players[player_number].paddle.direction;
+      this.players = state.players;
     }
     if (message === "ball_update"){
       console.log("Ball update: " + state.ball.x + ", " + state.ball.y );

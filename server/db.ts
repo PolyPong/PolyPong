@@ -28,7 +28,7 @@ interface UserSchema {
   xp: number;
 }
 
-const DB_URL = Deno.env.get("MONGOURL") ?? "mongodb://0.0.0.0:27017";
+const DB_URL = Deno.env.get("MONGOURL") ?? "mongodb://localhost:27017";
 
 console.log("mongo is at: ", DB_URL);
 

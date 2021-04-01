@@ -224,6 +224,32 @@ import { router } from "tinro";
         ) {
             $game.players[$game_info.my_player_number].paddle.x += Paddle.velocity;
         }
+        
+        // simulate other players movement
+        for (var i = 0; i < $game.players.length; i++) {
+            // skip updating self since already handled above
+            if (i == $game_info.my_player_number)
+                continue;
+
+            // let paddle = $game.players[i].paddle;
+            if ($game.players[i].paddle.moving) {
+                // moving right
+                if ($game.players[i].paddle.direction) {
+                    // constrain movement to length of side
+                    if (($game.players[i].paddle.x + Paddle.velocity) < $game.sideLength / 2) {
+                        $game.players[i].paddle.x += Paddle.velocity;
+                    }
+                }
+                // moving left
+                else {
+                    // constrain movement to length of side
+                    if (($game.players[i].paddle.x - $game.players[i].paddle.width - Paddle.velocity) > -$game.sideLength / 2) {
+                        $game.players[i].paddle.x -= Paddle.velocity;
+                    }
+                }
+            }
+        }
+
         moveBall();
 
         if (collisionDetect()) {
@@ -598,42 +624,50 @@ import { router } from "tinro";
     window.addEventListener("keydown", keyDownHandler);
     window.addEventListener("keyup", keyUpHandler);
 
-    const sendUpdate = () => {
+    const sendUpdate = (msg) => {
         const payload: ClientUpdate = {
             type: "client_update",
             player_id: $user_id,
             lobby_id: $lobby_id,
             player_number: $game_info.my_player_number,
             event: $game.jsonify(),
-            message: "paddle_movement",
+            message: msg,
         };
         $ws.send(JSON.stringify(payload));
     };
 
     // Activated when we press a key down
     function keyDownHandler(event: any) {
-        switch (event.keyCode) {
-            case 37: // Left arrow key
-                leftArrowPressed = true;
-                sendUpdate();
-                break;
-            case 39: // Right arrow key
-                rightArrowPressed = true;
-                sendUpdate();
-                break;
+        if (!leftArrowPressed && !rightArrowPressed) {
+            switch (event.keyCode) {
+                case 37: // Left arrow key
+                    leftArrowPressed = true;
+                    $game.players[$game_info.my_player_number].paddle.moving = true;
+                    $game.players[$game_info.my_player_number].paddle.direction = false;
+                    sendUpdate("paddle_press_left");
+                    break;
+                case 39: // Right arrow key
+                    rightArrowPressed = true;
+                    $game.players[$game_info.my_player_number].paddle.moving = true;
+                    $game.players[$game_info.my_player_number].paddle.direction = true;
+                    sendUpdate("paddle_press_right");
+                    break;
+            }
         }
     }
 
     // Activated when we release the key
-    function keyUpHandler(event) {
+    function keyUpHandler(event: any) {
         switch (event.keyCode) {
             case 37: // Left arrow key
                 leftArrowPressed = false;
-                sendUpdate();
+                $game.players[$game_info.my_player_number].paddle.moving = false;
+                sendUpdate("paddle_release_left");
                 break;
             case 39: // Right arrow key
                 rightArrowPressed = false;
-                sendUpdate();
+                $game.players[$game_info.my_player_number].paddle.moving = false;
+                sendUpdate("paddle_release_right");
                 break;
         }
     }

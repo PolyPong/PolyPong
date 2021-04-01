@@ -39,6 +39,8 @@ export class GameServer extends Game {
           true,
           Shape.Regular,
           Color.White,
+          false,
+          false,
         ),
         [],
         0,
@@ -61,7 +63,11 @@ export class GameServer extends Game {
   mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage ) {
 
     if (player_number || player_number === 0) {
-      this.players[player_number].paddle.x = game.players[player_number].paddle.x;
+      // for (var i = 0; i < this.players.length; i++)
+      //   this.players[i].paddle.x = game.players[i].paddle.x;
+      // this.players[player_number].paddle.moving = game.players[player_number].paddle.moving;
+      // this.players[player_number].paddle.direction = game.players[player_number].paddle.direction;
+      this.players = game.players;
     }
     
     if (message === "ball_update"){
