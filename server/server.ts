@@ -48,6 +48,12 @@ router.get("/leaderboard", async (ctx) => {
   ctx.response.body =  await dbHelper.getGlobalLeaderboard();
 })
 
+router.get("/localleaderboard/:userid", async (ctx) => {
+  const { userid } = getQuery(ctx, { mergeParams: true });
+  const leaderboard = await dbHelper.getLocalLeaderboard(userid);
+  ctx.response.body = leaderboard;
+})
+
 const MODE = Deno.env.get("MODE") ?? "development";
 if (MODE === "production") {
   app.use(oakCors({
