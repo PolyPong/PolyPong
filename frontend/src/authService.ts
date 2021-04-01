@@ -1,7 +1,7 @@
 // src/authService.js
 
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
-import { isAuthenticated, popupOpen, user } from "./store";
+import { popupOpen, user } from "./store";
 import config from "./auth_config";
 
 async function createClient() {
@@ -19,7 +19,6 @@ async function loginWithPopup(client: Auth0Client, options: any) {
     await client.loginWithPopup(options);
 
     user.set(await client.getUser());
-    isAuthenticated.set(true);
   } catch (e) {
     // eslint-disable-next-line
     console.error(e);
@@ -33,7 +32,6 @@ async function loginWithRedirect(client: Auth0Client, options: any) {
     await client.loginWithRedirect(options);
 
     user.set(await client.getUser());
-    isAuthenticated.set(true);
   } catch (e) {
     // eslint-disable-next-line
     console.error(e);

@@ -1,5 +1,5 @@
 <script>
-    import { isAuthenticated, user, auth0Client, usernameExists, ws } from "../store";
+    import { user, auth0Client, usernameExists, ws } from "../store";
     import {router } from "tinro";
     import { onMount } from "svelte";
     import type { CheckExists } from "@polypong/polypong-common";
@@ -7,7 +7,7 @@
     onMount(async () => {
 		// createclient should do this part automatically
 		// await auth0Client.getTokenSilently();
-		if ($isAuthenticated){
+		if (await (await $auth0Client).isAuthenticated()){
             document.getElementById("email")!.readOnly = true;
             document.getElementById("email")!.value = $user.email;
         } else {

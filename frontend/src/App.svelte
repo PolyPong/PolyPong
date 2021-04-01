@@ -11,7 +11,7 @@
 	import Login from "./routes/Login.svelte";
 	import { onMount } from "svelte";
 	import auth from "./authService";
-	import { isAuthenticated, user, auth0Client } from "./store";
+	import { user, auth0Client } from "./store";
 
 	router.mode.hash();
 
@@ -20,7 +20,6 @@
 	onMount(async () => {
 		// createclient should do this part automatically
 		// await auth0Client.getTokenSilently();
-		isAuthenticated.set(await (await $auth0Client).isAuthenticated());
 		user.set(await (await $auth0Client).getUser());
 	});
 </script>
@@ -38,7 +37,7 @@
 		{JSON.stringify($user)}
 	</div>
 	<div>
-		{$isAuthenticated}
+		{await auth0client.isAuthenticated()}
 	</div>
 	<a href="/game">goto game</a>
 </div> -->

@@ -12,7 +12,6 @@ import { binding_callbacks } from "svelte/internal";
 export const game_active = writable(false);
 export const all_clients_ready = writable(false);
 export const stop_game_loop = writable(false);
-export const isAuthenticated = writable(false);
 export const auth0Client = writable<Promise<Auth0Client>>(
   createAuth0Client(config)
 );

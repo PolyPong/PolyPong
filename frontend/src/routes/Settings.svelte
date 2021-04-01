@@ -1,14 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { skins, ws, isAuthenticated, user_id, auth0Client } from "../store";
+  import { skins, ws, user_id, auth0Client} from "../store";
   import type {
     GetAvailableSkinsRequest,
     SetSkinRequest,
-    Color
+    Color,
   } from "@polypong/polypong-common";
 
   onMount(async () => {
-    if (!$isAuthenticated) {
+    if (!(await (await $auth0Client).isAuthenticated())) {
       return;
     }
     const payload: GetAvailableSkinsRequest = {
@@ -38,36 +38,47 @@
   }
 
   const setSkin = async (skin: Color) => {
-    if (!$isAuthenticated){
-      alert("oops, you are a guest user")
+    if (!(await (await $auth0Client).isAuthenticated())) {
+      alert("oops, you are a guest user");
       return;
     }
 
-    const token = await (await $auth0Client).getIdTokenClaims();
-    
-    console.log("token", token.__raw)
+    const token = await (await $auth0Client).getTokenSilently();
+
+    console.log("token", token);
 
     const payload: SetSkinRequest = {
       type: "set_skin",
       skin,
-      token: token.__raw,
-    }
+      token,
+    };
 
     $ws.send(JSON.stringify(payload));
-  }
-
+  };
 </script>
 
 <body>
-  {#if $isAuthenticated}
-    {#each $skins as skin}
-      <button style={`background-color:${skin};`} on:click={() => setSkin(skin)}>{skin}</button>
-    {/each}
-  {:else}
-    <div>
-      it seems like you're not logged in. You're stuck with the white skin then
-    </div>
-  {/if}
+  {#await $auth0Client}
+    <div>Getting available skins... Hold on</div>
+  {:then client}
+    {#await client.isAuthenticated()}
+      <div>Getting available skins... Hold on</div>
+    {:then isauthenticated}
+      {#if isauthenticated}
+        {#each $skins as skin}
+          <button
+            style={`background-color:${skin};`}
+            on:click={() => setSkin(skin)}>{skin}</button
+          >
+        {/each}
+      {:else}
+        <div>
+          it seems like you're not logged in. You're stuck with the white skin
+          then
+        </div>
+      {/if}
+    {/await}
+  {/await}
   <h1 id="header" style="background-color: #353839;">PolyPong</h1>
   <hr />
   <br />

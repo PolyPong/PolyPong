@@ -1,12 +1,11 @@
 <script>
     import auth from "../authService";
-	import { isAuthenticated, user, auth0Client, popupOpen, ws } from "../store";
+	import { user, auth0Client, popupOpen, ws } from "../store";
 
     import {router } from "tinro";
     import type { CheckExists } from "@polypong/polypong-common";
 
     async function logIn() {
-        isAuthenticated.set(await (await $auth0Client).isAuthenticated());
 		user.set(await (await $auth0Client).getUser());
         auth.loginWithRedirect((await $auth0Client));  // Do not pass in null in the options field or the code will break
 
@@ -23,7 +22,7 @@
     }
 
     async function loggedInOrRegister() {
-        if ($isAuthenticated) {
+        if (await (await $auth0Client).isAuthenticated()) {
             console.log($user.email)
 
             // Check if user email is in the database
