@@ -44,6 +44,10 @@ router.get("/getavailableskins/:userid", async (ctx) => {
   ctx.response.body = skins;
 })
 
+router.get("/leaderboard", async (ctx) => {
+  ctx.response.body =  await dbHelper.getGlobalLeaderboard();
+})
+
 const MODE = Deno.env.get("MODE") ?? "development";
 if (MODE === "production") {
   app.use(oakCors({
