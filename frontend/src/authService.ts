@@ -28,6 +28,19 @@ async function loginWithPopup(client: Auth0Client, options: any) {
   }
 }
 
+async function loginWithRedirect(client: Auth0Client, options: any) {
+  try {
+    await client.loginWithRedirect(options);
+
+    user.set(await client.getUser());
+    isAuthenticated.set(true);
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error(e);
+  } finally {
+  }
+}
+
 function logout(client: Auth0Client) {
   return client.logout();
 }
@@ -36,6 +49,7 @@ const auth = {
   createClient,
   loginWithPopup,
   logout,
+  loginWithRedirect,
 };
 
 export default auth;
