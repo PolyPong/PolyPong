@@ -316,6 +316,7 @@ export interface JoinGamePayload {
   type: "join_game";
   lobby_id: string;
   user_id: string;
+  token: string | null;
 }
 
 export interface LobbyCreatedPayload {

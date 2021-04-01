@@ -41,15 +41,25 @@ export const game = writable<GameClient>(new GameClient(0, new Ball()));
 
 export const usernameExists = writable<boolean>(false);
 
-export const global_leaderboard = writable<LeaderboardEntry[]>([])
-export const local_leaderboard = writable<LeaderboardEntry[]>([])
+export const global_leaderboard = writable<LeaderboardEntry[]>([]);
+export const local_leaderboard = writable<LeaderboardEntry[]>([]);
 
-export const joinGame = (input: string | undefined, user_id: string) => {
+export const serverXPResponse = writable<number>(-1);
+
+export const joinGame = async (input: string | undefined, user_id: string) => {
   const payload: JoinGamePayload = {
     type: "join_game",
     lobby_id: !!input ? input : get(lobby_id),
     user_id,
+    token: null,
   };
+
+  if(get(isAuthenticated)){
+    const token = await (await get(auth0Client)).getTokenSilently();
+    console.log("Token: " + token);
+    payload.token = token;
+  }
+
   get(ws).send(JSON.stringify(payload));
   lobby_id.set(!!input ? input : get(lobby_id));
 };
@@ -122,10 +132,10 @@ const gotMessage = async (m: MessageEvent) => {
     } else if (message.type === "set_skin_response") {
       selectedskin.set(message.skin)
     } else if (message.type === "global_leaderboard") {
-      global_leaderboard.set(message.data)
+      global_leaderboard.set(message.data);
     } else if (message.type === "local_leaderboard") {
-      local_leaderboard.set(message.data)
-    }
+      local_leaderboard.set(message.data);
+    } 
     else {
       console.log("unrecognized message from server", message)
     }

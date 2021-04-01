@@ -5,6 +5,7 @@ import {
 
 import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 import { v4 } from "https://deno.land/std@0.84.0/uuid/mod.ts";
+import { verify, decode } from "https://deno.land/x/djwt@v2.2/mod.ts"
 
 import {
   ClientAction,
@@ -21,22 +22,26 @@ import {
   SetSkinResponse,
   GetAvailableSkinsResponse,
   LocalLeaderboard,
-  GlobalLeaderboard
-
+  GlobalLeaderboard,
+  CurrentXP,
 } from "../PolyPong-Common/src/Game.ts";
 
 import { GameServer } from "./Game.ts"
 
 import dbHelper from "./db.ts";
 
+const SECRET = Deno.env.get("SECRET")?? "secret was not set";
+
 class Lobby {
   userlist: Map<string, WebSocket>;
+  emailList: Map<string, string>; // Map user_id to an email, may be null for guest users
   lobby_id: string;
   game: GameServer;
   ready_count = 0;
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
+    this.emailList = new Map();
     this.lobby_id = lobby_id;
     this.game = new GameServer(new Map()); // will be replaced by setGame
   }
@@ -45,8 +50,18 @@ class Lobby {
     this.game = game;
   }
 
-  joinGame(user_id: string, ws: WebSocket) {
+  async joinGame(user_id: string, ws: WebSocket, jwt: string | null) {
     this.userlist.set(user_id, ws);
+
+    if (jwt !== null){
+      // const [payload, _, __] = decode(jwt); // , SECRET, "RS256");   // Get the user's email using a token and add it to the emailList map
+      // console.log("jwt: " + jwt);//JSON.stringify(payload));
+      // this.emailList.set(user_id, payload?.email as string);
+    }
+
+    for (const email in this.emailList.values()){
+      console.log("Emails so far: " + email);
+    }
 
     const response: LobbyJoinedPayload = {
       type: "lobby_joined_info",
@@ -124,7 +139,7 @@ const doStuff = async (ws: any) => {
           ws.send(JSON.stringify(response));
           continue;
         }
-        lobby.joinGame(message.user_id, ws);
+        lobby.joinGame(message.user_id, ws, message.token);
         continue;
       } else if (message.type === "create_lobby") {
         const lobby_id = createLobby();
@@ -210,6 +225,10 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
+        for (const email of lobby.emailList.values()){
+          dbHelper.levelUp(email, 1);
+        }
+
         lobby.userlist.delete(message.user_id);
 
         const payload: ServerSaysStopGame = {
@@ -217,6 +236,7 @@ const doStuff = async (ws: any) => {
           player_number: message.player_number,
           user_id: message.user_id, 
         }
+
 
         lobby.broadcast( JSON.stringify(payload), undefined)
         lobby.ready_count = 0;
@@ -277,8 +297,8 @@ const doStuff = async (ws: any) => {
           type: "local_leaderboard",
           data
         }
-        ws.send(JSON.stringify(payload))
-      }
+        ws.send(JSON.stringify(payload));
+      } 
       else {
         console.log("unrecognized message", message)
       }

@@ -120,8 +120,8 @@ export const setSkinAuthenticated = async (skin: Color, jwt: string) => {
 }
 
 // this should be determined by the server, not the game client
-export const levelUp = async (username: string, levels: number) => {
-  return await users.updateOne({ username: { $eq: username } }, { $inc: { xp: levels } });
+export const levelUp = async (email: string, levels: number) => {
+  return await users.updateOne({ email: { $eq: email } }, { $inc: { xp: levels } });
 }
 
 
@@ -153,8 +153,8 @@ export const getUserbyEmail = async (email: string) => {
   return await users.findOne({ email: { $eq: email } }, { projection: { _id: 0 } });
 }
 
-export const getXP: (username: string) => Promise<number | undefined> = async (username: string) => {
-  const result = await users.findOne({ username: { $eq: username } }, { projection: { _id: 0, xp: 1 } })
+export const getXP: (email: string) => Promise<number | undefined> = async (email: string) => {
+  const result = await users.findOne({ email: { $eq: email } }, { projection: { _id: 0, xp: 1 } })
   return result?.xp
 }
 

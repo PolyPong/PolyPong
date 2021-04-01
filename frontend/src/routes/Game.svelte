@@ -3,6 +3,7 @@
         isAuthenticated,
         game_info,
         ws,
+        user,
         user_id,
         lobby_id,
         game,
@@ -10,6 +11,7 @@
         all_clients_ready,
         stop_game_loop,
         loss_info,
+        serverXPResponse,
     } from "../store";
     import { onMount, tick } from "svelte";
     import { Ball, Paddle } from "@polypong/polypong-common";
@@ -21,9 +23,13 @@
         ClientSaysGameOver,
         ClientStopped,
         GameWon,
+        GetXP,
     } from "@polypong/polypong-common";
     import { GameClient } from "../Game";
 import { router } from "tinro";
+
+    const SERVER_URL = import.meta.env.MODE === "production" ? "https://polyserver.polypong.ca:8443/" : "http://localhost:5000/"
+
     let w: number;
     let h: number;
     let canvas: HTMLCanvasElement;
@@ -37,6 +43,9 @@ import { router } from "tinro";
     let allClientsReadyInterval: Timeout;
     let serverSaysStopGameInterval: Timeout;
     let textAlpha: number = 0;
+
+    let beginningXP: number = 0;
+    let endingXP: number = 0;
 
     const paddleCoverageRatio: number = 1 / 4;
     const ballScaleFactor: number = 1 / 30;
@@ -61,6 +70,9 @@ import { router } from "tinro";
     });
 
     async function load() {
+
+        beginningXP = await getClientXP();
+        console.log(beginningXP);
         w = document.documentElement.clientWidth;
         h = document.documentElement.clientHeight;
         canvas = document.getElementById("drawing") as HTMLCanvasElement;
@@ -640,7 +652,16 @@ import { router } from "tinro";
 
     function sleep(ms: number) {
       return new Promise(resolve => setTimeout(resolve, ms));
-   }
+    }
+
+    async function getClientXP() {
+        if (!$user.email){   // assume this is username
+            return 0;
+        }
+        return await fetch(SERVER_URL+"/getxp/"+$user.email);
+    }
+
+    
 </script>
 
 <!-- <body onload="load()" onresize="getSize()"> -->
