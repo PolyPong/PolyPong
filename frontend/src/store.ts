@@ -14,10 +14,7 @@ export const all_clients_ready = writable(false);
 export const stop_game_loop = writable(false);
 export const isAuthenticated = writable(false);
 export const auth0Client = writable<Promise<Auth0Client>>(
-  createAuth0Client({
-    domain: config.domain,
-    client_id: config.clientId,
-  })
+  createAuth0Client(config)
 );
 export const user = writable<any>({});
 export const popupOpen = writable(false);

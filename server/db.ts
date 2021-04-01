@@ -158,6 +158,11 @@ export const getXP: (username: string) => Promise<number | undefined> = async (u
   return result?.xp
 }
 
+export const getXPByEmail: (email: string) => Promise<number | undefined> = async (email: string) => {
+  const result = await users.findOne({ email: { $eq: email } }, { projection: { _id: 0, xp: 1 } })
+  return result?.xp
+}
+
 
 Deno.test("database test", async () => {
 
