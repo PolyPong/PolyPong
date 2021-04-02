@@ -11,9 +11,7 @@ import {
   assertThrows
 } from "https://deno.land/std/testing/asserts.ts";
 
-import { verify } from "https://deno.land/x/djwt@v2.2/mod.ts"
 
-const SECRET = Deno.env.get("SECRET")?? "secret was not set";
 
 const client = new MongoClient();
 
@@ -88,35 +86,29 @@ export const getAvailableSkins: (username: string) => Promise<Color[]> = async (
     .map(([k, v]) => k as Color);
 }
 
-const setSkin = async (email: string, skin: Color) => {
+export enum setSkinResponse{
+  UserNotFound,
+  LevelTooLow,
+  Success,
+  ErrorUpdating
+} 
+
+export const setSkin = async (email: string, skin: Color) => {
   const user = await getUserbyEmail(email)
   if (!user) {
-    return Color.White;
+    return setSkinResponse.UserNotFound
   }
 
   if (user.xp < ColorLevels[skin]) {
-    return user.paddleColor
+    return setSkinResponse.LevelTooLow
   }
 
-  const result = users.updateOne({ email: { $eq: email } }, { $set: { paddleColor: skin } });
+  const result = await users.updateOne({ email: { $eq: email } }, { $set: { paddleColor: skin } });
   if (result){
-    return skin;
+    return setSkinResponse.Success;
   }
 
-  return user.paddleColor
-}
-
-export const setSkinAuthenticated = async (skin: Color, jwt: string) => {
-
-  try {
-    const payload = await verify(jwt, SECRET, "RS256");
-    return setSkin(payload.email as string, skin);
-  } catch {
-    // token is not valid
-    return Color.White
-  }
-
-
+  return setSkinResponse.ErrorUpdating;
 }
 
 // this should be determined by the server, not the game client
@@ -295,9 +287,9 @@ export default {
   checkExists,
   addUser,
   levelUp,
-  setSkinAuthenticated,
   getAvailableSkins,
   getGlobalLeaderboard,
   getLocalLeaderboard,
+  setSkin
 
 }
