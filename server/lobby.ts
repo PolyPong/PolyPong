@@ -1,8 +1,3 @@
-import {
-  acceptable,
-  acceptWebSocket,
-} from "https://deno.land/std@0.84.0/ws/mod.ts";
-
 import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 import { v4 } from "https://deno.land/std@0.84.0/uuid/mod.ts";
 
@@ -18,8 +13,6 @@ import {
   Ball,
   ClientUpdateMessage,
   ServerSaysStopGame,
-  LocalLeaderboard,
-  GlobalLeaderboard
 
 } from "../PolyPong-Common/src/Game.ts";
 

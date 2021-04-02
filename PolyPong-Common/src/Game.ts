@@ -364,19 +364,12 @@ type ServerEvent =
   | SomeoneElseJoined
   | LobbyCreatedPayload
   | ServerUpdate
-  | GetAvailableSkinsResponse
-  | SetSkinResponse
-  | GlobalLeaderboard
-  | LocalLeaderboard
+
 type ClientAction =
   | JoinGamePayload
   | CreateLobbyRequest
   | ClientUpdate
   | ClientReady
-  | GetAvailableSkinsRequest
-  | SetSkinRequest
-  | GetGlobalLeaderboard
-  | GetLocalLeaderboard
 
 export type { ClientAction, ServerEvent };
 
