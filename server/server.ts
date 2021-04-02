@@ -1,8 +1,4 @@
-import {
-  acceptable,
-  acceptWebSocket,
-} from "https://deno.land/std@0.84.0/ws/mod.ts";
-import lobby, { handleSocket } from "./lobby.ts";
+import { handleSocket } from "./lobby.ts";
 
 import { Application, Router, Response } from "https://deno.land/x/oak/mod.ts";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
@@ -19,12 +15,6 @@ app.addEventListener("listen", ({ secure, hostname, port }) => {
 });
 
 const router = new Router();
-// app.use(
-//   oakCors({
-//     origin: "http://localhost:5000"
-//   }),
-// );
-
 
 router.get("/ws", handleSocket);
 router.get("/test", ({ response }: { response: Response }) => {
