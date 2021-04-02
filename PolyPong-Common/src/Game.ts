@@ -358,53 +358,6 @@ export interface ServerSaysGameStarted {
   ball: Ball;
 }
 
-export interface GetAvailableSkinsRequest {
-  type: "get_available_skins",
-  username: string,
-}
-
-export interface GetAvailableSkinsResponse {
-  type: "available_skins",
-  skins: Color[],
-}
-
-export interface SetSkinRequest {
-  type: "set_skin",
-  skin: Color,
-  token: string,
-}
-
-export interface SetSkinResponse {
-  type: "set_skin_response",
-  skin: Color
-}
-
-export interface GetGlobalLeaderboard {
-  type: "get_global_leaderboard"
-}
-
-export interface GetLocalLeaderboard {
-  type: "get_local_leaderboard",
-  username: string,
-}
-
-export interface LeaderboardEntry {
-  username: string,
-  xp: number
-}
-
-export interface GlobalLeaderboard {
-  type: "global_leaderboard",
-  data: LeaderboardEntry[],
-}
-
-export interface LocalLeaderboard {
-  type: "local_leaderboard",
-  data: LeaderboardEntry[],
-}
-
-
-
 type ServerEvent =
   | ErrorPayload
   | LobbyJoinedPayload

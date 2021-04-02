@@ -1,13 +1,15 @@
-import Lobby from "./routes/Lobby.svelte";
 import { derived, writable } from "svelte/store";
 import { Ball, Color } from "@polypong/polypong-common";
-import type { JoinGamePayload, CreateUser, LeaderboardEntry } from "@polypong/polypong-common";
+import type {
+  JoinGamePayload,
+  CreateUser,
+  LeaderboardEntry,
+} from "@polypong/polypong-common";
 import { get } from "svelte/store";
 import { router } from "tinro";
 import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import config from "./auth_config";
 import { GameClient } from "./Game";
-import { binding_callbacks } from "svelte/internal";
 
 export const game_active = writable(false);
 export const all_clients_ready = writable(false);
@@ -18,10 +20,13 @@ export const auth0Client = writable<Promise<Auth0Client>>(
 export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);
-export const skins = writable<[Color]>([Color.White])
+export const skins = writable<[Color]>([Color.White]);
 export const selectedskin = writable<Color>(Color.White);
 
-const SERVER_URL = import.meta.env.MODE === "production" ? "wss://polyserver.polypong.ca:8443/ws" : "ws://localhost:5000/ws"
+const SERVER_URL =
+  import.meta.env.MODE === "production"
+    ? "wss://polyserver.polypong.ca:8443/ws"
+    : "ws://localhost:5000/ws";
 export const ws = writable(new WebSocket(SERVER_URL));
 //export const ws = writable(new WebSocket("wss://polyserver.polypong.ca:8443/ws"));
 
@@ -37,8 +42,8 @@ export const game = writable<GameClient>(new GameClient(0, new Ball()));
 
 export const usernameExists = writable<boolean>(false);
 
-export const global_leaderboard = writable<LeaderboardEntry[]>([])
-export const local_leaderboard = writable<LeaderboardEntry[]>([])
+export const global_leaderboard = writable<LeaderboardEntry[]>([]);
+export const local_leaderboard = writable<LeaderboardEntry[]>([]);
 
 export const joinGame = (input: string | undefined, user_id: string) => {
   const payload: JoinGamePayload = {
@@ -60,19 +65,18 @@ const gotMessage = async (m: MessageEvent) => {
       joinGame(message.lobby_id, get(user_id));
     } else if (message.type === "join_success") {
       if (message.user_id === get(user_id)) {
-        console.log(`${message.user_id} has joined`)
+        console.log(`${message.user_id} has joined`);
       }
-      lobby_id.set(message.lobby_id)
+      lobby_id.set(message.lobby_id);
     } else if (message.type === "game_started") {
       game_info.set({
         sides: message.sides,
         my_player_number: message.your_player_number,
-        ball: message.ball
+        ball: message.ball,
       });
       game_active.set(true);
       router.goto("/game");
     } else if (message.type === "server_update") {
-
       const { event, player_number } = message;
       console.log(get(game));
       get(game).mergeState(event, player_number, message.message);
@@ -99,13 +103,13 @@ const gotMessage = async (m: MessageEvent) => {
             type: "create_user",
             username: message.str,
             email: get(user).email,
-          }
+          };
           get(ws).send(JSON.stringify(request));
           console.log("Request to create user has been sent");
           router.goto("/login");
         }
       } else {
-        console.log("Error. Unrecognized field")
+        console.log("Error. Unrecognized field");
       }
     } else if (message.type === "stop_game") {
       loss_info.set({
@@ -113,23 +117,14 @@ const gotMessage = async (m: MessageEvent) => {
         user_id: message.user_id,
       });
       stop_game_loop.set(true);
-    } else if (message.type === "available_skins") {
-      skins.set(message.skins)
-    } else if (message.type === "set_skin_response") {
-      selectedskin.set(message.skin)
-    } else if (message.type === "global_leaderboard") {
-      global_leaderboard.set(message.data)
-    } else if (message.type === "local_leaderboard") {
-      local_leaderboard.set(message.data)
-    }
-    else {
-      console.log("unrecognized message from server", message)
+    } else {
+      console.log("unrecognized message from server", message);
     }
   } catch (e) {
     console.error(
-      `got message: ${m.data} failed to parse it as json, so ignoring...`,
+      `got message: ${m.data} failed to parse it as json, so ignoring...`
     );
-    console.error(e)
+    console.error(e);
   }
 };
 get(ws).addEventListener("message", gotMessage);

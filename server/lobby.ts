@@ -18,8 +18,6 @@ import {
   Ball,
   ClientUpdateMessage,
   ServerSaysStopGame,
-  SetSkinResponse,
-  GetAvailableSkinsResponse,
   LocalLeaderboard,
   GlobalLeaderboard
 
@@ -89,8 +87,8 @@ class Lobby {
       player_number: undefined,
       message: "game_start",
     }
-    
-    for (const p of payload.event.players){
+
+    for (const p of payload.event.players) {
       p.websocketConnection = null;
     }
     this.broadcast(JSON.stringify(payload), undefined)
@@ -215,10 +213,10 @@ const doStuff = async (ws: any) => {
         const payload: ServerSaysStopGame = {
           type: "stop_game",
           player_number: message.player_number,
-          user_id: message.user_id, 
+          user_id: message.user_id,
         }
 
-        lobby.broadcast( JSON.stringify(payload), undefined)
+        lobby.broadcast(JSON.stringify(payload), undefined)
         lobby.ready_count = 0;
       } else if (message.type === "client_stopped") {
 
@@ -233,51 +231,19 @@ const doStuff = async (ws: any) => {
           continue;
         }
         lobby.ready_count += 1;
-  
+
         if (lobby.ready_count < lobby.userlist.size) {
           continue;
         }
-        if (lobby.userlist.size < 2){
+        if (lobby.userlist.size < 2) {
           continue;
         }
-        
+
         lobby.ready_count = 0;
 
         const game = new GameServer(lobby.userlist);
         lobby.setGame(game);
 
-      } else if (message.type === "set_skin"){
-        const {token, skin} = message;
-        const newskin = await dbHelper.setSkinAuthenticated(skin, token);
-
-        const payload: SetSkinResponse = {
-          type: "set_skin_response",
-          skin,
-        }
-        ws.send(JSON.stringify(payload))
-      } else if (message.type === "get_available_skins"){
-        const {username} = message;
-        const skins = await dbHelper.getAvailableSkins(username);
-        const payload: GetAvailableSkinsResponse = {
-          type: "available_skins",
-          skins,
-        }
-        ws.send(JSON.stringify(payload));
-      } else if (message.type === "get_global_leaderboard"){
-        const data = await dbHelper.getGlobalLeaderboard();
-        const payload: GlobalLeaderboard = {
-          type: "global_leaderboard",
-          data
-        }
-        ws.send(JSON.stringify(payload))
-      } else if (message.type === "get_local_leaderboard"){
-        const {username } = message
-        const data = await dbHelper.getLocalLeaderboard(username);
-        const payload: LocalLeaderboard = {
-          type: "local_leaderboard",
-          data
-        }
-        ws.send(JSON.stringify(payload))
       }
       else {
         console.log("unrecognized message", message)
@@ -294,7 +260,7 @@ const doStuff = async (ws: any) => {
 
 const handleSocket = async (ctx: Context) => {
   console.log(ctx);
-  const socket = await ctx.upgrade();  
+  const socket = await ctx.upgrade();
   await doStuff(socket);
 };
 
