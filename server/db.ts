@@ -284,6 +284,7 @@ Deno.test("database test", async () => {
 export default {
   getXP,
   getUser,
+  getUserbyEmail,
   checkExists,
   addUser,
   levelUp,
