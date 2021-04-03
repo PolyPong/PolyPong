@@ -1,11 +1,12 @@
 <script>
   import { onMount } from "svelte";
-  import type {
-    GetGlobalLeaderboard,
-    GetLocalLeaderboard,
-  } from "@polypong/polypong-common";
-  import { ws, global_leaderboard, local_leaderboard, user_id } from "../store";
-  import { use } from "chai";
+  import { ws, user_id } from "../store";
+  import Stats from "./Stats.svelte";
+
+  const SERVER_URL =
+    import.meta.env.MODE === "production"
+      ? "https://polyserver.polypong.ca/"
+      : "http://localhost:5000/";
 
   function toggleBackground(idOfLabel, ...ids) {
     for (let i = 0; i < ids.length; i++) {
@@ -17,37 +18,37 @@
     id.style.color = "#353839";
   }
 
-  onMount(() => {
-    $ws.send(
-      JSON.stringify({
-        type: "get_global_leaderboard",
-      })
-    );
-    $ws.send(
-      JSON.stringify({
-        type: "get_local_leaderboard",
-        username: $user_id
-      })
-    );
-  });
+  const username = "arun2";
 </script>
 
 <body>
   <div>
     <span>global leaderboard</span>
-    {#each $global_leaderboard as entry}
-      <div>
-        {entry.username} {entry.xp}
-      </div>
-    {/each}
+    {#await fetch(SERVER_URL + "leaderboard") then res}
+      <div>Getting global leaderboard Stats...</div>
+      {#await res.json() then leaderboard}
+        {#each leaderboard as entry}
+          <div>
+            {entry.username}
+            {entry.xp}
+          </div>
+        {/each}
+      {/await}
+    {/await}
   </div>
   <div>
     <span>local leaderboard</span>
-    {#each $local_leaderboard as entry}
-      <div>
-        {entry.username}  {entry.xp}
-      </div>
-    {/each}
+    {#await fetch(SERVER_URL + "localleaderboard/" + username) then res}
+      <div>Getting local leaderboard...</div>
+      {#await res.json() then leaderboard}
+        {#each leaderboard as entry}
+          <div>
+            {entry.username}
+            {entry.xp}
+          </div>
+        {/each}
+      {/await}
+    {/await}
   </div>
   <h1>PolyPong</h1>
   <hr />

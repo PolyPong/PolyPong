@@ -3,15 +3,13 @@
   import { skins, ws, user_id, auth0Client } from "../store";
   import  { Color } from "@polypong/polypong-common";
 
+  const SERVER_URL = import.meta.env.MODE === "production" ? "https://polyserver.polypong.ca/" : "http://localhost:5000/"
+
   // swap hex code with user friendly name
   const colors = Object.assign({}, ...Object.entries(Color).map(([a,b]) => ({ [b]: a })))
 
-  onMount(async () => {
-    const token = await (await $auth0Client).getTokenSilently();
-
-    console.log("token", token);
-  });
   let skinSelected = "white";
+  const username = "arun"
 
   function highlightSkins(idOfSkin: string) {
     if (idOfSkin == skinSelected) {
@@ -41,7 +39,7 @@
 
     console.log("token", token);
 
-    const success = await fetch("http://localhost:5000/setskin", {
+    const success = await fetch(SERVER_URL + "setskin", {
       method: "POST",
       headers: {
         Authorization: token,
@@ -66,7 +64,7 @@
       <div>Seeing if you're logged in... Hold on</div>
     {:then isauthenticated}
       {#if isauthenticated}
-        {#await fetch("http://localhost:5000/getavailableskins/arun2")}
+        {#await fetch(SERVER_URL + "getavailableskins/" + username)}
           <div>getting available skins...</div>
         {:then res}
           {#await res.json()}
