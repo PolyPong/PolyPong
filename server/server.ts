@@ -103,6 +103,12 @@ router.get("/localleaderboard/:userid", async (ctx) => {
 });
 
 router.get("/whatismyname", async (ctx) => {
+  const jwt = ctx.request.headers.get("Authorization");
+  if (!jwt) {
+    ctx.response.body = "Error: JWT not in header";
+    ctx.response.status = Status.Unauthorized;
+    return;
+  }
   console.log("about to verify token")
   console.log(jwt)
   // todo: wait for response from https://github.com/timonson/djwt/issues/47
