@@ -10,6 +10,7 @@ import {
   ServerExistsResponse,
   Game,
   ServerUpdate,
+  Powerup,
   Ball,
   ClientUpdateMessage,
   ServerSaysStopGame,
@@ -22,14 +23,17 @@ import dbHelper from "./db.ts";
 
 class Lobby {
   userlist: Map<string, WebSocket>;
+  powerUpList: Map<string, Powerup[]>;
   lobby_id: string;
   game: GameServer;
   ready_count = 0;
+  lobby_count = 0;
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
+    this.powerUpList = new Map();
     this.lobby_id = lobby_id;
-    this.game = new GameServer(new Map()); // will be replaced by setGame
+    this.game = new GameServer(new Map(), new Map()); // will be replaced by setGame
   }
 
   setGame(game: GameServer) {
@@ -70,6 +74,18 @@ class Lobby {
     }
     this.ready_count = 0;
     this.startGame();
+  }
+
+  incrementLobbyReady() {
+    this.lobby_count += 1;
+  }
+  async checkLobbyReady(lobby: Lobby) {
+    if (this.lobby_count < this.userlist.size) {
+      return
+    }
+    this.lobby_count = 0;
+    const game = new GameServer(lobby.userlist, lobby.powerUpList);
+    lobby.setGame(game);
   }
 
   startGame() {
@@ -136,7 +152,7 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
-        const game = new GameServer(lobby.userlist);
+        const game = new GameServer(lobby.userlist, lobby.powerUpList);
         lobby.setGame(game);
       } else if (message.type === "client_update") {
         const { lobby_id } = message;
@@ -176,6 +192,23 @@ const doStuff = async (ws: any) => {
         ws.send(JSON.stringify(response));
       } else if (message.type === "create_user") {
         dbHelper.addUser(message.username, message.email);
+      } else if (message.type === "lobby_client_ready") {
+        const { lobby_id } = message;
+        const lobby = LOBBIES.get(lobby_id);
+        if (!lobby) {
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          ws.send(JSON.stringify(response));
+          continue;
+        }
+        // Add powerups listed in the message to the powerUpsList along with the user id
+        console.log("Power Ups:" + message.powerups);
+        lobby.powerUpList.set(message.user_id, message.powerups);
+
+        lobby.incrementLobbyReady();
+        lobby.checkLobbyReady(lobby);
       } else if (message.type === "client_ready") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
@@ -202,6 +235,7 @@ const doStuff = async (ws: any) => {
         }
 
         lobby.userlist.delete(message.user_id);
+        lobby.powerUpList.delete(message.user_id);
 
         const payload: ServerSaysStopGame = {
           type: "stop_game",
@@ -234,7 +268,7 @@ const doStuff = async (ws: any) => {
 
         lobby.ready_count = 0;
 
-        const game = new GameServer(lobby.userlist);
+        const game = new GameServer(lobby.userlist, lobby.powerUpList);
         lobby.setGame(game);
 
       }

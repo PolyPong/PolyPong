@@ -53,106 +53,67 @@
     <br />
 
     <div>
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="bigger"
+        <button class="button" style="background-color: #353839; width: 25%;" id="bigger"
             on:click={() => highlightPowerUps("bigger")}
         >
-            <img src="/images/Bigger Paddle.png" width="90" height="90" />
+            <img src="/images/Bigger_Paddle.png" width="90" height="90" />
             <p>Bigger Paddle</p>
         </button>
 
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="smaller"
+        <button class="button" style="background-color: #353839; width: 25%;" id="smaller"
             on:click={() => highlightPowerUps("smaller")}
         >
-            <img src="/images/Smaller Paddle.png" width="90" height="90" />
+            <img src="/images/Smaller_Paddle.png" width="90" height="90" />
             <p>Smaller Paddle</p>
         </button>
 
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="curved"
+        <button class="button" style="background-color: #353839; width: 25%;" id="curved"
             on:click={() => highlightPowerUps("curved")}
         >
-            <img src="/images/Curved Paddle.png" width="90" height="90" />
+            <img src="/images/Curved_Paddle.png" width="90" height="90" />
             <p>Curved Paddle</p>
         </button>
     </div>
 
     <div>
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="invisible"
+        <button class="button" style="background-color: #353839; width: 25%;" id="invisible"
             on:click={() => highlightPowerUps("invisible")}
         >
-            <img src="/images/Invisible Paddle.png" width="90" height="90" />
+            <img src="/images/Invisible_Paddle.png" width="90" height="90" />
             <p>Invisible Paddle<br /><br /></p>
         </button>
 
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="split"
+        <button class="button" style="background-color: #353839; width: 25%;" id="split"
             on:click={() => highlightPowerUps("split")}
         >
-            <img src="/images/Split Paddle.png" width="90" height="90" />
+            <img src="/images/Split_Paddle.png" width="90" height="90" />
             <p>Split Paddle<br /><br /></p>
         </button>
 
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="distracting"
+        <button class="button" style="background-color: #353839; width: 25%;" id="distracting"
             on:click={() => highlightPowerUps("distracting")}
         >
-            <img
-                src="/images/Distracting Background.png"
-                width="90"
-                height="90"
-            />
+            <img src="/images/Distracting_Background.png" width="90" height="90"/>
             <p>Distracting Background</p>
         </button>
     </div>
 
     <div>
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="anotherBall"
+        <button class="button" style="background-color: #353839; width: 25%;" id="anotherBall"
             on:click={() => highlightPowerUps("anotherBall")}
         >
-            <img
-                src="/images/Add a Ball into the Mix.png"
-                width="90"
-                height="90"
-            />
+            <img src="/images/Add_a_Ball_into_the_Mix.png" width="90" height="90"/>
             <p>Add a Ball into the Mix</p>
         </button>
 
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="changeShape"
+        <button class="button" style="background-color: #353839; width: 25%;" id="changeShape"
             on:click={() => highlightPowerUps("changeShape")}
         >
-            <img
-                src="/images/Change Ball Shape - Star.png"
-                width="90"
-                height="90"
-            />
+            <img src="/images/Change_Ball_Shape_-_Star.png" width="90" height="90"/>
             <p>Change Ball Shape - Star</p>
         </button>
 
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="bomb"
+        <button class="button" style="background-color: #353839; width: 25%;" id="bomb"
             on:click={() => highlightPowerUps("bomb")}
         >
             <img src="/images/Bomb.png" width="90" height="90" />
@@ -161,13 +122,10 @@
     </div>
 
     <div>
-        <button
-            class="button"
-            style="background-color: #353839; width: 25%;"
-            id="catchAndAim"
+        <button class="button" style="background-color: #353839; width: 25%;" id="catchAndAim"
             on:click={() => highlightPowerUps("catchAndAim")}
         >
-            <img src="/images/Catch And Aim.png" width="90" height="90" />
+            <img src="/images/Catch_And Aim.png" width="90" height="90" />
             <p>Catch And Aim</p>
         </button>
     </div>

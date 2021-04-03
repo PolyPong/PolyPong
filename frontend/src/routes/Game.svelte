@@ -750,7 +750,7 @@
 <style>
   @font-face {
     font-family: SuperLegendBoy;
-    src: url("SuperLegendBoy-4w8Y.ttf");
+    src: url("/fonts/SuperLegendBoy-4w8Y.ttf");
   }
 
   /* html, body {

@@ -24,12 +24,17 @@ export class GameServer extends Game {
   activePowerups: Powerup[] = [];
   players: Player[] = [];
 
-  constructor(userlist: Map<string, WebSocket>) {
+  constructor(userlist: Map<string, WebSocket>, powerUpList: Map<string, Powerup[]>) {
     super();
     this.sides = userlist.size;
     this.sideLength = 2 * this.radius * Math.sin(Math.PI / this.sides);
 
     for (const [user_id, ws] of userlist.entries()) {
+      let powerUps = powerUpList.get(user_id);
+      if (powerUps === undefined){
+        powerUps = [];
+      }
+
       const player = new Player(
         user_id,
         "",
@@ -42,7 +47,7 @@ export class GameServer extends Game {
           false,
           false,
         ),
-        [],
+        powerUps,
         0,
         ws,
       );

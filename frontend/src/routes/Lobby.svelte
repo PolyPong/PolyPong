@@ -1,12 +1,19 @@
 <script lang="ts">
     import { onDestroy, onMount, afterUpdate } from "svelte";
     import { v4 } from "uuid";
-    import type { JoinGamePayload, StartGameRequest } from "@polypong/polypong-common";
+    import { AddBall, Bomb, CatchAndAim, ChangeBallShape, ExpandedPaddle, MakePaddleCurveInwards, MakeSelfInvisible, SetBackgroundColor, ShrinkPaddle, SplitPaddle } from "@polypong/polypong-common"
+    import type { Powerup } from "@polypong/polypong-common";
+    import type { JoinGamePayload, StartGameRequest, LobbyClientReady } from "@polypong/polypong-common";
     import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
     import {lobby_id, user_id, ws, joinGame} from "../store";
   
 
     let lobby_input: string;
+    let powerUpsStr: any[] = [];
+    let client_ready: boolean = false;
+
+    let expandedPaddleButton: HTMLElement;
+
     user_id.set(v4());
     afterUpdate(() => console.log($lobby_id))
 
@@ -44,6 +51,71 @@
         }
         $ws.send(JSON.stringify(payload));
     };
+
+    function highlightPowerUps(idOfElement: any) {
+        // expandedPaddleButton.style = 
+        var id = document.getElementById(idOfElement);
+        if (id && id.style.backgroundColor === document.getElementById("header")!.style.backgroundColor && powerUpsStr.length < 3) {
+            id.style.backgroundColor = "#FFFFFF";
+            id.style.color = "#353839";
+            powerUpsStr.push(idOfElement);
+        } else if (id){
+            id!.style.backgroundColor = "#353839";
+            id!.style.color = "#FFFFFF";
+
+            for (const powerUp of powerUpsStr) {
+                if (powerUp === idOfElement) {
+                    console.log(powerUp);
+                    powerUpsStr.splice(powerUpsStr.indexOf(powerUp), 1);
+                }
+            }
+        }
+        console.log(powerUpsStr);
+    }
+
+    function clientReady() {
+        console.log("We are sending a lobby_client_ready request on the client")
+        let powerUps: Powerup[] = [];
+
+        for (const powerUp of powerUpsStr){
+            console.log("Element of powerUpsStr: " + powerUp);
+
+            if (powerUp === "bigger") {
+                powerUps.push(new ExpandedPaddle());
+            } else if (powerUp === "smaller") {
+                powerUps.push(new ShrinkPaddle());
+            } else if (powerUp === "curved") {
+                powerUps.push(new MakePaddleCurveInwards());
+            } else if (powerUp === "invisible") {
+                powerUps.push(new MakeSelfInvisible());
+            } else if (powerUp === "split") {
+                powerUps.push(new SplitPaddle());
+            } else if (powerUp === "distracting") {
+                powerUps.push(new SetBackgroundColor());
+            } else if (powerUp === "anotherBall") {
+                powerUps.push(new AddBall());
+            } else if (powerUp === "changeShape") {
+                powerUps.push(new ChangeBallShape());
+            } else if (powerUp === "bomb") {
+                powerUps.push(new Bomb());
+            } else if (powerUp === "catchAndAim") {
+                powerUps.push(new CatchAndAim());
+            } else {
+                console.log("Error in clientReady()");
+            }
+
+            console.log(powerUps);
+        }
+        const payload: LobbyClientReady = {
+            type: "lobby_client_ready",
+            lobby_id: $lobby_id,
+            user_id: $user_id,
+            powerups: powerUps,
+        }
+        $ws.send(JSON.stringify(payload));
+
+        client_ready = true;
+    }
 </script>
 
 <body>
@@ -72,9 +144,11 @@
             join game
         </button>
     {/if}
-    <h1>PolyPong</h1>
+    <h1 id="header" style="background-color: #353839;">PolyPong</h1>
     <hr />
     <h2>Lobby</h2>
+
+    <hr />
 
     <ol>
         <div style="float: left; width: 40%;">
@@ -127,25 +201,112 @@
     <br />
     <br />
 
-    <hr />
-
-    <br />
-
     <p>Link to Join: <u>https://polypong.ca/717263</u></p>
 
-    <br />
+    <button class="button button4" style="vertical-align: middle;">Copy Link to Invite Friends</button>
+    
 
-    <div>
-        <button class="button button4" style="vertical-align: middle;"
-            >Copy Link to Invite Friends</button
-        >
-        <a href="/login">
-            <!-- This assumes the user is logged in -->
-            <button class="button button4" style="vertical-align: middle;"
-                >Leave Game</button
+    {#if !client_ready}
+        <hr />
+        <h2>Choose 3 Powerups:</h2>
+        <br />
+
+        <div>
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="bigger" bind:this={expandedPaddleButton}                
+                on:click={() => highlightPowerUps("bigger")}
             >
-        </a>
-    </div>
+                <img src="/images/Bigger_Paddle.png" width="90" height="90" />
+                <p>Bigger Paddle</p>
+            </button>
+
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="smaller"
+                on:click={() => highlightPowerUps("smaller")}
+            >
+                <img src="/images/Smaller_Paddle.png" width="90" height="90" />
+                <p>Smaller Paddle</p>
+            </button>
+
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="curved"
+                on:click={() => highlightPowerUps("curved")}
+            >
+                <img src="/images/Curved_Paddle.png" width="90" height="90" />
+                <p>Curved Paddle</p>
+            </button>
+        </div>
+
+        <div>
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="invisible"
+                on:click={() => highlightPowerUps("invisible")}
+            >
+                <img src="/images/Invisible_Paddle.png" width="90" height="90" />
+                <p>Invisible Paddle<br /><br /></p>
+            </button>
+
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="split"
+                on:click={() => highlightPowerUps("split")}
+            >
+                <img src="/images/Split_Paddle.png" width="90" height="90" />
+                <p>Split Paddle<br /><br /></p>
+            </button>
+
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="distracting"
+                on:click={() => highlightPowerUps("distracting")}
+            >
+                <img src="/images/Distracting_Background.png" width="90" height="90"/>
+                <p>Distracting Background</p>
+            </button>
+        </div>
+
+        <div>
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="anotherBall"
+                on:click={() => highlightPowerUps("anotherBall")}
+            >
+                <img src="/images/Add_a_Ball_into_the_Mix.png" width="90" height="90"/>
+                <p>Add a Ball into the Mix</p>
+            </button>
+
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="changeShape"
+                on:click={() => highlightPowerUps("changeShape")}
+            >
+                <img src="/images/Change_Ball_Shape_-_Star.png" width="90" height="90"/>
+                <p>Change Ball Shape - Star</p>
+            </button>
+
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="bomb"
+                on:click={() => highlightPowerUps("bomb")}
+            >
+                <img src="/images/Bomb.png" width="90" height="90" />
+                <p>Bomb<br /><br /></p>
+            </button>
+        </div>
+
+        <div>
+            <button class="powerUpButton" style="background-color: #353839; width: 25%;" id="catchAndAim"
+                on:click={() => highlightPowerUps("catchAndAim")}
+            >
+                <img src="/images/Catch_And_Aim.png" width="90" height="90" />
+                <p>Catch And Aim</p>
+            </button>
+        </div>
+
+        <br />
+        <hr />
+
+    
+        <p>When you are ready and have your powerups selected, click the button below:</p>
+        <button class="button button9" style="vertical-align: middle;"
+            on:click={() => clientReady()}
+        >
+            Let's Play!
+        </button>
+    {:else}
+        <br />
+        <hr />
+        <p>Great! Waiting for other players...</p>
+    {/if}
+   
+
+    
 </body>
 
 <style>
@@ -184,11 +345,12 @@
     .button {
         font-family: SuperLegendBoy;
         border: 2px solid #ffffff;
-        height: 100px;
+        height: 70px;
         color: white;
         padding: 15px 15px;
         text-align: center;
         text-decoration: none;
+        vertical-align: middle;
         display: inline-block;
         font-size: 22px;
         margin: 10px 0px;
@@ -202,7 +364,7 @@
     }
 
     .button4 {
-        width: 20%;
+        width: 50%;
         margin-left: auto;
         margin-right: auto;
     }
@@ -212,5 +374,23 @@
     }
     .alignright {
         float: right;
+    }
+
+    .powerUpButton {
+        font-family: SuperLegendBoy;
+        border: 2px solid #ffffff;
+        height: auto;
+        color: white;
+        padding: 15px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 22px;
+        margin: 5px 5px;
+        cursor: pointer;
+        background-color: #353839;
+        width: 20%;
+        margin-left: auto;
+        margin-right: auto;
     }
 </style>

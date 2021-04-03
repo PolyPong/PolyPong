@@ -195,6 +195,7 @@ export interface Powerup {
 }
 
 export class ExpandedPaddle implements Powerup {
+  type: string = "Hello";
   applyPowerup() {
     return;
   }
@@ -260,6 +261,13 @@ export class AddBall implements Powerup {
   }
 }
 
+export class ChangeBallShape implements Powerup {
+  applyPowerup() {
+    return;
+  }
+}
+
+
 export class CatchAndAim implements Powerup {
   applyPowerup() {
     return;
@@ -276,6 +284,18 @@ export class TraceBallPath implements Powerup {
   applyPowerup() {
     return;
   }
+}
+
+export class LeaderboardEntry {
+  username: string = "";
+  xp: string = "";
+}
+
+export interface LobbyClientReady {
+  type: "lobby_client_ready";
+  lobby_id: string;
+  user_id: string;
+  powerups: Powerup[];
 }
 
 export interface ClientSaysGameOver {
