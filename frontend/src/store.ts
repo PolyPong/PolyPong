@@ -21,7 +21,6 @@ export const user = writable<any>({});
 export const popupOpen = writable(false);
 export const error = writable(null);
 export const skins = writable<[Color]>([Color.White]);
-export const selectedskin = writable<Color>(Color.White);
 
 const SERVER_URL =
   import.meta.env.MODE === "production"

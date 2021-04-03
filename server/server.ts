@@ -11,7 +11,7 @@ import { getQuery } from "https://deno.land/x/oak/helpers.ts";
 import dbHelper, { setSkinResponse } from "./db.ts";
 import { Color } from "../PolyPong-Common/src/Game.ts";
 
-import { verify } from "https://deno.land/x/djwt@v2.2/mod.ts";
+import { verify, decode } from "https://deno.land/x/djwt/mod.ts";
 
 const SECRET = Deno.env.get("SECRET") ?? "secret was not set";
 
@@ -46,7 +46,7 @@ router.get("/getavailableskins/:userid", async (ctx) => {
 
 router.post("/setskin", async (ctx) => {
   const skinstr = await ctx.request.body({ type: "text" }).value;
-  if (!(skinstr in Color)) {
+  if (!(Object.values(Color).includes(skinstr as Color))) {
     ctx.response.body = "Error: Invalid skin";
     ctx.response.status = Status.BadRequest;
     return;
@@ -59,13 +59,21 @@ router.post("/setskin", async (ctx) => {
     return;
   }
   try {
-    const payload = await verify(jwt, SECRET, "RS256");
-    console.log(payload);
-    const { email } = payload;
+    console.log("about to verify token")
+    console.log(jwt)
+    // todo: wait for response from https://github.com/timonson/djwt/issues/47
+    // const payload = await verify(jwt, SECRET, "RS256");
+
+    const [_, payload, __]: [_: any, payload: any, __: any] = decode(jwt);
+    console.log(payload)
+    const email: string = payload["https://polyserver.polypong.ca/email"]
+    console.log(email)
     const res: setSkinResponse = await dbHelper.setSkin(email as string, skin);
     switch (res) {
       case setSkinResponse.ErrorUpdating:
+        console.log("errrorupdating")
       case setSkinResponse.UserNotFound:
+        console.log('i get printed')
         ctx.response.status = Status.InternalServerError;
         return;
       case setSkinResponse.LevelTooLow:
@@ -76,7 +84,9 @@ router.post("/setskin", async (ctx) => {
         ctx.response.status = Status.NoContent;
         return;
     }
-  } catch {
+  } catch(e) {
+    // verify failed
+    console.error(e)
     ctx.response.body = "Error: invalid JWT";
     ctx.response.status = Status.Unauthorized;
   }

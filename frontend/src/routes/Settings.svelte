@@ -1,21 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { skins, ws, user_id, auth0Client} from "../store";
-  import type {
-    GetAvailableSkinsRequest,
-    SetSkinRequest,
-    Color,
-  } from "@polypong/polypong-common";
+  import { skins, ws, user_id, auth0Client } from "../store";
+  import  { Color } from "@polypong/polypong-common";
+
+  // swap hex code with user friendly name
+  const colors = Object.assign({}, ...Object.entries(Color).map(([a,b]) => ({ [b]: a })))
 
   onMount(async () => {
-    if (!(await (await $auth0Client).isAuthenticated())) {
-      return;
-    }
-    const payload: GetAvailableSkinsRequest = {
-      type: "get_available_skins",
-      username: $user_id,
-    };
-    $ws.send(JSON.stringify(payload));
+    const token = await (await $auth0Client).getTokenSilently();
+
+    console.log("token", token);
   });
   let skinSelected = "white";
 
@@ -47,30 +41,45 @@
 
     console.log("token", token);
 
-    const payload: SetSkinRequest = {
-      type: "set_skin",
-      skin,
-      token,
-    };
+    const success = await fetch("http://localhost:5000/setskin", {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+      body: skin,
+    });
 
-    $ws.send(JSON.stringify(payload));
+    skinSelected = skin;
   };
 </script>
 
 <body>
+  <h1 id="header" style="background-color: #353839;">PolyPong</h1>
+  <hr />
+  <br />
+  <p>Selected Skin:</p>
+
   {#await $auth0Client}
-    <div>Getting available skins... Hold on</div>
+    <div>Seeing if you're logged in... Hold on</div>
   {:then client}
     {#await client.isAuthenticated()}
-      <div>Getting available skins... Hold on</div>
+      <div>Seeing if you're logged in... Hold on</div>
     {:then isauthenticated}
       {#if isauthenticated}
-        {#each $skins as skin}
-          <button
-            style={`background-color:${skin};`}
-            on:click={() => setSkin(skin)}>{skin}</button
-          >
-        {/each}
+        {#await fetch("http://localhost:5000/getavailableskins/arun2")}
+          <div>getting available skins...</div>
+        {:then res}
+          {#await res.json()}
+            <div>getting available skins...</div>
+          {:then skins}
+            {#each skins as skin}
+              <button
+                style={`background-color:${skin};`}
+                on:click={() => setSkin(skin)}>{colors[skin]}</button
+              >
+            {/each}
+          {/await}
+        {/await}
       {:else}
         <div>
           it seems like you're not logged in. You're stuck with the white skin
@@ -79,46 +88,6 @@
       {/if}
     {/await}
   {/await}
-  <h1 id="header" style="background-color: #353839;">PolyPong</h1>
-  <hr />
-  <br />
-  <p>Selected Skin:</p>
-
-  <div>
-    <button
-      class="button button4"
-      id="white"
-      style="vertical-align: middle;"
-      on:click={() => highlightSkins("white")}>Default</button
-    >
-    <button
-      class="button button5"
-      id="red"
-      style="vertical-align: middle;"
-      on:click={() => highlightSkins("red")}>Red</button
-    >
-    <button
-      class="button button6"
-      id="blue"
-      style="vertical-align: middle;"
-      on:click={() => highlightSkins("blue")}>Blue</button
-    >
-    <button
-      class="button button7"
-      id="orange"
-      style="vertical-align: middle;"
-      on:click={() => highlightSkins("orange")}>Orange</button
-    >
-  </div>
-
-  <br />
-  <hr />
-  <br />
-
-  <p>Change Email:</p>
-
-  <label for="email">Current Email:</label>
-  <input type="text" class="input" id="email" name="email" /><br /><br />
 
   <a href="/login">
     <!-- This assumes the user is logged in -->
