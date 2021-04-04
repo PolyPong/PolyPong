@@ -1,8 +1,7 @@
 {
-    "settings": {
-        "[svelte]": {
-            "editor.defaultFormatter": "svelte.svelte-vscode"
-        },
-        "deno.enable": false,
-    }
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+
+  "deno.enable": false
 }

@@ -13,7 +13,7 @@
     power_ups_str,
     power_up_one_used,
     power_up_two_used,
-    power_up_three_used
+    power_up_three_used,
   } from "../store";
   import { onMount, tick } from "svelte";
   import { Ball, Paddle } from "@polypong/polypong-common";
@@ -25,7 +25,7 @@
     ClientSaysGameOver,
     ClientStopped,
     GameWon,
-    PowerupStrings
+    PowerupStrings,
   } from "@polypong/polypong-common";
   import { GameClient } from "../Game";
   import { router } from "tinro";
@@ -123,7 +123,7 @@
         startGame(
           $game_info.sides,
           $game_info.my_player_number,
-          $game_info.ball 
+          $game_info.ball
         );
         adjustSize();
       }
@@ -377,7 +377,7 @@
     ctx.lineWidth = Paddle.height;
 
     for (var i = 0; i < $game.sides; i++) {
-      if($game.players[i].paddle.visible){
+      if ($game.players[i].paddle.visible) {
         ctx.beginPath();
         ctx.strokeStyle = $game.players[i].paddle.paddleColor;
 
@@ -420,7 +420,7 @@
   }
 
   function drawBall() {
-    if($game.ball.visible){
+    if ($game.ball.visible) {
       ctx.beginPath();
       ctx.arc($game.ball.x, $game.ball.y, $game.ball.radius, 0, Math.PI * 2);
       ctx.fillStyle = "#0095DD";
@@ -669,24 +669,24 @@
           $game.players[$game_info.my_player_number].paddle.direction = true;
           sendUpdate("paddle_press_right");
           break;
-        case 49:  // 1
+        case 49: // 1
           console.log("Pressed 1");
-          if (!$power_up_one_used){
+          if (!$power_up_one_used) {
             $power_up_one_used = true;
             handlePowerup($power_ups_str[0]);
           }
           break;
-        case 50:  // 2
+        case 50: // 2
           console.log("Pressed 2");
-          if (!$power_up_two_used){
+          if (!$power_up_two_used) {
             $power_up_two_used = true;
             handlePowerup($power_ups_str[1]);
           }
           break;
-          
-        case 51:  // 3
+
+        case 51: // 3
           console.log($power_ups_str);
-          if (!$power_up_three_used){
+          if (!$power_up_three_used) {
             $power_up_three_used = true;
             handlePowerup($power_ups_str[2]);
           }
@@ -710,11 +710,11 @@
         $game.players[$game_info.my_player_number].paddle.moving = false;
         sendUpdate("paddle_release_right");
         break;
-      case 49:  // 1
+      case 49: // 1
         console.log("Key Let Go");
-      case 50:  // 2
+      case 50: // 2
         console.log("Key Let Go");
-      case 51:  // 3
+      case 51: // 3
         console.log("Key Let Go");
       case 57: // 9
         console.log("Key Let Go");
@@ -725,71 +725,71 @@
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  function handlePowerup(powerup: PowerupStrings){
+  function handlePowerup(powerup: PowerupStrings) {
     console.log(powerup);
     if (powerup === "bigger") {
       //console.log("We are in 'bigger'");
       //console.log("Paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
       //console.log("Paddle widthMultiplier: " + Paddle.widthMultiplier);
-      
-      $game.players[$game_info.my_player_number].paddle.width = $game.players[$game_info.my_player_number].paddle.width*Paddle.widthMultiplier;
+
+      $game.players[$game_info.my_player_number].paddle.width =
+        $game.players[$game_info.my_player_number].paddle.width *
+        Paddle.widthMultiplier;
       //console.log("New paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
       sendUpdate("");
-      setTimeout(
-        function(){ 
-          $game.players[$game_info.my_player_number].paddle.width = $game.players[$game_info.my_player_number].paddle.width/Paddle.widthMultiplier; 
-          sendUpdate("");
-        }, Paddle.changeWidthDuration);
+      setTimeout(function () {
+        $game.players[$game_info.my_player_number].paddle.width =
+          $game.players[$game_info.my_player_number].paddle.width /
+          Paddle.widthMultiplier;
+        sendUpdate("");
+      }, Paddle.changeWidthDuration);
     } else if (powerup === "smaller") {
-      for (let i = 0; i < $game_info.sides; i++){
-        if (i !== $game_info.my_player_number){
-          $game.players[i].paddle.width = $game.players[i].paddle.width/Paddle.widthMultiplier;
+      for (let i = 0; i < $game_info.sides; i++) {
+        if (i !== $game_info.my_player_number) {
+          $game.players[i].paddle.width =
+            $game.players[i].paddle.width / Paddle.widthMultiplier;
         }
       }
       sendUpdate("");
-      setTimeout(
-        function(){ 
-          for (let i = 0; i < $game_info.sides; i++){
-            if (i !== $game_info.my_player_number){
-              $game.players[i].paddle.width = $game.players[i].paddle.width*Paddle.widthMultiplier;
-            }
+      setTimeout(function () {
+        for (let i = 0; i < $game_info.sides; i++) {
+          if (i !== $game_info.my_player_number) {
+            $game.players[i].paddle.width =
+              $game.players[i].paddle.width * Paddle.widthMultiplier;
           }
-          sendUpdate("");
-        }, Paddle.changeWidthDuration);
+        }
+        sendUpdate("");
+      }, Paddle.changeWidthDuration);
     } else if (powerup === "selfInvisible") {
       $game.players[$game_info.my_player_number].paddle.visible = false;
       sendUpdate("");
-      setTimeout(
-        function(){ 
-          $game.players[$game_info.my_player_number].paddle.visible = true;
-          sendUpdate("");
-        }, Paddle.invisibleDuration);
+      setTimeout(function () {
+        $game.players[$game_info.my_player_number].paddle.visible = true;
+        sendUpdate("");
+      }, Paddle.invisibleDuration);
     } else if (powerup === "othersInvisible") {
-      for (let i = 0; i < $game_info.sides; i++){
-        if (i !== $game_info.my_player_number){
+      for (let i = 0; i < $game_info.sides; i++) {
+        if (i !== $game_info.my_player_number) {
           $game.players[i].paddle.visible = false;
         }
       }
       sendUpdate("");
-      setTimeout(
-        function(){ 
-          for (let i = 0; i < $game_info.sides; i++){
-            if (i !== $game_info.my_player_number){
-              $game.players[i].paddle.visible = true;
-            }
+      setTimeout(function () {
+        for (let i = 0; i < $game_info.sides; i++) {
+          if (i !== $game_info.my_player_number) {
+            $game.players[i].paddle.visible = true;
           }
-          sendUpdate("");
-        }, Paddle.invisibleDuration);
+        }
+        sendUpdate("");
+      }, Paddle.invisibleDuration);
     } else if (powerup === "ballInvisible") {
       $game.ball.visible = false;
       sendUpdate("");
-      setTimeout(
-        function(){ 
-          $game.ball.visible = true;
-          sendUpdate("");
-        }, Ball.invisibleDuration);
+      setTimeout(function () {
+        $game.ball.visible = true;
+        sendUpdate("");
+      }, Ball.invisibleDuration);
     }
-
   }
 </script>
 
@@ -815,11 +815,12 @@
 
   <br />
 
-  <p> Inventory: </p>
+  <p>Inventory:</p>
 
-  <p> Press 1 to use: {$power_ups_str[0]} </p> <!-- <p>Note this does not currently update when the power up is used</p>-->
-  <p> Press 2 to use: {$power_ups_str[1]} </p>
-  <p> Press 3 to use: {$power_ups_str[2]} </p>
+  <p>Press 1 to use: {$power_ups_str[0]}</p>
+  <!-- <p>Note this does not currently update when the power up is used</p>-->
+  <p>Press 2 to use: {$power_ups_str[1]}</p>
+  <p>Press 3 to use: {$power_ups_str[2]}</p>
 
   <!-- <p>Draw a:</p>
 

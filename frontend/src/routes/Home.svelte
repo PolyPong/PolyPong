@@ -19,13 +19,11 @@
     if (await (await $auth0Client).isAuthenticated()) {
       const token = await (await $auth0Client).getTokenSilently();
 
-      const res = await fetch(SERVER_URL + "whatismyname",
-      {
-          method: 'GET',
-          headers: {
-              Authorization: token
-          }
-
+      const res = await fetch(SERVER_URL + "whatismyname", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
       });
       if (res.status === 204) {
         router.goto("/signup");
