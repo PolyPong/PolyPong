@@ -87,6 +87,7 @@
         }
       }
     }
+  }
 
 
   function clientReady() {
