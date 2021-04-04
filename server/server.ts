@@ -12,7 +12,6 @@ import dbHelper, { setSkinResponse } from "./db.ts";
 import { Color } from "../PolyPong-Common/src/Game.ts";
 
 import { verify, decode } from "https://deno.land/x/djwt/mod.ts";
-import { addUser } from "./db";
 
 const SECRET = Deno.env.get("SECRET") ?? "secret was not set";
 
@@ -155,7 +154,7 @@ router.post("/signup", async (ctx) => {
   }
 
   try {
-    addUser(username, email);
+    dbHelper.addUser(username, email);
     ctx.response.status = Status.NoContent;
     return;
   } catch {
