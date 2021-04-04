@@ -9,6 +9,7 @@
 	import Signup from "./routes/Signup.svelte";
 	import Stats from "./routes/Stats.svelte";
 	import Login from "./routes/Login.svelte";
+	import Callback from './routes/Callback.svelte'
 	import { onMount } from "svelte";
 	import auth from "./authService";
 	import { user, auth0Client } from "./store";
@@ -85,6 +86,10 @@
 
 	<Route path="/login">
 		<Login />
+	</Route>
+
+	<Route path="/callback">
+		<Callback/>
 	</Route>
 </Route>
 <Route fallback>ruh roh</Route>

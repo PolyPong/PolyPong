@@ -119,7 +119,51 @@ router.get("/whatismyname", async (ctx) => {
   const email: string = payload["https://polyserver.polypong.ca/email"]
   const user = await dbHelper.getUserbyEmail(email)
 
+  if (!user){
+    ctx.response.status = Status.NoContent;
+    return;
+  }
+
   ctx.response.body = user?.username;
+})
+
+router.post("/signup", async (ctx) => {
+  const jwt = ctx.request.headers.get("Authorization");
+  if (!jwt) {
+    ctx.response.body = "Error: JWT not in header";
+    ctx.response.status = Status.Unauthorized;
+    return;
+  }
+  console.log("about to verify token")
+  console.log(jwt)
+  // todo: wait for response from https://github.com/timonson/djwt/issues/47
+  // const payload = await verify(jwt, SECRET, "RS256");
+
+  const [_, payload, __]: [_: any, payload: any, __: any] = decode(jwt);
+  console.log(payload)
+  const email: string = payload["https://polyserver.polypong.ca/email"]
+
+  const body = await ctx.request.body({type: "json"}).value;
+
+  const {username} = body;
+
+  if (!username){
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Error: no username specified"
+    return;
+  }
+
+  try {
+    console.log("what")
+    await dbHelper.addUser(username, email);
+    ctx.response.status = Status.NoContent;
+    return;
+  } catch {
+    ctx.response.status = Status.Conflict
+    ctx.response.body = `Error: ${username} is already taken or your email already exists under a different username!`
+    return;
+  }
+
 })
 
 const MODE = Deno.env.get("MODE") ?? "development";

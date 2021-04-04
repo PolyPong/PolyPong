@@ -346,19 +346,6 @@ export interface ClientStopped {
   lobby_id: string;
 }
 
-export interface CheckExists {
-  type: "check_exists";
-  field: string;
-  str: string;
-}
-
-export interface ServerExistsResponse {
-  type: "check_exists";
-  field: string;
-  str: string;
-  exists: boolean;
-}
-
 export interface CreateUser {
   type: "create_user";
   username: string;

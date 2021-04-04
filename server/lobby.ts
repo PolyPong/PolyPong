@@ -7,7 +7,6 @@ import {
   LobbyCreatedPayload,
   LobbyJoinedPayload,
   ServerEvent,
-  ServerExistsResponse,
   Game,
   ServerUpdate,
   ExpandedPaddle,
@@ -173,22 +172,6 @@ const doStuff = async (ws: any) => {
           message: message.message,
         };
         lobby!.broadcast(JSON.stringify(payload), player_id);
-      } else if (message.type === "check_exists") {
-        const field = message.field;
-        const str = message.str;
-        const strExists = await dbHelper.checkExists(field, str);
-        const response: ServerExistsResponse = {
-          type: "check_exists",
-          field: field,
-          str: str,
-          exists: false,
-        };
-        if (strExists) {
-          response.exists = true;
-        }
-        ws.send(JSON.stringify(response));
-      } else if (message.type === "create_user") {
-        dbHelper.addUser(message.username, message.email);
       } else if (message.type === "lobby_client_ready") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
