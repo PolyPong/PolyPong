@@ -1,5 +1,7 @@
 <script>
-    let powerUpsSelected: any[] = [];
+    import type { PowerupStrings } from "@polypong/polypong-common";
+
+    let powerUpsSelected: PowerupStrings[] = [];
     let skinSelected = "white";
 
     function highlightPowerUps(idOfElement: any) {

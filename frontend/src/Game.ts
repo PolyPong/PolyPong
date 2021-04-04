@@ -56,14 +56,14 @@ export class GameClient extends Game {
     }
   }
   mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
+    console.log(player_number);
     if (player_number || player_number === 0) {
       // this.players[player_number].paddle.x = state.players[player_number].paddle.x;
       // this.players[player_number].paddle.moving = state.players[player_number].paddle.moving;
-      // this.players[player_number].paddle.direction = state.players[player_number].paddle.direction;
+      // this.players[player_number].paddle.direction = state.players[player_number].paddle.direction;    
       this.players = state.players;
     }
     if (message === "ball_update"){
-      console.log("Ball update: " + state.ball.x + ", " + state.ball.y );
       this.ball.x = state.ball.x;
       this.ball.y = state.ball.y;
       this.ball.dx = state.ball.dx;

@@ -1,5 +1,5 @@
 import { derived, writable } from "svelte/store";
-import { Ball, Color } from "@polypong/polypong-common";
+import { Ball, Color, PowerupStrings } from "@polypong/polypong-common";
 import type {
   JoinGamePayload,
   CreateUser,
@@ -38,6 +38,7 @@ export const game_info = writable<any>({});
 export const loss_info = writable<any>({});
 
 export const game = writable<GameClient>(new GameClient(0, new Ball()));
+export const power_ups_str = writable<PowerupStrings[]>([]);
 
 export const usernameExists = writable<boolean>(false);
 
@@ -77,7 +78,6 @@ const gotMessage = async (m: MessageEvent) => {
       router.goto("/game");
     } else if (message.type === "server_update") {
       const { event, player_number } = message;
-      console.log(get(game));
       get(game).mergeState(event, player_number, message.message);
 
       if (message.message === "game_start") {

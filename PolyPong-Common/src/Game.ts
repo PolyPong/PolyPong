@@ -134,7 +134,7 @@ export class Player {
   username: string;
   email: string;
   paddle: Paddle;
-  inventory: Powerup[];
+  inventory: PowerupStrings[];
   xp: number;
   websocketConnection: WebSocket | null;
 
@@ -142,7 +142,7 @@ export class Player {
     username: string,
     email: string,
     paddle: Paddle,
-    inventory: Powerup[],
+    inventory: PowerupStrings[],
     xp: number,
     websocketConnection: WebSocket | null,
   ) {
@@ -190,99 +190,124 @@ export class Ball {
 // game.player[i].expand();
 
 // Some different options to consider!
+
+export type PowerupStrings = "bigger" 
+  | "smaller" 
+  | "invisible"
+  | "selfInvisible" 
+  | "othersInvisible"
+  | "ballInvisible"
+  | "curved"
+  | "curvedOutwards"
+  | "curvedOutwards"
+  | "bumpy"
+  | "split"
+  | "anotherBall"
+  | "changeShape"
+  | "catchAndAim"
+  | "bomb"
+  | "tracePath"
+  | "distracting"
+
 export interface Powerup {
   applyPowerup(): void;
 }
 
 export class ExpandedPaddle implements Powerup {
-  type: string = "Hello";
+  type = "Expand Paddle";
+  powerupnumber = 1;
+
   applyPowerup() {
-    return;
+    console.log("Expand Paddle");
   }
 }
 
 export class ShrinkPaddle implements Powerup {
+  type = "Shrink Paddle";
+  powerupnumber = 2;
   applyPowerup() {
-    return;
+    console.log("Shrink Paddle");
   }
 }
 
 export class MakeSelfInvisible implements Powerup {
+  type = "Make Self Invisible";
+  powerupnumber = 3;
   applyPowerup() {
-    return;
+    console.log("Make Self Invisible");
   }
 }
 
 export class MakeOthersInvisible implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Make Others Invisible");
   }
 }
 
 export class MakeBallInvisible implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Make Ball Invisible");
   }
 }
 
 export class MakePaddleCurveOutwards implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Make paddle curved outwards");
   }
 }
 
 export class MakePaddleCurveInwards implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Make Paddle Curved Inwards");
   }
 }
 
 export class MakePaddleBumpy implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Make Paddle Bumpy");
   }
 }
 
 export class SetBackgroundColor implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Set Background Color");
   }
 }
 
 export class SplitPaddle implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Split Paddle");
   }
 }
 
 export class AddBall implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Add Ball");
   }
 }
 
 export class ChangeBallShape implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Change Ball State");
   }
 }
 
 
 export class CatchAndAim implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Catch and Aim");
   }
 }
 
 export class Bomb implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Bomb");
   }
 }
 
 export class TraceBallPath implements Powerup {
   applyPowerup() {
-    return;
+    console.log("Trace Ball Path");
   }
 }
 
@@ -295,7 +320,6 @@ export interface LobbyClientReady {
   type: "lobby_client_ready";
   lobby_id: string;
   user_id: string;
-  powerups: Powerup[];
 }
 
 export interface ClientSaysGameOver {

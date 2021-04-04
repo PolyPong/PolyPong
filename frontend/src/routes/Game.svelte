@@ -10,6 +10,7 @@
     stop_game_loop,
     loss_info,
     auth0Client,
+    power_ups_str
   } from "../store";
   import { onMount, tick } from "svelte";
   import { Ball, Paddle } from "@polypong/polypong-common";
@@ -118,7 +119,7 @@
         startGame(
           $game_info.sides,
           $game_info.my_player_number,
-          $game_info.ball
+          $game_info.ball 
         );
         adjustSize();
       }
@@ -167,6 +168,7 @@
 
   function startGame(sides: number, player_number: number, ball: Ball) {
     // Create new games with 'sides' number of players
+
     $game = new GameClient(sides, ball);
     // Starts the game loop
     const payload: ClientReady = {
@@ -659,6 +661,15 @@
           $game.players[$game_info.my_player_number].paddle.direction = true;
           sendUpdate("paddle_press_right");
           break;
+        case 49:  // 1
+          console.log($power_ups_str);
+          // handlePowerup($game.players[$game_info.my_player_number].inventory[0]);
+        case 50:  // 2
+          // handlePowerup($game.players[$game_info.my_player_number].inventory[1]);
+        case 51:  // 3
+          // handlePowerup($game.players[$game_info.my_player_number].inventory[2]);
+        case 57: // 9
+          console.log("9");
       }
     }
   }
@@ -676,6 +687,14 @@
         $game.players[$game_info.my_player_number].paddle.moving = false;
         sendUpdate("paddle_release_right");
         break;
+      case 49:  // 1
+        console.log("Key Let Go");
+      case 50:  // 2
+        console.log("Key Let Go");
+      case 51:  // 3
+        console.log("Key Let Go");
+      case 57: // 9
+        console.log("Key Let Go");
     }
   }
 

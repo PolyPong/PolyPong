@@ -10,20 +10,18 @@ import {
   ServerExistsResponse,
   Game,
   ServerUpdate,
-  Powerup,
+  ExpandedPaddle,
   Ball,
   ClientUpdateMessage,
   ServerSaysStopGame,
-
 } from "../PolyPong-Common/src/Game.ts";
-
+    
 import { GameServer } from "./Game.ts"
 
 import dbHelper from "./db.ts";
 
 class Lobby {
   userlist: Map<string, WebSocket>;
-  powerUpList: Map<string, Powerup[]>;
   lobby_id: string;
   game: GameServer;
   ready_count = 0;
@@ -31,9 +29,8 @@ class Lobby {
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
-    this.powerUpList = new Map();
     this.lobby_id = lobby_id;
-    this.game = new GameServer(new Map(), new Map()); // will be replaced by setGame
+    this.game = new GameServer(new Map()); // will be replaced by setGame
   }
 
   setGame(game: GameServer) {
@@ -84,7 +81,7 @@ class Lobby {
       return
     }
     this.lobby_count = 0;
-    const game = new GameServer(lobby.userlist, lobby.powerUpList);
+    const game = new GameServer(lobby.userlist);
     lobby.setGame(game);
   }
 
@@ -152,7 +149,7 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
-        const game = new GameServer(lobby.userlist, lobby.powerUpList);
+        const game = new GameServer(lobby.userlist);
         lobby.setGame(game);
       } else if (message.type === "client_update") {
         const { lobby_id } = message;
@@ -203,9 +200,6 @@ const doStuff = async (ws: any) => {
           ws.send(JSON.stringify(response));
           continue;
         }
-        // Add powerups listed in the message to the powerUpsList along with the user id
-        console.log("Power Ups:" + message.powerups);
-        lobby.powerUpList.set(message.user_id, message.powerups);
 
         lobby.incrementLobbyReady();
         lobby.checkLobbyReady(lobby);
@@ -235,7 +229,6 @@ const doStuff = async (ws: any) => {
         }
 
         lobby.userlist.delete(message.user_id);
-        lobby.powerUpList.delete(message.user_id);
 
         const payload: ServerSaysStopGame = {
           type: "stop_game",
@@ -268,7 +261,7 @@ const doStuff = async (ws: any) => {
 
         lobby.ready_count = 0;
 
-        const game = new GameServer(lobby.userlist, lobby.powerUpList);
+        const game = new GameServer(lobby.userlist);
         lobby.setGame(game);
 
       }

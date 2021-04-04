@@ -2,14 +2,14 @@
     import { onDestroy, onMount, afterUpdate } from "svelte";
     import { v4 } from "uuid";
     import { AddBall, Bomb, CatchAndAim, ChangeBallShape, ExpandedPaddle, MakePaddleCurveInwards, MakeSelfInvisible, SetBackgroundColor, ShrinkPaddle, SplitPaddle } from "@polypong/polypong-common"
-    import type { Powerup } from "@polypong/polypong-common";
+    import type { PowerupStrings } from "@polypong/polypong-common";
     import type { JoinGamePayload, StartGameRequest, LobbyClientReady } from "@polypong/polypong-common";
     import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
-    import {lobby_id, user_id, ws, joinGame} from "../store";
+    import {lobby_id, user_id, ws, joinGame, power_ups_str} from "../store";
   
 
     let lobby_input: string;
-    let powerUpsStr: any[] = [];
+    let powerUpsStr: PowerupStrings[] = [];
     let client_ready: boolean = false;
 
     let expandedPaddleButton: HTMLElement;
@@ -75,42 +75,13 @@
 
     function clientReady() {
         console.log("We are sending a lobby_client_ready request on the client")
-        let powerUps: Powerup[] = [];
 
-        for (const powerUp of powerUpsStr){
-            console.log("Element of powerUpsStr: " + powerUp);
+        power_ups_str.set(powerUpsStr);
 
-            if (powerUp === "bigger") {
-                powerUps.push(new ExpandedPaddle());
-            } else if (powerUp === "smaller") {
-                powerUps.push(new ShrinkPaddle());
-            } else if (powerUp === "curved") {
-                powerUps.push(new MakePaddleCurveInwards());
-            } else if (powerUp === "invisible") {
-                powerUps.push(new MakeSelfInvisible());
-            } else if (powerUp === "split") {
-                powerUps.push(new SplitPaddle());
-            } else if (powerUp === "distracting") {
-                powerUps.push(new SetBackgroundColor());
-            } else if (powerUp === "anotherBall") {
-                powerUps.push(new AddBall());
-            } else if (powerUp === "changeShape") {
-                powerUps.push(new ChangeBallShape());
-            } else if (powerUp === "bomb") {
-                powerUps.push(new Bomb());
-            } else if (powerUp === "catchAndAim") {
-                powerUps.push(new CatchAndAim());
-            } else {
-                console.log("Error in clientReady()");
-            }
-
-            console.log(powerUps);
-        }
         const payload: LobbyClientReady = {
             type: "lobby_client_ready",
             lobby_id: $lobby_id,
             user_id: $user_id,
-            powerups: powerUps,
         }
         $ws.send(JSON.stringify(payload));
 
