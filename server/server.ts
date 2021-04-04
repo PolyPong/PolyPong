@@ -119,7 +119,7 @@ router.get("/whatismyname", async (ctx) => {
   const email: string = payload["https://polyserver.polypong.ca/email"]
   const user = await dbHelper.getUserbyEmail(email)
 
-  if (!user){
+  if (!user) {
     ctx.response.status = Status.NoContent;
     return;
   }
@@ -143,11 +143,11 @@ router.post("/signup", async (ctx) => {
   console.log(payload)
   const email: string = payload["https://polyserver.polypong.ca/email"]
 
-  const body = await ctx.request.body({type: "json"}).value;
+  const body = await ctx.request.body({ type: "json" }).value;
 
-  const {username} = body;
+  const { username } = body;
 
-  if (!username){
+  if (!username) {
     ctx.response.status = Status.BadRequest
     ctx.response.body = "Error: no username specified"
     return;

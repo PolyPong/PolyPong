@@ -9,7 +9,7 @@ import {
   ServerSaysGameStarted,
   ClientUpdateMessage,
 } from "../PolyPong-Common/src/Game.ts";
-    
+
 
 
 export class GameServer extends Game {
@@ -61,7 +61,7 @@ export class GameServer extends Game {
     }
   }
 
-  mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage ) {
+  mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage) {
 
     if (player_number || player_number === 0) {
       // for (var i = 0; i < this.players.length; i++)
@@ -72,14 +72,14 @@ export class GameServer extends Game {
       console.log("We are merging client state into the server, ball visibility should change")
       this.ball.visible = game.ball.visible;
     }
-    
-    if (message === "ball_update"){
+
+    if (message === "ball_update") {
       this.ball.x = game.ball.x;
       this.ball.y = game.ball.y;
       this.ball.dx = game.ball.dx;
       this.ball.dy = game.ball.dy;
     }
-    
-    
+
+
   }
 }
