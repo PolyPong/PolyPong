@@ -12,6 +12,7 @@ import dbHelper, { setSkinResponse } from "./db.ts";
 import { Color } from "../PolyPong-Common/src/Game.ts";
 
 import { verify, decode } from "https://deno.land/x/djwt/mod.ts";
+import { addUser } from "./db";
 
 const SECRET = Deno.env.get("SECRET") ?? "secret was not set";
 
@@ -125,6 +126,44 @@ router.get("/whatismyname", async (ctx) => {
   }
 
   ctx.response.body = user?.username;
+})
+
+router.post("/signup", async (ctx) => {
+  const jwt = ctx.request.headers.get("Authorization");
+  if (!jwt) {
+    ctx.response.body = "Error: JWT not in header";
+    ctx.response.status = Status.Unauthorized;
+    return;
+  }
+  console.log("about to verify token")
+  console.log(jwt)
+  // todo: wait for response from https://github.com/timonson/djwt/issues/47
+  // const payload = await verify(jwt, SECRET, "RS256");
+
+  const [_, payload, __]: [_: any, payload: any, __: any] = decode(jwt);
+  console.log(payload)
+  const email: string = payload["https://polyserver.polypong.ca/email"]
+
+  const body = await ctx.request.body({type: "json"}).value;
+
+  const {username} = body;
+
+  if (!username){
+    ctx.response.status = Status.BadRequest
+    ctx.response.body = "Error: no username specified"
+    return;
+  }
+
+  try {
+    addUser(username, email);
+    ctx.response.status = Status.NoContent;
+    return;
+  } catch {
+    ctx.response.status = Status.Conflict
+    ctx.response.body = `Error: ${username} is already taken`
+    return;
+  }
+
 })
 
 const MODE = Deno.env.get("MODE") ?? "development";

@@ -4,12 +4,20 @@
     import { onMount } from "svelte";
     import type { CheckExists } from "@polypong/polypong-common";
 
+    let email: HTMLInputElement;
+    let username: HTMLInputElement;
+
+    const SERVER_URL =
+    import.meta.env.MODE === "production"
+      ? "https://polyserver.polypong.ca/"
+      : "http://localhost:5000/";
+
     onMount(async () => {
 		// createclient should do this part automatically
 		// await auth0Client.getTokenSilently();
 		if (await (await $auth0Client).isAuthenticated()){
-            document.getElementById("email")!.readOnly = true;
-            document.getElementById("email")!.value = $user.email;
+            email.readOnly = true;
+            email.value = $user.email;
         } else {
             console.log("Error. User not autheticated");
             router.goto("/home");
@@ -17,20 +25,35 @@
 		user.set(await (await $auth0Client).getUser());
 	});
 
-    function signUpUser(){
-        const input = document.getElementById("username")!.value.trim();
+    async function signUpUser(){
+        const input = username.value.trim();
         if(input === ""){
             console.log("Nothing entered");
         } else {
             console.log(input);
             // Check if username is in the database
             // Send over a check_exists request for the username to server and wait for response (response happens in store.ts)
-            const request: CheckExists = {
-                type: "check_exists",
-                field: "username",
-                str: input,
+            const res = await fetch(SERVER_URL + "signup",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    username: input
+                })
+            })
+
+            if (res.status === 200){
+                router.goto("/")
+                return;
             }
-            $ws.send(JSON.stringify(request));
+
+            if (res.status === 409){
+                console.log("error: username already taken")
+                return;
+            }
+
+
+
+            // TODO serverurl, add createuser
         }
     }
 
@@ -51,7 +74,7 @@
 
     <!-- <p id="email">Email: </p> -->
     <label for="email" class="label1">Email:</label>
-    <input type="text" class="input1" id="email" name="email"/>
+    <input type="text" class="input1" id="email" bind:this={email} name="email"/>
     <br/>
     <br/>
 
@@ -60,7 +83,7 @@
 
     {#if !$usernameExists}
         <label for="username" class="label2">Username:</label>
-        <input type="text" class="input" id="username" name="username" /><br /><br />
+        <input type="text" class="input" id="username" bind:this={username} name="username" /><br /><br />
     {:else}
         <label for="username" class="label2">Username:</label>
         <input type="text" class="usernameExists" id="username" name="username" /><br /><br />
