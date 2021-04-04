@@ -119,6 +119,11 @@ router.get("/whatismyname", async (ctx) => {
   const email: string = payload["https://polyserver.polypong.ca/email"]
   const user = await dbHelper.getUserbyEmail(email)
 
+  if (!user){
+    ctx.response.status = Status.NoContent;
+    return;
+  }
+
   ctx.response.body = user?.username;
 })
 
