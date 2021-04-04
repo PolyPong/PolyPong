@@ -1,5 +1,5 @@
 <script lang="typescript">
-	import { Route, router } from "tinro";
+	import { Route, router, meta } from "tinro";
 	import Home from "./routes/Home.svelte";
 	import Game from "./routes/Game.svelte";
 	import Leaderboard from "./routes/Leaderboard.svelte";
@@ -59,8 +59,12 @@
 		<Leaderboard />
 	</Route>
 
+	<Route path="/lobby/:id" let:meta>
+		<Lobby id={meta.params.id}/>
+	</Route>
+
 	<Route path="/lobby">
-		<Lobby />
+		<Lobby id=""/>
 	</Route>
 
 	<Route path="/powerups">

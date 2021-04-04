@@ -84,7 +84,7 @@ router.post("/setskin", async (ctx) => {
         ctx.response.status = Status.NoContent;
         return;
     }
-  } catch(e) {
+  } catch (e) {
     // verify failed
     console.error(e)
     ctx.response.body = "Error: invalid JWT";
@@ -101,6 +101,26 @@ router.get("/localleaderboard/:userid", async (ctx) => {
   const leaderboard = await dbHelper.getLocalLeaderboard(userid);
   ctx.response.body = leaderboard;
 });
+
+router.get("/whatismyname", async (ctx) => {
+  const jwt = ctx.request.headers.get("Authorization");
+  if (!jwt) {
+    ctx.response.body = "Error: JWT not in header";
+    ctx.response.status = Status.Unauthorized;
+    return;
+  }
+  console.log("about to verify token")
+  console.log(jwt)
+  // todo: wait for response from https://github.com/timonson/djwt/issues/47
+  // const payload = await verify(jwt, SECRET, "RS256");
+
+  const [_, payload, __]: [_: any, payload: any, __: any] = decode(jwt);
+  console.log(payload)
+  const email: string = payload["https://polyserver.polypong.ca/email"]
+  const user = await dbHelper.getUserbyEmail(email)
+
+  ctx.response.body = user?.username;
+})
 
 const MODE = Deno.env.get("MODE") ?? "development";
 if (MODE === "production") {
