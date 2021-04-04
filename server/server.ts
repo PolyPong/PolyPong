@@ -154,12 +154,13 @@ router.post("/signup", async (ctx) => {
   }
 
   try {
-    dbHelper.addUser(username, email);
+    console.log("what")
+    await dbHelper.addUser(username, email);
     ctx.response.status = Status.NoContent;
     return;
   } catch {
     ctx.response.status = Status.Conflict
-    ctx.response.body = `Error: ${username} is already taken`
+    ctx.response.body = `Error: ${username} is already taken or your email already exists under a different username!`
     return;
   }
 

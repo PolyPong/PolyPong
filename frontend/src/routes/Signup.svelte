@@ -31,6 +31,7 @@
             console.log("Nothing entered");
         } else {
             console.log(input);
+            const token = await (await $auth0Client).getTokenSilently();
             // Check if username is in the database
             // Send over a check_exists request for the username to server and wait for response (response happens in store.ts)
             const res = await fetch(SERVER_URL + "signup",
@@ -38,10 +39,13 @@
                 method: "POST",
                 body: JSON.stringify({
                     username: input
-                })
+                }),
+                headers: {
+                    Authorization: token,
+                }
             })
 
-            if (res.status === 200){
+            if (res.status === 204){
                 router.goto("/")
                 return;
             }
