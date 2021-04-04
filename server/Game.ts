@@ -69,6 +69,8 @@ export class GameServer extends Game {
       // this.players[player_number].paddle.moving = game.players[player_number].paddle.moving;
       // this.players[player_number].paddle.direction = game.players[player_number].paddle.direction;
       this.players = game.players;
+      console.log("We are merging client state into the server, ball visibility should change")
+      this.ball.visible = game.ball.visible;
     }
     
     if (message === "ball_update"){

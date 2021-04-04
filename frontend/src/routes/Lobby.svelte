@@ -20,7 +20,7 @@
     LobbyClientReady,
   } from "@polypong/polypong-common";
   import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
-  import { lobby_id, user_id, ws, joinGame, power_ups_str } from "../store";
+  import { lobby_id, user_id, ws, joinGame, power_ups_str, power_up_one_used, power_up_two_used, power_up_three_used } from "../store";
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -87,12 +87,22 @@
         }
       }
     }
+  };
 
 
   function clientReady() {
-    console.log("We are sending a lobby_client_ready request on the client")
+    console.log("We are sending a lobby_client_ready request on the client");
 
     power_ups_str.set(powerUpsStr);
+    if(powerUpsStr.length > 0){
+      power_up_one_used.set(false);
+    }
+    if(powerUpsStr.length > 1){
+      power_up_two_used.set(false);
+    }
+    if(powerUpsStr.length > 2){
+      power_up_three_used.set(false);
+    }
 
     const payload: LobbyClientReady = {
         type: "lobby_client_ready",
@@ -103,7 +113,7 @@
 
     client_ready = true;
     console.log(powerUpsStr);
-  }
+  };
 </script>
 
 <body>
@@ -246,31 +256,31 @@
       <button
         class="powerUpButton"
         style="background-color: #353839; width: 25%;"
-        id="invisible"
-        on:click={() => highlightPowerUps("invisible")}
+        id="selfInvisible"
+        on:click={() => highlightPowerUps("selfInvisible")}
       >
         <img src="/images/Invisible_Paddle.png" width="90" height="90" />
-        <p>Invisible Paddle<br /><br /></p>
+        <p>Invisible Paddle, Self<br /><br /></p>
       </button>
 
       <button
         class="powerUpButton"
         style="background-color: #353839; width: 25%;"
-        id="split"
-        on:click={() => highlightPowerUps("split")}
+        id="othersInvisible"
+        on:click={() => highlightPowerUps("othersInvisible")}
       >
-        <img src="/images/Split_Paddle.png" width="90" height="90" />
-        <p>Split Paddle<br /><br /></p>
+        <img src="/images/Invisible_Paddle.png" width="90" height="90" />
+        <p>Invisible Paddle, Others<br /><br /></p>
       </button>
 
       <button
         class="powerUpButton"
         style="background-color: #353839; width: 25%;"
-        id="distracting"
-        on:click={() => highlightPowerUps("distracting")}
+        id="ballInvisible"
+        on:click={() => highlightPowerUps("ballInvisible")}
       >
-        <img src="/images/Distracting_Background.png" width="90" height="90" />
-        <p>Distracting Background</p>
+        <img src="/images/Invisible_Paddle.png" width="90" height="90" />
+        <p>Invisible Ball<br /><br /></p>
       </button>
     </div>
 
@@ -319,6 +329,26 @@
       >
         <img src="/images/Catch_And_Aim.png" width="90" height="90" />
         <p>Catch And Aim</p>
+      </button>
+
+      <button
+        class="powerUpButton"
+        style="background-color: #353839; width: 25%;"
+        id="distracting"
+        on:click={() => highlightPowerUps("distracting")}
+      >
+        <img src="/images/Distracting_Background.png" width="90" height="90" />
+        <p>Distracting Background</p>
+      </button>
+
+      <button
+        class="powerUpButton"
+        style="background-color: #353839; width: 25%;"
+        id="split"
+        on:click={() => highlightPowerUps("split")}
+      >
+        <img src="/images/Split_Paddle.png" width="90" height="90" />
+        <p>Split Paddle<br /><br /></p>
       </button>
     </div>
 

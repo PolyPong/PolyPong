@@ -10,7 +10,10 @@
     stop_game_loop,
     loss_info,
     auth0Client,
-    power_ups_str
+    power_ups_str,
+    power_up_one_used,
+    power_up_two_used,
+    power_up_three_used
   } from "../store";
   import { onMount, tick } from "svelte";
   import { Ball, Paddle } from "@polypong/polypong-common";
@@ -22,6 +25,7 @@
     ClientSaysGameOver,
     ClientStopped,
     GameWon,
+    PowerupStrings
   } from "@polypong/polypong-common";
   import { GameClient } from "../Game";
   import { router } from "tinro";
@@ -42,7 +46,7 @@
   const paddleCoverageRatio: number = 1 / 4;
   const ballScaleFactor: number = 1 / 30;
   // const frameRate = 1000/60;  // 60 FPS
-  const frameRate = 1000 / 60;
+  const frameRate = 1000 / 20;
 
   // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
   // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -373,21 +377,23 @@
     ctx.lineWidth = Paddle.height;
 
     for (var i = 0; i < $game.sides; i++) {
-      ctx.beginPath();
-      ctx.strokeStyle = $game.players[i].paddle.paddleColor;
+      if($game.players[i].paddle.visible){
+        ctx.beginPath();
+        ctx.strokeStyle = $game.players[i].paddle.paddleColor;
 
-      // Starting from the exact center, we move down the canvas (positive Y is down)
-      // and across to where the right side of the paddle is
-      // Old note, ignore: In place of 0, we need $game.players[i].paddle.x
-      ctx.moveTo($game.players[i].paddle.x, getPaddleY());
-      // We then go to the left (since negative X is left) by
-      // the paddle width ($game.players[i].paddle.width)
-      ctx.lineTo(
-        $game.players[i].paddle.x - $game.players[i].paddle.width,
-        getPaddleY()
-      );
-      ctx.stroke();
-      ctx.closePath();
+        // Starting from the exact center, we move down the canvas (positive Y is down)
+        // and across to where the right side of the paddle is
+        // Old note, ignore: In place of 0, we need $game.players[i].paddle.x
+        ctx.moveTo($game.players[i].paddle.x, getPaddleY());
+        // We then go to the left (since negative X is left) by
+        // the paddle width ($game.players[i].paddle.width)
+        ctx.lineTo(
+          $game.players[i].paddle.x - $game.players[i].paddle.width,
+          getPaddleY()
+        );
+        ctx.stroke();
+        ctx.closePath();
+      }
       ctx.rotate((2 * Math.PI) / $game.sides);
     }
     ctx.lineWidth = 1;
@@ -414,11 +420,13 @@
   }
 
   function drawBall() {
-    ctx.beginPath();
-    ctx.arc($game.ball.x, $game.ball.y, $game.ball.radius, 0, Math.PI * 2);
-    ctx.fillStyle = "#0095DD";
-    ctx.fill();
-    ctx.closePath();
+    if($game.ball.visible){
+      ctx.beginPath();
+      ctx.arc($game.ball.x, $game.ball.y, $game.ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
   }
 
   // Collision detection function, returns true or false
@@ -589,45 +597,45 @@
     ctx.translate(canvas.width / 2, canvas.height / 2);
   }
 
-  function drawTriangle() {
-    startGame(3);
-  }
+  // function drawTriangle() {
+  //   startGame(3);
+  // }
 
-  function drawSquare() {
-    startGame(4);
-  }
+  // function drawSquare() {
+  //   startGame(4);
+  // }
 
-  function drawPentagon() {
-    startGame(5);
-  }
+  // function drawPentagon() {
+  //   startGame(5);
+  // }
 
-  function drawHexagon() {
-    startGame(6);
-  }
+  // function drawHexagon() {
+  //   startGame(6);
+  // }
 
-  function drawSeptagon() {
-    startGame(7);
-  }
+  // function drawSeptagon() {
+  //   startGame(7);
+  // }
 
-  function drawOctagon() {
-    startGame(8);
-  }
+  // function drawOctagon() {
+  //   startGame(8);
+  // }
 
-  function drawNonagon() {
-    startGame(9);
-  }
+  // function drawNonagon() {
+  //   startGame(9);
+  // }
 
-  function drawDecagon() {
-    startGame(10);
-  }
+  // function drawDecagon() {
+  //   startGame(10);
+  // }
 
-  function drawHendecagon() {
-    startGame(11);
-  }
+  // function drawHendecagon() {
+  //   startGame(11);
+  // }
 
-  function drawDodecagon() {
-    startGame(12);
-  }
+  // function drawDodecagon() {
+  //   startGame(12);
+  // }
 
   // Adding an EventListener to window to listen for keys being pressed
   window.addEventListener("keydown", keyDownHandler);
@@ -662,14 +670,29 @@
           sendUpdate("paddle_press_right");
           break;
         case 49:  // 1
-          console.log($power_ups_str);
-          // handlePowerup($game.players[$game_info.my_player_number].inventory[0]);
+          console.log("Pressed 1");
+          if (!$power_up_one_used){
+            $power_up_one_used = true;
+            handlePowerup($power_ups_str[0]);
+          }
+          break;
         case 50:  // 2
-          // handlePowerup($game.players[$game_info.my_player_number].inventory[1]);
+          console.log("Pressed 2");
+          if (!$power_up_two_used){
+            $power_up_two_used = true;
+            handlePowerup($power_ups_str[1]);
+          }
+          break;
+          
         case 51:  // 3
-          // handlePowerup($game.players[$game_info.my_player_number].inventory[2]);
-        case 57: // 9
-          console.log("9");
+          console.log($power_ups_str);
+          if (!$power_up_three_used){
+            $power_up_three_used = true;
+            handlePowerup($power_ups_str[2]);
+          }
+          break;
+        // case 57: // 9
+        //   console.log("9");
       }
     }
   }
@@ -701,6 +724,73 @@
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
+
+  function handlePowerup(powerup: PowerupStrings){
+    console.log(powerup);
+    if (powerup === "bigger") {
+      //console.log("We are in 'bigger'");
+      //console.log("Paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
+      //console.log("Paddle widthMultiplier: " + Paddle.widthMultiplier);
+      
+      $game.players[$game_info.my_player_number].paddle.width = $game.players[$game_info.my_player_number].paddle.width*Paddle.widthMultiplier;
+      //console.log("New paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
+      sendUpdate("");
+      setTimeout(
+        function(){ 
+          $game.players[$game_info.my_player_number].paddle.width = $game.players[$game_info.my_player_number].paddle.width/Paddle.widthMultiplier; 
+          sendUpdate("");
+        }, Paddle.changeWidthDuration);
+    } else if (powerup === "smaller") {
+      for (let i = 0; i < $game_info.sides; i++){
+        if (i !== $game_info.my_player_number){
+          $game.players[i].paddle.width = $game.players[i].paddle.width/Paddle.widthMultiplier;
+        }
+      }
+      sendUpdate("");
+      setTimeout(
+        function(){ 
+          for (let i = 0; i < $game_info.sides; i++){
+            if (i !== $game_info.my_player_number){
+              $game.players[i].paddle.width = $game.players[i].paddle.width*Paddle.widthMultiplier;
+            }
+          }
+          sendUpdate("");
+        }, Paddle.changeWidthDuration);
+    } else if (powerup === "selfInvisible") {
+      $game.players[$game_info.my_player_number].paddle.visible = false;
+      sendUpdate("");
+      setTimeout(
+        function(){ 
+          $game.players[$game_info.my_player_number].paddle.visible = true;
+          sendUpdate("");
+        }, Paddle.invisibleDuration);
+    } else if (powerup === "othersInvisible") {
+      for (let i = 0; i < $game_info.sides; i++){
+        if (i !== $game_info.my_player_number){
+          $game.players[i].paddle.visible = false;
+        }
+      }
+      sendUpdate("");
+      setTimeout(
+        function(){ 
+          for (let i = 0; i < $game_info.sides; i++){
+            if (i !== $game_info.my_player_number){
+              $game.players[i].paddle.visible = true;
+            }
+          }
+          sendUpdate("");
+        }, Paddle.invisibleDuration);
+    } else if (powerup === "ballInvisible") {
+      $game.ball.visible = false;
+      sendUpdate("");
+      setTimeout(
+        function(){ 
+          $game.ball.visible = true;
+          sendUpdate("");
+        }, Ball.invisibleDuration);
+    }
+
+  }
 </script>
 
 <!-- <body onload="load()" onresize="getSize()"> -->
@@ -725,7 +815,13 @@
 
   <br />
 
-  <p>Draw a:</p>
+  <p> Inventory: </p>
+
+  <p> Press 1 to use: {$power_ups_str[0]} </p> <!-- <p>Note this does not currently update when the power up is used</p>-->
+  <p> Press 2 to use: {$power_ups_str[1]} </p>
+  <p> Press 3 to use: {$power_ups_str[2]} </p>
+
+  <!-- <p>Draw a:</p>
 
   <div>
     <button id="triangle" class="button button8" on:click={drawTriangle}
@@ -762,7 +858,7 @@
     <button id="dodecagon" class="button button8" on:click={drawDodecagon}
       >Dodecagon</button
     >
-  </div>
+  </div> -->
 </body>
 
 <!-- <body onload="load()" onresize="getSize()"> -->

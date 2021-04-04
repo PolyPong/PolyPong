@@ -62,6 +62,7 @@ export class GameClient extends Game {
       // this.players[player_number].paddle.moving = state.players[player_number].paddle.moving;
       // this.players[player_number].paddle.direction = state.players[player_number].paddle.direction;    
       this.players = state.players;
+      this.ball.visible = state.ball.visible;
     }
     if (message === "ball_update"){
       this.ball.x = state.ball.x;

@@ -98,12 +98,15 @@ export const ColorLevels = {
 
 export class Paddle {
   width: number = 100;
+  static widthMultiplier: number = 2;
+  static changeWidthDuration: number = 30000;
+  static invisibleDuration: number = 30000;
   static readonly height: number = 10;
 
   static velocity: number = 2;
 
   x: number;
-  invisible: boolean;
+  visible: boolean;
   shape: Shape;
   paddleColor: Color = Color.White;
 
@@ -114,7 +117,7 @@ export class Paddle {
   constructor(
     x: number,
     width: number,
-    invisible: boolean,
+    visible: boolean,
     shape: Shape,
     paddleColor: Color,
     moving: boolean,
@@ -122,7 +125,7 @@ export class Paddle {
   ) {
     this.x = x;
     this.width = width;
-    this.invisible = invisible;
+    this.visible = visible;
     this.shape = shape;
     this.paddleColor = paddleColor;
     this.moving = moving;
@@ -167,6 +170,9 @@ export class Ball {
   y: number = 0;
   dx: number;
   dy: number;
+  visible: boolean = true;
+  static invisibleDuration: number = 15000;
+
 
   velocity: number = 1;
 

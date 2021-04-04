@@ -39,6 +39,9 @@ export const loss_info = writable<any>({});
 
 export const game = writable<GameClient>(new GameClient(0, new Ball()));
 export const power_ups_str = writable<PowerupStrings[]>([]);
+export const power_up_one_used = writable<boolean>(true);
+export const power_up_two_used = writable<boolean>(true);
+export const power_up_three_used = writable<boolean>(true);
 
 export const usernameExists = writable<boolean>(false);
 
