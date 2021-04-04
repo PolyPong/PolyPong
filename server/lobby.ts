@@ -7,7 +7,6 @@ import {
   LobbyCreatedPayload,
   LobbyJoinedPayload,
   ServerEvent,
-  ServerExistsResponse,
   Game,
   ServerUpdate,
   ExpandedPaddle,
