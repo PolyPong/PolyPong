@@ -468,6 +468,7 @@
       console.log("Ball dX: " + $game.ball.dx);
       console.log("Transformed dX: " + transformedBalldX);
       ctx.beginPath();
+      // Taken from : https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
       canvas_arrow(
         ctx, 
         $game.ball.x, 
