@@ -69,7 +69,6 @@
   async function load() {
     w = document.documentElement.clientWidth;
     h = document.documentElement.clientHeight;
-    canvas = document.getElementById("drawing") as HTMLCanvasElement;
 
     // canvas.width = w - 100;
     // canvas.height = h - 150;
@@ -899,6 +898,7 @@
 
   <canvas
     id="drawing"
+    bind:this={canvas}
     width="800"
     height="800"
     style="border:1px solid rgb(255,255,255)"
