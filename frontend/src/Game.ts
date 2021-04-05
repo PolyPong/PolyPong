@@ -56,7 +56,6 @@ export class GameClient extends Game {
     }
   }
   mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
-    console.log(player_number);
     if (player_number || player_number === 0) {
       // this.players[player_number].paddle.x = state.players[player_number].paddle.x;
       // this.players[player_number].paddle.moving = state.players[player_number].paddle.moving;

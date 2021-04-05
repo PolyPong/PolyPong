@@ -280,10 +280,20 @@
   function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if($game.sides === 2){
+      $game.radius = 200;
+    }
+
     drawPolygon($game.sides, 255, 255, 255);
 
     //Move the origin to the exact center of the canvas
     ctx.translate(canvas.width / 2, canvas.height / 2);
+
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo($game.ball.dx*100, $game.ball.dy*100);
+    ctx.stroke();
+    ctx.closePath();
 
     // Rotate so that the player which has '$game_info.my_player_number' number is at the bottom
     // Need to rotate BEFORE paddles are drawn to the screen, need to rotate around center of canvas
@@ -293,6 +303,7 @@
     drawBall();
     // Undo the spell we cast
     ctx.rotate((2 * Math.PI * $game_info.my_player_number) / $game.sides);
+
 
     // Later on, when the ball information is coming in from the server, we will want to include
     // drawBall() in between the two rotations. For now, the ball information is not rotated because
@@ -401,6 +412,11 @@
 
   function getPaddleY() {
     // Attempting to get the paddles to resize well, still not a great solution but handles about 85% of cases well
+    if ($game.sides == 2) {
+      return 175;
+    }
+      
+    
     if ($game.sides == 3) {
       return $game.radius - 98 + 5 * $game.sides;
       //     if ($game.radius < 200) {
@@ -431,6 +447,14 @@
 
   // Collision detection function, returns true or false
   function collisionDetect() {
+
+    if ($game_info.sides === 2 && $game_info.my_player_number === 0){
+      if( ($game.ball.x - $game.ball.dx - $game.ball.radius) < -canvas.width/2 || 
+        ($game.ball.x + $game.ball.dx + $game.ball.radius) > canvas.width/2){
+          return true;
+      }
+    }
+
     const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
     const transformedBallX =
       $game.ball.x * Math.cos(theta) + $game.ball.y * Math.sin(theta);
@@ -477,55 +501,105 @@
   }
 
   function handleCollision() {
+
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(150,100);
+    ctx.stroke();
+    ctx.closePath();
+
     const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
     let angle = theta;
-    const transformedBallX =
-      $game.ball.x * Math.cos(theta) + $game.ball.y * Math.sin(theta);
-    const transformedBallY =
-      -$game.ball.x * Math.sin(theta) + $game.ball.y * Math.cos(theta);
+    const transformedBallX = $game.ball.x * Math.cos(theta) + $game.ball.y * Math.sin(theta);
+    const transformedBallY = -$game.ball.x * Math.sin(theta) + $game.ball.y * Math.cos(theta);
+    const transformedBalldX = $game.ball.dx * Math.cos(theta) + $game.ball.dy * Math.sin(theta);
+    const transformedBalldY = -$game.ball.dx * Math.sin(theta) + $game.ball.dy * Math.cos(theta);
+    
+    if ($game_info.sides === 2 && $game_info.my_player_number === 0 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2)) {
+      console.log("we are handling the collision, but only on player 0")
+      // if ($game.ball.dx > 0 && $game.ball.dy > 0){
+      //   console.log("Case 1: (dx: +, dy: +)");
+      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
+      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
+        
+      // } else if ($game.ball.dx < 0 && $game.ball.dy > 0) {
+      //   console.log("Case 2: (dx: -, dy: +)");
+      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
+      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
 
-    // If the ball hits the left quarter of the paddle, make the ball go left
-    if (
-      transformedBallX <
-      $game.players[$game_info.my_player_number].paddle.x -
-        (3 * $game.players[$game_info.my_player_number].paddle.width) / 4
-    ) {
-      angle = theta + (-1 * Math.PI) / 4; // -45 degrees
+      // } else if ($game.ball.dx > 0 && $game.ball.dy < 0) {
+      //   console.log("Case 3: (dx: +, dy: -)");
+      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
+      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
+
+      // } else if ($game.ball.dx < 0 && $game.ball.dy < 0) {
+      //   console.log("Case 4: (dx: -, dy: -)");
+      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
+      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
+
+      // }
+      console.log("Old x: " + $game.ball.x);
+      console.log("Old y: " + $game.ball.y);
+      console.log("Old dx: " + $game.ball.dx);
+      console.log("Old dy: " + $game.ball.dy);
+      $game.ball.dx = -1 * ($game.ball.dx); // -1 to reverse the direction of the ball
+      // $game.ball.dx = ($game.ball.dx > 0) ? $game.ball.dx-0.5 : $game.ball.dx+0.5;
+      $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
+      moveBall();
+      moveBall();
+      console.log("New x: " + $game.ball.x);
+      console.log("New y: " + $game.ball.y);
+      console.log("New dx: " + $game.ball.dx);
+      console.log("New dy: " + $game.ball.dy);
+    } else if ($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2)){
+
+    } else {
+
+      // If the ball hits the left quarter of the paddle, make the ball go left
+      if (
+        transformedBallX <
+        $game.players[$game_info.my_player_number].paddle.x -
+          (3 * $game.players[$game_info.my_player_number].paddle.width) / 4
+      ) {
+        angle = theta + (-1 * Math.PI) / 4; // -45 degrees
+      }
+      // Else If the ball hits the right quarter of the paddle, make the ball go right
+      else if (
+        transformedBallX >
+        $game.players[$game_info.my_player_number].paddle.x -
+          $game.players[$game_info.my_player_number].paddle.width / 4
+      ) {
+        angle = theta + Math.PI / 4; // 45 degrees
+      }
+      // Else Angle = 0
+
+      // Update X and Y velocity of the ball
+      let dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+      let dx = $game.ball.velocity * Math.sin(angle);
+
+      // console.log("Dy on server: " + dy);
+      // console.log("Dx on server: " + dx);
+
+      // $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+      // $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+
+      // $game.ball.dy = -$game.ball.dy; // -1 to reverse the direction of the ball
+      // $game.ball.dx = -$game.ball.dx;
+      $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+      $game.ball.dx = $game.ball.velocity * Math.sin(angle);
     }
-    // Else If the ball hits the right quarter of the paddle, make the ball go right
-    else if (
-      transformedBallX >
-      $game.players[$game_info.my_player_number].paddle.x -
-        $game.players[$game_info.my_player_number].paddle.width / 4
-    ) {
-      angle = theta + Math.PI / 4; // 45 degrees
+
+    if (!($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2))){
+      const payload: ClientUpdate = {
+        type: "client_update",
+        event: $game.jsonify(),
+        player_number: $game_info.my_player_number,
+        lobby_id: $lobby_id,
+        player_id: $user_id,
+        message: "ball_update",
+      };
+      $ws.send(JSON.stringify(payload));
     }
-    // Else Angle = 0
-
-    // Update X and Y velocity of the ball
-    let dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-    let dx = $game.ball.velocity * Math.sin(angle);
-
-    // console.log("Dy on server: " + dy);
-    // console.log("Dx on server: " + dx);
-
-    // $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-    // $game.ball.dx = $game.ball.velocity * Math.sin(angle);
-
-    // $game.ball.dy = -$game.ball.dy; // -1 to reverse the direction of the ball
-    // $game.ball.dx = -$game.ball.dx;
-    $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-    $game.ball.dx = $game.ball.velocity * Math.sin(angle);
-
-    const payload: ClientUpdate = {
-      type: "client_update",
-      event: $game.jsonify(),
-      player_number: $game_info.my_player_number,
-      lobby_id: $lobby_id,
-      player_id: $user_id,
-      message: "ball_update",
-    };
-    $ws.send(JSON.stringify(payload));
 
     // Increase ball's velocity (optional)
     // $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta);
@@ -707,6 +781,9 @@
         break;
       case 39: // Right arrow key
         rightArrowPressed = false;
+        console.log("In keyUp Handler: ");
+        console.log(JSON.stringify($game));
+        console.log(JSON.stringify($game.players[$game_info.my_player_number]));
         $game.players[$game_info.my_player_number].paddle.moving = false;
         sendUpdate("paddle_release_right");
         break;
