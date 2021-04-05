@@ -20,7 +20,16 @@
     LobbyClientReady,
   } from "@polypong/polypong-common";
   import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
-  import { lobby_id, user_id, ws, joinGame, power_ups_str, power_up_one_used, power_up_two_used, power_up_three_used } from "../store";
+  import {
+    lobby_id,
+    user_id,
+    ws,
+    joinGame,
+    power_ups_str,
+    power_up_one_used,
+    power_up_two_used,
+    power_up_three_used,
+  } from "../store";
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -87,19 +96,19 @@
         }
       }
     }
-  };
+  }
 
   function clientReady() {
     console.log("We are sending a lobby_client_ready request on the client");
 
     power_ups_str.set(powerUpsStr);
-    if(powerUpsStr.length > 0){
+    if (powerUpsStr.length > 0) {
       power_up_one_used.set(false);
     }
-    if(powerUpsStr.length > 1){
+    if (powerUpsStr.length > 1) {
       power_up_two_used.set(false);
     }
-    if(powerUpsStr.length > 2){
+    if (powerUpsStr.length > 2) {
       power_up_three_used.set(false);
     }
 
@@ -112,7 +121,7 @@
 
     client_ready = true;
     console.log(powerUpsStr);
-  };
+  }
 </script>
 
 <body>
@@ -200,9 +209,9 @@
 
   <div>
     <p>Link to join:</p>
-    <textarea readonly bind:this={copyLink}
-      >{SERVER_URL + "lobby/" + $lobby_id}</textarea
-    >
+    <textarea readonly bind:this={copyLink}>
+      {SERVER_URL + "lobby/" + $lobby_id}
+    </textarea>
     <button
       on:click={() => {
         copyLink.select();
@@ -213,9 +222,9 @@
     </button>
   </div>
 
-  <button class="button button4" style="vertical-align: middle;"
-    >Copy Link to Invite Friends</button
-  >
+  <button class="button button4" style="vertical-align: middle;">
+    Copy Link to Invite Friends
+  </button>
 
   {#if !client_ready}
     <hr />

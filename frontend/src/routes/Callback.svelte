@@ -13,4 +13,7 @@
   });
 </script>
 
-<div>One sec!! We're bringing you back....</div>
+<body>
+  <div>One sec!! We're bringing you back....</div>
+  <button href="/">In case that didn't work, click me to go home</button>
+</body>
