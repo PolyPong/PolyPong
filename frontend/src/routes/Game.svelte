@@ -47,7 +47,7 @@
   const paddleCoverageRatio: number = 1 / 4;
   const ballScaleFactor: number = 1 / 30;
   // const frameRate = 1000/60;  // 60 FPS
-  const frameRate = 1000 / 20;
+  const frameRate = 1000 / 10;
 
   // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
   // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -291,12 +291,6 @@
     //Move the origin to the exact center of the canvas
     ctx.translate(canvas.width / 2, canvas.height / 2);
 
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo($game.ball.dx*100, $game.ball.dy*100);
-    ctx.stroke();
-    ctx.closePath();
-
     // Rotate so that the player which has '$game_info.my_player_number' number is at the bottom
     // Need to rotate BEFORE paddles are drawn to the screen, need to rotate around center of canvas
     ctx.rotate((-2 * Math.PI * $game_info.my_player_number) / $game.sides);
@@ -421,16 +415,21 @@
     // Attempting to get the paddles to resize well, still not a great solution but handles about 85% of cases well
     if ($game.sides == 2) {
       return 175;
-    }
-      
-    
-    if ($game.sides == 3) {
-      return $game.radius - 98 + 5 * $game.sides;
+    } else if ($game.sides === 3) {
+      return 82;
       //     if ($game.radius < 200) {
       //         return 200 - 450 / $game.sides - 10;
       //     } else {
       //         return $game.radius - 450 / $game.sides - 10;
       //     }
+    } else if ($game.sides === 4) {
+      return 119;
+    } else if ($game.sides === 5) {
+      return 136;
+    } else if ($game.sides === 6) {
+      return 146;
+    } else if ($game.sides === 7) {
+      return 152;
     } else {
       return $game.radius - 100 + 8 * $game.sides;
       // $game.radius - 450 / $game.sides + $game.sides;
