@@ -450,6 +450,48 @@
       ctx.fill();
       ctx.closePath();
     }
+
+    if ($game.ball.pathShown) {
+      console.log("WE ARE HERE");
+
+      ctx.lineWidth = 3;
+
+      const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
+      const transformedBallX = $game.ball.x * Math.cos(theta) + $game.ball.y * Math.sin(theta);
+      const transformedBallY = -$game.ball.x * Math.sin(theta) + $game.ball.y * Math.cos(theta);
+      const transformedBalldX = $game.ball.dx * Math.cos(theta) + $game.ball.dy * Math.sin(theta);
+      const transformedBalldY = -$game.ball.dx * Math.sin(theta) + $game.ball.dy * Math.cos(theta);
+      
+
+      console.log("Ball X: " + $game.ball.x);
+      console.log("Transformed X: " + transformedBallX);
+      console.log("Ball dX: " + $game.ball.dx);
+      console.log("Transformed dX: " + transformedBalldX);
+      ctx.beginPath();
+      canvas_arrow(
+        ctx, 
+        $game.ball.x, 
+        $game.ball.y, 
+        $game.ball.x + $game.ball.dx*100, 
+        $game.ball.y + $game.ball.dy*100);
+      // ctx.moveTo($game.ball.x, $game.ball.y);
+      // ctx.lineTo($game.ball.x + $game.ball.dx*100, $game.ball.y + $game.ball.dy*100)
+      ctx.strokeStyle = "#0095DD";
+      ctx.stroke();
+      ctx.closePath();
+    }
+  }
+
+  function canvas_arrow(context: CanvasRenderingContext2D, fromx: number, fromy: number, tox: number, toy: number) {
+    var headlen = 10; // length of head in pixels
+    var dx = tox - fromx;
+    var dy = toy - fromy;
+    var angle = Math.atan2(dy, dx);
+    context.moveTo(fromx, fromy);
+    context.lineTo(tox, toy);
+    context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+    context.moveTo(tox, toy);
+    context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
   }
 
   // Collision detection function, returns true or false
@@ -891,6 +933,11 @@
         console.log($game.backgroundColor);
         sendUpdate("");
       }, 5000);
+    } else if (powerup === "tracePath") {
+      $game.ball.pathShown = true;
+      setTimeout(function () {
+        $game.ball.pathShown = false;
+      }, Ball.pathDuration);
     }
   }
 </script>

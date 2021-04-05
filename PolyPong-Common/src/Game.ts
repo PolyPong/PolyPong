@@ -173,6 +173,8 @@ export class Ball {
   dy: number;
   visible: boolean = true;
   static invisibleDuration: number = 15000;
+  pathShown: boolean = false;
+  static pathDuration: number = 60000;
 
 
   velocity: number = 1;
@@ -180,8 +182,10 @@ export class Ball {
   radius: number = 10;
 
   constructor() {
-    this.dx = getRandom(-0.5, 0.5);
-    this.dy = getRandom(-0.5, 0.5);
+    let sign1 = (getRandom(0,1) > 0.5) ? 1 : -1;
+    let sign2 = (getRandom(0,1) > 0.5) ? 1 : -1;
+    this.dx = sign1 * getRandom(0.3, 0.7);
+    this.dy = sign2 * getRandom(0.3, 0.7);
   }
 }
 

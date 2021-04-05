@@ -364,6 +364,18 @@
       </button>
     </div>
 
+    <div>
+      <button
+        class="powerUpButton"
+        style="background-color: #353839; width: 25%;"
+        id="tracePath"
+        on:click={() => highlightPowerUps("tracePath")}
+      >
+        <img src="/images/Catch_And_Aim.png" width="90" height="90" />
+        <p>Trace Ball Path<br /><br /></p>
+      </button>
+    </div>
+
     <br />
     <hr />
 
