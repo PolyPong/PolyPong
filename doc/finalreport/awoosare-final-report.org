@@ -1,0 +1,100 @@
+#+TITLE: ECE 493 Final Report
+#+Author: Arun Woosaree
+#+OPTIONS: toc:nil
+#+latex_class_options: [12pt]
+
+* Problem domain
+Multiplayer games or something
+
+* Existing Solutions
+A quick google search reveals that there are a plethora of online projects which already exist that
+allows one to play a multiplayer game online, with balls and paddles.
+
+* Our Solution
+We chose a client server model over a peer-to-peer model
+
+We use WebSockets for quick, bi-directional communication between the game server and clients
+
+We decided to use Typescript as the main language for writing our frontend and backend code in.
+This allowed us to define common classes and interfaces that were shared between the frontend and backend code.
+This helped to standardize the code base, since the backend and frontend are use the same interfaces, we avoided problems where
+the data passed between the client and server could be mismatched.
+
+Furthermore, the Typescript language can be compiled to Javascript, which runs in modern browsers, so a user of our application
+does not have to install any new programs on their computer. Typescript gives us the advantages of having a type system,
+so some errors like referencing a null value can be avoided by statically analyzing the code before it is run.
+The type system also allowed us to standardize the classes and interfaces that the frontend and backend depended on.
+
+For our frontend client library, we chose to use svelte as a framework for the website. There is no particular reason we
+chose Svelte over some other javascript framework like React, other than it is a newer framework and seemed interesting
+to use. We did find that using Svelte was kind of nice, since a lot of the code is in the same style as vanilla HTML and
+CSS, whereas with something like react has a little bit more of a learning curve with its JSX syntax and subtle differences.
+With svelte, we also converted a vanilla HTML and CSS prototype with minimal effort, whereas it would have taken longer
+to do with React, and we would have likely needed to rewrite more of our initial prototype.
+
+For our backend, we chose to use Deno. We could have used Node.JS instead, but we chose deno because it seemed cooler.
+Plus, it has Typescript support out of the box, and claims to be more secure. Honestly, our lives would have been easier if
+we went with Express, because Deno is not widely adopted yet, and the community is not as large, however, I like where
+Deno is going, and it was fun to work with. I'd probably still use it in a future project.
+
+
+We added powerups to add something different to the base pong-like experience, to help vary things.
+We think this helps us distinguish ourselves from the competition
+
+* Potential Impact on Society and the Environment
+To be honest, I don't see our project significantly changing someone else's life for better or worse.
+It's a simple, fun game that friends could get together and play for a bit, but also it is a simple game with not much depth
+
+Hosting our project online as a website accessible at polypong.ca undoubtedly has an environmental impact.
+Our frontend is hosted using Cloudflare Pages, a service offered for free by Cloudflare. Our domain is also registered
+with Cloudflare, and we are using their DNS services. Because this is an on-demand service, this means that the servers
+used to run our frontend code does not always need to be active, if users are not using the website. These resources can be
+used by other users of the cloudflare network when our demand is low. Furthermore, Cloudflare appears to be
+a company which is conscious about their impact on the environment. For example, in 2019, they purchased Renewable Energy Certificates to match their electricity use for all of their data centres and offices around the world.
+https://blog.cloudflare.com/the-climate-and-cloudflare/
+
+Our backend code is hosted on Cybera, a local nonprofit organization in Alberta. Unfortunately, due to how we desinged
+the project, the backend server must run constantly to be ready for a client to connect to it.
+Also, this code does not automatically scale back when the demand is low. Fortunately, it is not
+running on dedicated resources, as the CPU and memory resources are shared, so other users of the service
+can use the resources when we are not.
+
+In my limited searching, I did not find any information about efforts Cybera is making to lessen their impact on the environment, however, we did find that Cybera is using data science to support green tech solutions
+https://www.cybera.ca/cybera-uses-data-science-to-support-green-tech-solutions/
+
+* My Role
+For this project, I found myself acting as a senior developer of sorts.
+In the sense that
+I got to make decisions about which technologies we were using, and I found my teammates asking for advice on best practices
+and such, because I have previous experience with Javascript frameworks like React and Node.JS.
+I got to make the big design decisions, and get the ball rolling, so to speak, Things like
+creating initial boilerplate code that we could all build on later.
+I worked mainly on the backend and database side of things. I also touched a fair bit of the frontend code, mainly
+hooking up core functionality and making sure that the frontend can communicate properly with the server.
+I also worked entirely on the authentication system, database functionality, and getting our project deployed
+so that we can play the game on polypong.ca. The deployment involved writing Dockerfiles to make sure our program can be easily
+deployed on most platforms. The authentication system invoved
+
+Michael mainly focused on the frontend, UI design,
+making my initial "functional" prototypes look pretty. He came up
+with the initial UI prototype for the frontend, a large portion of which
+we have tweaked and kept in the final product. He also worked on getting the game to render on the HTML canvas,
+and did geometry work, collision detection, input handling, and designing the game loop.
+I pair programmed with Michael a lot over the course of the
+project, getting things between the frontend and backend in sync, and making sure they communicate with each other.
+Together, we got a basic game working, one without synchronization. "Basic game" meaning that we got multiple players to connect to the server, get their paddles to move on each others' screens, and a ball moving. However, at that point, there
+was no synchronization, and although we could see the ball moving in the same direction on all screens, they were in different
+positions because of the lack of synchronization
+
+Josh mainly worked on the synchronization algorithm. We also pair programmed for a bit, like when we got the paddles to move
+simultaneously. He also implemented the remaining power ups
+
+* History of Changes
+#+begin_src sh :results output :exports results
+git --no-pager log --graph --all --oneline
+#+end_src
+
+#+RESULTS:
+
+* Summary of Defects
+oh boy....
