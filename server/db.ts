@@ -86,12 +86,12 @@ export const getAvailableSkins: (username: string) => Promise<Color[]> = async (
     .map(([k, v]) => k as Color);
 }
 
-export enum setSkinResponse{
+export enum setSkinResponse {
   UserNotFound,
   LevelTooLow,
   Success,
   ErrorUpdating
-} 
+}
 
 export const setSkin = async (email: string, skin: Color) => {
   const user = await getUserbyEmail(email)
@@ -104,7 +104,7 @@ export const setSkin = async (email: string, skin: Color) => {
   }
 
   const result = await users.updateOne({ email: { $eq: email } }, { $set: { paddleColor: skin } });
-  if (result){
+  if (result) {
     return setSkinResponse.Success;
   }
 

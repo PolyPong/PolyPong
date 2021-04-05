@@ -63,7 +63,7 @@ export class GameClient extends Game {
       this.players = state.players;
       this.ball.visible = state.ball.visible;
     }
-    if (message === "ball_update"){
+    if (message === "ball_update") {
       this.ball.x = state.ball.x;
       this.ball.y = state.ball.y;
       this.ball.dx = state.ball.dx;

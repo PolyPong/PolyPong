@@ -1,15 +1,21 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { skins, ws, user_id, auth0Client } from "../store";
-  import  { Color } from "@polypong/polypong-common";
+  import { Color } from "@polypong/polypong-common";
 
-  const SERVER_URL = import.meta.env.MODE === "production" ? "https://polyserver.polypong.ca/" : "http://localhost:5000/"
+  const SERVER_URL =
+    import.meta.env.MODE === "production"
+      ? "https://polyserver.polypong.ca/"
+      : "http://localhost:5000/";
 
   // swap hex code with user friendly name
-  const colors = Object.assign({}, ...Object.entries(Color).map(([a,b]) => ({ [b]: a })))
+  const colors = Object.assign(
+    {},
+    ...Object.entries(Color).map(([a, b]) => ({ [b]: a }))
+  );
 
   let skinSelected = "white";
-  const username = "arun"
+  const username = "arun";
 
   function highlightSkins(idOfSkin: string) {
     if (idOfSkin == skinSelected) {

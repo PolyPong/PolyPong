@@ -5,7 +5,7 @@ const config: Auth0ClientOptions = {
   domain: "polypong.us.auth0.com",
   client_id: "mHazgm6fRKXOgoLxFYRhvstXJRl1dSGC",
   redirect_uri,
-//  cacheLocation: 'localstorage',
+  //  cacheLocation: 'localstorage',
   audience: "https://polyserver.polypong.ca",
 };
 

@@ -44,23 +44,23 @@
         joinGame(id, $user_id);
         lobby_input = id;
         console.log("hm", id);
-      }, 1000)
+      }, 1000);
     }
   });
 
   const joinGameButton = (input: string | undefined) => {
-      if (!$ws) {
-          return;
-      }
-      joinGame(input, $user_id);        
+    if (!$ws) {
+      return;
+    }
+    joinGame(input, $user_id);
   };
 
   const startGame = () => {
-    console.log("We are sending a start_game request on the client")
+    console.log("We are sending a start_game request on the client");
     const payload: StartGameRequest = {
-        type: "start_game",
-        lobby_id: $lobby_id,
-    }
+      type: "start_game",
+      lobby_id: $lobby_id,
+    };
     $ws.send(JSON.stringify(payload));
   };
 
@@ -89,7 +89,6 @@
     }
   };
 
-
   function clientReady() {
     console.log("We are sending a lobby_client_ready request on the client");
 
@@ -105,10 +104,10 @@
     }
 
     const payload: LobbyClientReady = {
-        type: "lobby_client_ready",
-        lobby_id: $lobby_id,
-        user_id: $user_id,
-    }
+      type: "lobby_client_ready",
+      lobby_id: $lobby_id,
+      user_id: $user_id,
+    };
     $ws.send(JSON.stringify(payload));
 
     client_ready = true;
@@ -201,11 +200,15 @@
 
   <div>
     <p>Link to join:</p>
-    <textarea readonly bind:this={copyLink}>{SERVER_URL + "lobby/" + $lobby_id}</textarea>
-    <button on:click={() => {
-      copyLink.select();
-      document.execCommand('copy');
-    }}>
+    <textarea readonly bind:this={copyLink}
+      >{SERVER_URL + "lobby/" + $lobby_id}</textarea
+    >
+    <button
+      on:click={() => {
+        copyLink.select();
+        document.execCommand("copy");
+      }}
+    >
       Copy to clipboard
     </button>
   </div>

@@ -14,7 +14,7 @@ import {
   ClientUpdateMessage,
   ServerSaysStopGame,
 } from "../PolyPong-Common/src/Game.ts";
-    
+
 import { GameServer } from "./Game.ts"
 
 import dbHelper from "./db.ts";
