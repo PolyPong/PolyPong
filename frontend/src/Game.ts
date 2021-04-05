@@ -62,6 +62,7 @@ export class GameClient extends Game {
       // this.players[player_number].paddle.direction = state.players[player_number].paddle.direction;    
       this.players = state.players;
       this.ball.visible = state.ball.visible;
+      this.backgroundColor = state.backgroundColor;
     }
     if (message === "ball_update") {
       this.ball.x = state.ball.x;

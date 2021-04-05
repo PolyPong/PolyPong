@@ -26,14 +26,15 @@ export abstract class Game {
   abstract mergeState(game: Game, player_number: number, message: ClientUpdateMessage): void;
 
   jsonify() {
-    const { ball, activePowerups, players } = this;
+    const { ball, activePowerups, players, backgroundColor } = this;
     for (const p of players) {
       p.websocketConnection = null;
     }
     return {
       ball,
       activePowerups,
-      players
+      players, 
+      backgroundColor
     }
   }
 }

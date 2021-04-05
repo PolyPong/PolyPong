@@ -71,6 +71,7 @@ export class GameServer extends Game {
       this.players = game.players;
       console.log("We are merging client state into the server, ball visibility should change")
       this.ball.visible = game.ball.visible;
+      this.backgroundColor = game.backgroundColor;
     }
 
     if (message === "ball_update") {

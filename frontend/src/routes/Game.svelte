@@ -16,7 +16,7 @@
     power_up_three_used,
   } from "../store";
   import { onMount, tick } from "svelte";
-  import { Ball, Paddle } from "@polypong/polypong-common";
+  import { Ball, Color, Paddle } from "@polypong/polypong-common";
   import type {
     ClientUpdate,
     KeyDownEvent,
@@ -41,6 +41,7 @@
   let gameActiveInterval: Timeout;
   let allClientsReadyInterval: Timeout;
   let serverSaysStopGameInterval: Timeout;
+  let distractingBackgroundInterval: Timeout;
   let textAlpha: number = 0;
 
   const paddleCoverageRatio: number = 1 / 4;
@@ -145,6 +146,7 @@
         $stop_game_loop = false;
 
         clearInterval(gameLoopRunning);
+        clearInterval(distractingBackgroundInterval);
         // animateText("Player " + $loss_info.player_number + ", " + $loss_info.user_id + ", has lost", 8000);
         // await sleep(8000);
 
@@ -337,6 +339,13 @@
     // Clear the canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // For changing the background color of just the game board/within the polygon
+    ctx.fillStyle = $game.backgroundColor; // See $game.ts, default color is set to the same color as rest of board
+    
+    if($game_info.sides === 2){
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     //Move the origin to the exact center of the canvas
     ctx.translate(canvas.width / 2, canvas.height / 2);
 
@@ -361,8 +370,6 @@
     ctx.strokeStyle = "rgba(" + red + ", " + green + ", " + blue + ", 1.0)";
     ctx.stroke();
 
-    // For changing the background color of just the game board/within the polygon
-    ctx.fillStyle = $game.backgroundColor; // See $game.ts, default color is set to the same color as rest of board
     ctx.fill();
 
     ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
@@ -622,6 +629,7 @@
 
   function handleGameOver() {
     clearInterval(gameLoopRunning);
+    clearInterval(distractingBackgroundInterval);
 
     if ($game_info.sides < 2) {
       // The current player has come second in the entire game
@@ -744,7 +752,7 @@
           sendUpdate("paddle_press_right");
           break;
         case 49: // 1
-          console.log("Pressed 1");
+          console.log("Pressed 1 " + $power_up_one_used);
           if (!$power_up_one_used) {
             $power_up_one_used = true;
             handlePowerup($power_ups_str[0]);
@@ -803,7 +811,6 @@
   }
 
   function handlePowerup(powerup: PowerupStrings) {
-    console.log(powerup);
     if (powerup === "bigger") {
       //console.log("We are in 'bigger'");
       //console.log("Paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
@@ -812,12 +819,14 @@
       $game.players[$game_info.my_player_number].paddle.width =
         $game.players[$game_info.my_player_number].paddle.width *
         Paddle.widthMultiplier;
+      $game.players[$game_info.my_player_number].paddle.x += (Paddle.widthMultiplier-1)/2;
       //console.log("New paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
       sendUpdate("");
       setTimeout(function () {
         $game.players[$game_info.my_player_number].paddle.width =
           $game.players[$game_info.my_player_number].paddle.width /
           Paddle.widthMultiplier;
+        $game.players[$game_info.my_player_number].paddle.x -= (Paddle.widthMultiplier-1)/2;
         sendUpdate("");
       }, Paddle.changeWidthDuration);
     } else if (powerup === "smaller") {
@@ -866,6 +875,22 @@
         $game.ball.visible = true;
         sendUpdate("");
       }, Ball.invisibleDuration);
+    } else if (powerup === "distracting") {
+      
+      let index = Math.floor(Math.random() * Object.entries(Color).length);
+      console.log(index);
+      $game.backgroundColor = Object.values(Color)[index];
+      console.log(Object.values(Color)[index]);
+      console.log($game.backgroundColor);
+      sendUpdate("");
+      distractingBackgroundInterval = setInterval(function () {
+        let index = Math.floor(Math.random() * Object.entries(Color).length);
+        console.log(index);
+        $game.backgroundColor = Object.values(Color)[index];
+        console.log(Object.values(Color)[index]);
+        console.log($game.backgroundColor);
+        sendUpdate("");
+      }, 5000);
     }
   }
 </script>
