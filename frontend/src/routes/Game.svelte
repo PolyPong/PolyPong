@@ -442,6 +442,7 @@
   }
 
   function drawBall() {
+    // If the ball is invisible (across all clients)
     if ($game.ball.visible) {
       ctx.beginPath();
       ctx.arc($game.ball.x, $game.ball.y, $game.ball.radius, 0, Math.PI * 2);
@@ -450,24 +451,10 @@
       ctx.closePath();
     }
 
+    // If the pathShown power up is active for this client
     if ($game.ball.pathShown) {
-      console.log("WE ARE HERE");
-
       ctx.lineWidth = 3;
-
-      const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
-      const transformedBallX = $game.ball.x * Math.cos(theta) + $game.ball.y * Math.sin(theta);
-      const transformedBallY = -$game.ball.x * Math.sin(theta) + $game.ball.y * Math.cos(theta);
-      const transformedBalldX = $game.ball.dx * Math.cos(theta) + $game.ball.dy * Math.sin(theta);
-      const transformedBalldY = -$game.ball.dx * Math.sin(theta) + $game.ball.dy * Math.cos(theta);
-      
-
-      console.log("Ball X: " + $game.ball.x);
-      console.log("Transformed X: " + transformedBallX);
-      console.log("Ball dX: " + $game.ball.dx);
-      console.log("Transformed dX: " + transformedBalldX);
       ctx.beginPath();
-      // Taken from : https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
       canvas_arrow(
         ctx, 
         $game.ball.x, 
@@ -482,6 +469,8 @@
     }
   }
 
+  // Draws an arrow to the canvas, used for path tracing/showing the path of the ball
+  // Taken from : https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
   function canvas_arrow(context: CanvasRenderingContext2D, fromx: number, fromy: number, tox: number, toy: number) {
     var headlen = 10; // length of head in pixels
     var dx = tox - fromx;
@@ -497,6 +486,9 @@
   // Collision detection function, returns true or false
   function collisionDetect() {
 
+    // For a two player game, all collision detection is done on one client (player 0)
+    // Player 1 waits to receive an update from Player 0 to prevent overwriting and 
+    // conflicting state between server and the two clients
     if ($game_info.sides === 2 && $game_info.my_player_number === 0){
       if( ($game.ball.x - $game.ball.dx - $game.ball.radius) < -canvas.width/2 || 
         ($game.ball.x + $game.ball.dx + $game.ball.radius) > canvas.width/2){
@@ -549,13 +541,11 @@
     );
   }
 
+  // Note: for 2-player games, all collision handling is done on one client (player 0)
+  // and sent to the other client as an update
+  // This is done to prevent the two clients from overwriting each other, 
+  // causing the ball to never properly update dx and dy
   function handleCollision() {
-
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.lineTo(150,100);
-    ctx.stroke();
-    ctx.closePath();
 
     const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
     let angle = theta;
@@ -565,43 +555,12 @@
     const transformedBalldY = -$game.ball.dx * Math.sin(theta) + $game.ball.dy * Math.cos(theta);
     
     if ($game_info.sides === 2 && $game_info.my_player_number === 0 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2)) {
-      console.log("we are handling the collision, but only on player 0")
-      // if ($game.ball.dx > 0 && $game.ball.dy > 0){
-      //   console.log("Case 1: (dx: +, dy: +)");
-      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
-      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
-        
-      // } else if ($game.ball.dx < 0 && $game.ball.dy > 0) {
-      //   console.log("Case 2: (dx: -, dy: +)");
-      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
-      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
-
-      // } else if ($game.ball.dx > 0 && $game.ball.dy < 0) {
-      //   console.log("Case 3: (dx: +, dy: -)");
-      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
-      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
-
-      // } else if ($game.ball.dx < 0 && $game.ball.dy < 0) {
-      //   console.log("Case 4: (dx: -, dy: -)");
-      //   $game.ball.dx = -1 * $game.ball.dx; // -1 to reverse the direction of the ball
-      //   $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
-
-      // }
-      console.log("Old x: " + $game.ball.x);
-      console.log("Old y: " + $game.ball.y);
-      console.log("Old dx: " + $game.ball.dx);
-      console.log("Old dy: " + $game.ball.dy);
       $game.ball.dx = -1 * ($game.ball.dx); // -1 to reverse the direction of the ball
-      // $game.ball.dx = ($game.ball.dx > 0) ? $game.ball.dx-0.5 : $game.ball.dx+0.5;
-      $game.ball.dy = $game.ball.dy; // * Math.cos(angle/2);
+      $game.ball.dy = $game.ball.dy; // dy remains the same, we are just bouncing off the wall
       moveBall();
       moveBall();
-      console.log("New x: " + $game.ball.x);
-      console.log("New y: " + $game.ball.y);
-      console.log("New dx: " + $game.ball.dx);
-      console.log("New dy: " + $game.ball.dy);
     } else if ($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2)){
-
+      // If we are player 1 and the ball hits the wall/goes out of bounds, do not do anything - wait for update from player 0
     } else {
 
       // If the ball hits the left quarter of the paddle, make the ball go left
@@ -623,17 +582,6 @@
       // Else Angle = 0
 
       // Update X and Y velocity of the ball
-      let dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-      let dx = $game.ball.velocity * Math.sin(angle);
-
-      // console.log("Dy on server: " + dy);
-      // console.log("Dx on server: " + dx);
-
-      // $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-      // $game.ball.dx = $game.ball.velocity * Math.sin(angle);
-
-      // $game.ball.dy = -$game.ball.dy; // -1 to reverse the direction of the ball
-      // $game.ball.dx = -$game.ball.dx;
       $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
       $game.ball.dx = $game.ball.velocity * Math.sin(angle);
     }
@@ -650,13 +598,7 @@
       $ws.send(JSON.stringify(payload));
     }
 
-    // Increase ball's velocity (optional)
-    // $game.ball.dy = -dx*Math.sin(theta) + dy*Math.cos(theta);
-    // $game.ball.dx = dx*Math.cos(theta) + dy*Math.sin(theta);
-
-    // console.log("Transformed Dy: " + $game.ball.dy);
-    // console.log("Transformed Dx: " + $game.ball.dx);
-
+    // Increase ball's velocity
     $game.ball.velocity += 0.2;
   }
 
