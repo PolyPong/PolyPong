@@ -83,7 +83,7 @@
   });
 
   onDestroy( () => {
-    $ws = new WebSocket(WS_SERVER_URL);
+    // $ws = new WebSocket(WS_SERVER_URL);
   });
 
   async function load() {
@@ -199,6 +199,7 @@
           lobby_id: $lobby_id,
         };
         $ws.send(JSON.stringify(payload));
+        $lobby_id = "";
         ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
       }
       await tick();
