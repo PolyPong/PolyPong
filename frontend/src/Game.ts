@@ -14,43 +14,24 @@ export class GameClient extends Game {
     // this.player_number = player_number;
     this.sideLength = 2 * this.radius * Math.sin(Math.PI / sides);
 
-    for (var i = 0; i < sides; i++) {
+    for (let i = 0; i < sides; i++) {
       // Note width of each paddle is set to the radius of the shape divided by the number of sides
-      if (i < 1) {
-        var player: Player = new Player(
-          "",
-          "",
-          new Paddle(
-            0,
-            this.sideLength * this.paddleCoverageRatio,
-            true,
-            Shape.Regular,
-            Color.Red,
-            false,
-            false,
-          ),
-          [],
+      const player: Player = new Player(
+        "",
+        "",
+        new Paddle(
           0,
-          null,
-        );
-      } else {
-        var player: Player = new Player(
-          "",
-          "",
-          new Paddle(
-            0,
-            this.sideLength * this.paddleCoverageRatio,
-            true,
-            Shape.Regular,
-            Color.White,
-            false,
-            false,
-          ),
-          [],
-          0,
-          null,
-        );
-      }
+          this.sideLength * this.paddleCoverageRatio,
+          true,
+          Shape.Regular,
+          Color.White,
+          false,
+          false,
+        ),
+        [],
+        0,
+      );
+      
       //var player: Player = new Player("","",new Paddle(0,this.radius/this.sides,true,Shape.Regular,Color.White),[],0);
       this.players.push(player);
     }

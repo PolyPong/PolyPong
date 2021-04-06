@@ -1,4 +1,5 @@
 import { derived, writable } from "svelte/store";
+import { v4 } from "uuid";
 import { Ball, Color, PowerupStrings } from "@polypong/polypong-common";
 import type {
   JoinGamePayload,
@@ -32,7 +33,7 @@ export const ws = writable(new WebSocket(SERVER_URL));
 export const lobby = writable(null);
 
 export const lobby_id = writable<string>("");
-export const user_id = writable<string>("");
+export const user_id = writable<string>(v4());
 
 export const game_info = writable<any>({});
 export const loss_info = writable<any>({});
@@ -75,6 +76,7 @@ const gotMessage = async (m: MessageEvent) => {
       }
       lobby_id.set(message.lobby_id);
     } else if (message.type === "game_started") {
+      console.log("We got a game_started message from the server");
       game_info.set({
         sides: message.sides,
         my_player_number: message.your_player_number,
@@ -96,7 +98,13 @@ const gotMessage = async (m: MessageEvent) => {
         user_id: message.user_id,
       });
       stop_game_loop.set(true);
-    } else {
+    } else if (message.type === "error"){
+      if(message.message === "Game in Progress"){
+        lobby_id.set("");
+        alert("This game has already started");
+      }
+    }
+    else {
       console.log("unrecognized message from server", message);
     }
   } catch (e) {

@@ -1,5 +1,6 @@
-import { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
-import { v4 } from "https://deno.land/std@0.84.0/uuid/mod.ts";
+import { Application, Context } from "https://deno.land/x/oak/mod.ts";
+import { v4 } from "https://deno.land/std@0.92.0/uuid/mod.ts";
+import { WebSocket, isWebSocketCloseEvent } from "https://deno.land/std@0.92.0/ws/mod.ts"
 
 import {
   ClientAction,
@@ -21,30 +22,51 @@ import dbHelper from "./db.ts";
 
 class Lobby {
   userlist: Map<string, WebSocket>;
+  userReadyList: string[]; // Array of user_id's that have hit "Let's play"
   usernameList: Map<string, string>;
   lobby_id: string;
   game: GameServer;
   ready_count = 0;
   lobby_count = 0;
+  game_in_progress = false;
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
+    this.userReadyList = [];
     this.usernameList = new Map();
     this.lobby_id = lobby_id;
     this.game = new GameServer(new Map(), new Map()); // will be replaced by setGame
   }
 
   setGame(game: GameServer) {
+    console.log("we have set the game");
     this.game = game;
   }
 
   joinGame(user_id: string, ws: WebSocket, username: string | undefined) {
+
+    if (this.game_in_progress){
+      console.log("We are in game in progress")
+      console.log(this.userlist.keys());
+      const response: ErrorPayload = {
+        type: "error",
+        message: "Game in Progress",
+      };
+      ws.send(JSON.stringify(response));
+      return;
+    }
+
     this.userlist.set(user_id, ws);
     if (username !== undefined){
       this.usernameList.set(user_id, username);
     }
 
     console.log("Username List: " + this.usernameList);
+    console.log("Userlist in Join Game: " + this.userlist);
+    console.log("Userlist in Join Game: " + JSON.stringify(this.userlist));
+    for (let user of this.userlist.keys()){
+      console.log("User in userlist: " + user);
+    }
 
     const response: LobbyJoinedPayload = {
       type: "lobby_joined_info",
@@ -56,7 +78,14 @@ class Lobby {
 
   broadcast(message: string, ignore: string | undefined) {
     //console.log("broadcasting message", message)
+    console.log("Userlist: " + this.userlist);
     for (const [k, v] of this.userlist.entries()) {
+      if (v.isClosed){
+        this.userlist.delete(k);
+        this.usernameList.delete(k);
+        continue;
+      }
+      
       if (k === ignore) {
         continue;
       }
@@ -76,6 +105,7 @@ class Lobby {
       return
     }
     this.ready_count = 0;
+    this.game_in_progress = true;
     this.startGame();
   }
 
@@ -88,10 +118,32 @@ class Lobby {
     }
     this.lobby_count = 0;
     const game = new GameServer(lobby.userlist, lobby.usernameList);
+    console.log("We have theoretically sent over the socket");
     lobby.setGame(game);
   }
 
   startGame() {
+
+    for (const [user_id, ws_connection] of this.userlist.entries()){
+      if (ws_connection.isClosed){
+        this.userlist.delete(user_id);
+        this.usernameList.delete(user_id);
+        if (user_id in this.userReadyList){
+          this.userReadyList.splice(this.userReadyList.indexOf(user_id),1);
+          this.lobby_count -= 1;
+        }
+
+        if (this.userlist.size < 2) {
+          this.game_in_progress = false;
+          this.lobby_count = 0;
+          this.ready_count = 0;
+          if (!(LobbyNames.has(this.lobby_id))){
+            LOBBIES.delete(this.lobby_id);
+          }
+        }
+      }
+    }
+
     console.log("3: " + JSON.stringify(this.game.players));
 
     const payload: ServerUpdate = {
@@ -102,9 +154,9 @@ class Lobby {
       message: "game_start",
     }
 
-    for (const p of payload.event.players) {
-      p.websocketConnection = null;
-    }
+    // for (const p of payload.event.players) {
+    //   p.websocketConnection = null;
+    // }
     this.broadcast(JSON.stringify(payload), undefined)
   }
 }
@@ -112,6 +164,13 @@ class Lobby {
 // global
 // this dies if the server dies
 const LOBBIES: Map<string, Lobby> = new Map();
+const LobbyNames: Set<string> = new Set();
+const names = ["Turing","Jobs","Gates","Torvalds","Stallman","Davis","Brin"];
+names.forEach((n) => LobbyNames.add(n));
+
+for (const lobbyName of LobbyNames){
+  LOBBIES.set(lobbyName, new Lobby(lobbyName));
+}
 
 export const createLobby: () => string = () => {
   const lobby_id = v4.generate();
@@ -124,6 +183,18 @@ const doStuff = async (ws: any) => {
   for await (const event of ws) {
     console.log("got message", event);
     // in case parsing fails, we wrap in a try/catch
+
+    // if(isWebSocketCloseEvent(event)){
+    //   for(const [lobby_id, lobby] of LOBBIES.entries()){
+    //     for(const [user_id, ws_connection] of lobby.userlist.entries())
+    //       if(ws_connection === ws){
+    //         lobby.userlist.delete(user_id);
+    //         lobby.usernameList.delete(user_id);
+    //          lobby.lobby_count -= 1;
+    //       }
+    //   }
+    // }
+
     try {
       const message = JSON.parse(event);
       if (message.type === "join_game") {
@@ -135,6 +206,24 @@ const doStuff = async (ws: any) => {
           };
           ws.send(JSON.stringify(response));
           continue;
+        }
+        ws.onclose = function(){
+          console.log("We are closing the WS");
+          this.userlist.delete(message.user_id);
+          this.usernameList.delete(message.user_id);
+          if (message.user_id in this.userReadyList){
+            this.userReadyList.splice(this.userReadyList.indexOf(message.user_id),1);
+            this.lobby_count -= 1;
+          }
+  
+          if (this.userlist.size < 2) {
+            this.game_in_progress = false;
+            this.lobby_count = 0;
+            this.ready_count = 0;
+            if (!(LobbyNames.has(this.lobby_id))){
+              LOBBIES.delete(this.lobby_id);
+            }
+          }
         }
         lobby.joinGame(message.user_id, ws, message.username);
         continue;
@@ -192,7 +281,7 @@ const doStuff = async (ws: any) => {
           ws.send(JSON.stringify(response));
           continue;
         }
-
+        lobby.userReadyList.push(message.user_id);
         lobby.incrementLobbyReady();
         lobby.checkLobbyReady(lobby);
       } else if (message.type === "client_ready") {
@@ -220,8 +309,6 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
-
-
         for (const username of lobby.usernameList.values()){
           console.log(username);
           dbHelper.levelUp(username, 1);
@@ -231,7 +318,7 @@ const doStuff = async (ws: any) => {
         lobby.usernameList.delete(message.user_id);
 
 
-        if (lobby.userlist.size === 1){
+        if (lobby.userlist.size < 2){
           console.log("There is only one player left, the game is over");
           for (const username of lobby.usernameList.values()){
             console.log(username);
@@ -264,11 +351,26 @@ const doStuff = async (ws: any) => {
         if (lobby.ready_count < lobby.userlist.size) {
           continue;
         }
+        lobby.ready_count = 0;
+
         if (lobby.userlist.size < 2) {
+          console.log("Size of userlist less than 2");
+          if (!(LobbyNames.has(lobby_id))){
+            console.log(lobby_id + " is not in LobbyNames");
+            LOBBIES.delete(lobby_id);
+          } else {
+            console.log("We are clearing out " + lobby.lobby_id + " lobby");
+            lobby.game_in_progress = false;
+            lobby.userlist = new Map();
+            lobby.userReadyList = [];
+            lobby.usernameList = new Map();
+            lobby.lobby_count = 0;
+            lobby.ready_count = 0;
+            // LOBBIES.set(lobby_id, lobby);
+            console.log(JSON.stringify(lobby));
+          }
           continue;
         }
-
-        lobby.ready_count = 0;
 
         const game = new GameServer(lobby.userlist, lobby.usernameList);
         lobby.setGame(game);

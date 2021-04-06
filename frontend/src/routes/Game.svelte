@@ -16,7 +16,7 @@
     power_up_two_used,
     power_up_three_used,
   } from "../store";
-  import { onMount, tick } from "svelte";
+  import { onMount, tick, onDestroy } from "svelte";
   import { Ball, Color, Paddle } from "@polypong/polypong-common";
   import type {
     ClientUpdate,
@@ -55,6 +55,11 @@
       ? "https://polyserver.polypong.ca/"
       : "http://localhost:5000/";
 
+  const WS_SERVER_URL =
+    import.meta.env.MODE === "production"
+      ? "wss://polyserver.polypong.ca:8443/ws"
+      : "ws://localhost:5000/ws";
+
   let beginningXP: number = 0;
   let endingXP: number = 0;
   let earnedXP: number = 0;
@@ -75,6 +80,10 @@
 
   onMount(async () => {
     load();
+  });
+
+  onDestroy( () => {
+    $ws = new WebSocket(WS_SERVER_URL);
   });
 
   async function load() {
@@ -424,9 +433,6 @@
       if ($game.players[i].paddle.visible) {
         ctx.beginPath();
         ctx.strokeStyle = $game.players[i].paddle.paddleColor;
-        console.log("Player number: " + i);
-        console.log("We are in drawPaddles: " + $game.players[i].paddle.paddleColor);
-        
 
         // Starting from the exact center, we move down the canvas (positive Y is down)
         // and across to where the right side of the paddle is

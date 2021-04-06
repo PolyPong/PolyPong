@@ -10,9 +10,7 @@ import {
   ClientUpdateMessage,
 } from "../PolyPong-Common/src/Game.ts";
 import dbHelper from "./db.ts";
-
-
-
+import { WebSocket } from "https://deno.land/std@0.92.0/ws/mod.ts"
 
 
 export class GameServer extends Game {
@@ -51,14 +49,13 @@ export class GameServer extends Game {
         ),
         [],
         0,
-        ws,
       );
       this.players.push(player);
     }
-    this.setSkins();
+    this.setSkins(userlist);
   }
 
-  async setSkins(){
+  async setSkins(userlist: Map<string, WebSocket>){
     console.log("1: " + JSON.stringify(this.players));
     for (const player of this.players){
       let skin = Color.White;
@@ -71,15 +68,26 @@ export class GameServer extends Game {
     }
 
     console.log("2: " + JSON.stringify(this.players));
+    console.log("Userlist");
+    console.log(userlist);
+
 
     for (const player of this.players) {
+      console.log("We are creating a payload to send");
       const payload: ServerSaysGameStarted = {
         type: "game_started",
         sides: this.sides,
         your_player_number: this.players.indexOf(player),
         ball: this.ball,
       };
-      player.websocketConnection!.send(JSON.stringify(payload));
+      // player.websocketConnection!.send(JSON.stringify(payload));
+      const socket = userlist.get(player.username);
+      if(!socket){
+        console.log("Socket no worky");
+      }
+
+      console.log("We are sending our payload");
+      socket?.send(JSON.stringify(payload));
     }
 
   }

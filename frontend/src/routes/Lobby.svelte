@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onDestroy, onMount, afterUpdate } from "svelte";
-  import { v4 } from "uuid";
   import {
     AddBall,
     Bomb,
@@ -44,7 +43,6 @@
   let expandedPaddleButton: HTMLElement;
   let copyLink: HTMLTextAreaElement;
 
-  user_id.set(v4());
   afterUpdate(() => console.log($lobby_id));
 
   onMount(async () => {

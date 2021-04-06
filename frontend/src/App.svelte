@@ -14,6 +14,7 @@
   import { onMount } from "svelte";
   import auth from "./authService";
   import { user, auth0Client } from "./store";
+import LobbySelection from "./routes/LobbySelection.svelte";
 
   router.mode.hash();
 
@@ -87,6 +88,10 @@
 
   <Route path="/login">
     <Login />
+  </Route>
+
+  <Route path="/lobbySelection">
+    <LobbySelection />
   </Route>
 
   <Route path="/callback">

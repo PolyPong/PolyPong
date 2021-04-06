@@ -50,12 +50,27 @@
 
   <div>
     <a href="/lobby">
-      <button class="button button1">Play As Guest</button>
+      <button class="button button2">Play As Guest</button>
     </a>
+
+    <a href="/lobbySelection">
+      <button class="button button3">Join Existing Lobby</button>
+    </a>
+ 
   </div>
+
+
+
   {#await $auth0Client then client}
     {#await client.isAuthenticated() then loggedin}
-      {#if !loggedin}
+      {#if loggedin}
+        <a href="/stats">
+          <button class="button button2">My Stats and Leaderboard</button>
+        </a>
+        <a href="/settings">
+          <button class="button button3">Settings</button>
+        </a>
+      {:else}
         <div>
           <a href="/signup">
             <button class="button button2">Sign Up</button>

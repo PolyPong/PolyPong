@@ -27,9 +27,9 @@ export abstract class Game {
 
   jsonify() {
     const { ball, activePowerups, players, backgroundColor } = this;
-    for (const p of players) {
-      p.websocketConnection = null;
-    }
+    // for (const p of players) {
+    //   p.websocketConnection = null;
+    // }
     return {
       ball,
       activePowerups,
@@ -140,7 +140,6 @@ export class Player {
   paddle: Paddle;
   inventory: PowerupStrings[];
   xp: number;
-  websocketConnection: WebSocket | null;
 
   constructor(
     username: string,
@@ -148,14 +147,12 @@ export class Player {
     paddle: Paddle,
     inventory: PowerupStrings[],
     xp: number,
-    websocketConnection: WebSocket | null,
   ) {
     this.username = username;
     this.email = email;
     this.paddle = paddle;
     this.inventory = inventory;
     this.xp = xp;
-    this.websocketConnection = websocketConnection;
   }
 
   // Does a player contain a paddle? Does skin/paddle color belong to player or to paddle?
@@ -219,7 +216,7 @@ export type PowerupStrings = "bigger"
   | "bomb"
   | "tracePath"
   | "distracting"
-
+  
 export interface Powerup {
   applyPowerup(): void;
 }
