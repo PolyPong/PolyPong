@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.13.6",
+    "@types/uuid": "^8.3.0",
     "svelte": "^3.24.0",
     "uuid": "^8.3.2"
   },
