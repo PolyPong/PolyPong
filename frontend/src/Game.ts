@@ -56,14 +56,22 @@ export class GameClient extends Game {
     }
   }
   mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
-    if (player_number || player_number === 0) {
-      // this.players[player_number].paddle.x = state.players[player_number].paddle.x;
-      // this.players[player_number].paddle.moving = state.players[player_number].paddle.moving;
-      // this.players[player_number].paddle.direction = state.players[player_number].paddle.direction;    
-      this.players = state.players;
-      this.ball.visible = state.ball.visible;
-      this.backgroundColor = state.backgroundColor;
-    }
+    // if (player_number || player_number === 0) {
+    //   // this.players[player_number].paddle.x = state.players[player_number].paddle.x;
+    //   // this.players[player_number].paddle.moving = state.players[player_number].paddle.moving;
+    //   // this.players[player_number].paddle.direction = state.players[player_number].paddle.direction;    
+    //   console.log("State color: " + state.players[0].paddle.paddleColor);
+    //   console.log("Client color: " + this.players[0].paddle.paddleColor);
+      
+    //   this.players = state.players;
+    //   this.ball.visible = state.ball.visible;
+    //   this.backgroundColor = state.backgroundColor;
+    // }
+
+    this.players = state.players;
+    this.ball.visible = state.ball.visible;
+    this.backgroundColor = state.backgroundColor;
+
     if (message === "ball_update") {
       this.ball.x = state.ball.x;
       this.ball.y = state.ball.y;

@@ -31,7 +31,7 @@ class Lobby {
     this.userlist = new Map();
     this.usernameList = new Map();
     this.lobby_id = lobby_id;
-    this.game = new GameServer(new Map()); // will be replaced by setGame
+    this.game = new GameServer(new Map(), new Map()); // will be replaced by setGame
   }
 
   setGame(game: GameServer) {
@@ -87,11 +87,13 @@ class Lobby {
       return
     }
     this.lobby_count = 0;
-    const game = new GameServer(lobby.userlist);
+    const game = new GameServer(lobby.userlist, lobby.usernameList);
     lobby.setGame(game);
   }
 
   startGame() {
+    console.log("3: " + JSON.stringify(this.game.players));
+
     const payload: ServerUpdate = {
 
       type: "server_update",
@@ -155,7 +157,7 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
-        const game = new GameServer(lobby.userlist);
+        const game = new GameServer(lobby.userlist, lobby.usernameList);
         lobby.setGame(game);
       } else if (message.type === "client_update") {
         const { lobby_id } = message;
@@ -268,7 +270,7 @@ const doStuff = async (ws: any) => {
 
         lobby.ready_count = 0;
 
-        const game = new GameServer(lobby.userlist);
+        const game = new GameServer(lobby.userlist, lobby.usernameList);
         lobby.setGame(game);
 
       }

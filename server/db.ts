@@ -86,6 +86,14 @@ export const getAvailableSkins: (username: string) => Promise<Color[]> = async (
     .map(([k, v]) => k as Color);
 }
 
+export const getSelectedSkin: (username: string) => Promise<Color> = async (username: string) => {
+  const user = await getUser(username);
+  if (!user) {
+    return Color.White;
+  }
+  return user.paddleColor;
+}
+
 export enum setSkinResponse {
   UserNotFound,
   LevelTooLow,
@@ -291,6 +299,6 @@ export default {
   getAvailableSkins,
   getGlobalLeaderboard,
   getLocalLeaderboard,
-  setSkin
-
+  setSkin,
+  getSelectedSkin
 }

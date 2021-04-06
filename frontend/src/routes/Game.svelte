@@ -48,7 +48,7 @@
   const paddleCoverageRatio: number = 1 / 4;
   const ballScaleFactor: number = 1 / 30;
   // const frameRate = 1000/60;  // 60 FPS
-  const frameRate = 1000 / 60;
+  const frameRate = 1000 / 30;
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -424,6 +424,9 @@
       if ($game.players[i].paddle.visible) {
         ctx.beginPath();
         ctx.strokeStyle = $game.players[i].paddle.paddleColor;
+        console.log("Player number: " + i);
+        console.log("We are in drawPaddles: " + $game.players[i].paddle.paddleColor);
+        
 
         // Starting from the exact center, we move down the canvas (positive Y is down)
         // and across to where the right side of the paddle is

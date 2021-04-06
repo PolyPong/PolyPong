@@ -9,6 +9,9 @@ import {
   ServerSaysGameStarted,
   ClientUpdateMessage,
 } from "../PolyPong-Common/src/Game.ts";
+import dbHelper from "./db.ts";
+
+
 
 
 
@@ -24,13 +27,16 @@ export class GameServer extends Game {
   backgroundColor: Color = Color.BackgroundColor;
   activePowerups: Powerup[] = [];
   players: Player[] = [];
+  usernameList: Map<string, string>;
 
-  constructor(userlist: Map<string, WebSocket>) {
+
+  constructor(userlist: Map<string, WebSocket>, usernameList: Map<string, string>) {
     super();
     this.sides = userlist.size;
+    this.usernameList = usernameList;
     this.sideLength = 2 * this.radius * Math.sin(Math.PI / this.sides);
 
-    for (const [user_id, ws] of userlist.entries()) {
+    for (const [user_id, ws] of userlist.entries()) {  
       const player = new Player(
         user_id,
         "",
@@ -49,6 +55,22 @@ export class GameServer extends Game {
       );
       this.players.push(player);
     }
+    this.setSkins();
+  }
+
+  async setSkins(){
+    console.log("1: " + JSON.stringify(this.players));
+    for (const player of this.players){
+      let skin = Color.White;
+      const username: string = this.usernameList.get(player.username) ?? "";
+
+      if(username){
+        skin = await dbHelper.getSelectedSkin(username) ?? Color.White;
+      }
+      player.paddle.paddleColor = skin;
+    }
+
+    console.log("2: " + JSON.stringify(this.players));
 
     for (const player of this.players) {
       const payload: ServerSaysGameStarted = {
@@ -59,6 +81,7 @@ export class GameServer extends Game {
       };
       player.websocketConnection!.send(JSON.stringify(payload));
     }
+
   }
 
   mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage) {

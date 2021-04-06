@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { skins, ws, user_id, auth0Client } from "../store";
+  import { skins, ws, user, user_id, auth0Client } from "../store";
   import { Color } from "@polypong/polypong-common";
+import { router } from "tinro";
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -15,7 +16,15 @@
   );
 
   let skinSelected = "white";
-  const username = "arun";
+  let authenticated = false;
+
+  onMount(async () => {
+    authenticated = await (await $auth0Client).isAuthenticated();
+    console.log(authenticated);
+    if (authenticated) {
+      await (await $auth0Client).getTokenSilently();
+    }
+  });
 
   function highlightSkins(idOfSkin: string) {
     if (idOfSkin == skinSelected) {
@@ -70,15 +79,15 @@
       <div>Seeing if you're logged in... Hold on</div>
     {:then isauthenticated}
       {#if isauthenticated}
-        {#await fetch(SERVER_URL + "getavailableskins/" + username)}
+        {#await fetch(SERVER_URL + "getavailableskins/" + $user.username)}
           <div>getting available skins...</div>
         {:then res}
           {#await res.json()}
             <div>getting available skins...</div>
           {:then skins}
             {#each skins as skin}
-              <button
-                style={`background-color:${skin};`}
+              <button class="button"
+                style={`color:${skin};`}
                 on:click={() => setSkin(skin)}>{colors[skin]}</button
               >
             {/each}
@@ -93,10 +102,18 @@
     {/await}
   {/await}
 
-  <a href="/login">
-    <!-- This assumes the user is logged in -->
-    <button class="button button8">Home</button>
-  </a>
+  {#if {authenticated}}
+    <a href="/login">
+      <!-- This assumes the user is logged in -->
+      <button class="button button8">Logged In Home</button>
+    </a>
+  {:else}
+    <a href="/home">
+      <!-- This assumes the user is logged in -->
+      <button class="button button8">Guest Home</button>
+    </a>
+  {/if}
+
 </body>
 
 <style>
@@ -142,6 +159,10 @@
     width: 20%;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .button:hover{
+    background-color: white;
   }
 
   .button4 {

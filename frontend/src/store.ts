@@ -84,6 +84,7 @@ const gotMessage = async (m: MessageEvent) => {
       router.goto("/game");
     } else if (message.type === "server_update") {
       const { event, player_number } = message;
+      console.log("We are here, about to merge state")
       get(game).mergeState(event, player_number, message.message);
 
       if (message.message === "game_start") {
