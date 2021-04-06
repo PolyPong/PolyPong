@@ -2,6 +2,7 @@
   import {
     game_info,
     ws,
+    user,
     user_id,
     lobby_id,
     game,
@@ -47,7 +48,17 @@
   const paddleCoverageRatio: number = 1 / 4;
   const ballScaleFactor: number = 1 / 30;
   // const frameRate = 1000/60;  // 60 FPS
-  const frameRate = 1000 / 10;
+  const frameRate = 1000 / 60;
+
+  const SERVER_URL =
+    import.meta.env.MODE === "production"
+      ? "https://polyserver.polypong.ca/"
+      : "http://localhost:5000/";
+
+  let beginningXP: number = 0;
+  let endingXP: number = 0;
+  let earnedXP: number = 0;
+  
 
   // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
   // function getPlayerInitialX(sides: number, playerNumber: number): number{
@@ -76,6 +87,13 @@
     canvas.width = 400;
     canvas.height = 400;
     ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;
+
+    if (await (await $auth0Client).isAuthenticated()) {
+      await (await $auth0Client).getTokenSilently();
+    }
+
+    beginningXP = await getXP();
+    console.log("Beginning XP: " + beginningXP);
 
     // First we send a game_over message from Game.svelte to lobby.ts
     // Then, lobby.ts sends over a game_started message, which is processed in store.ts
@@ -153,9 +171,16 @@
         if ($game_info.sides === 2) {
           clearScreenOriginCentered();
           animateText("You Win!", 8000);
-          // clearInterval(gameActiveInterval);
-          await sleep(8000);
+          await sleep(8500);
+
           if (await (await $auth0Client).isAuthenticated()) {
+            endingXP = await getXP();
+            earnedXP = endingXP - beginningXP;
+            console.log("Earned XP: " + earnedXP);
+            let xpString: string = "+" + earnedXP + " XP Earned!";
+            console.log("XP String: " + xpString);
+            animateText(xpString, 8000);
+            await sleep(8500);
             router.goto("/login");
           }
           router.goto("/home");
@@ -316,8 +341,16 @@
   async function drawGameOver() {
     clearScreenOriginCentered();
     animateText("Game Over", 8000);
-    await sleep(8000);
+    await sleep(8500);
+
     if (await (await $auth0Client).isAuthenticated()) {
+      endingXP = await getXP();
+      earnedXP = endingXP - beginningXP;
+      console.log("Earned XP: " + earnedXP);
+      let xpString: string = "+" + earnedXP + " XP Earned!";
+      console.log("XP String: " + xpString);
+      animateText(xpString, 8000);
+      await sleep(8500);
       router.goto("/login");
     }
     router.goto("/home");
@@ -647,6 +680,7 @@
   function drawText(text: string) {
     textAlpha += 0.01;
     ctx.fillStyle = "rgba(255,69,0, " + textAlpha + ")"; // CSS: orangered, hex value is #ff4500
+    console.log("We are drawing to the screen: " + text);
     ctx.fillText(text, 0, 0);
     if (Math.round(textAlpha * 100) / 100 == 1) {
       animationInterval.forEach(clearInterval);
@@ -792,6 +826,22 @@
 
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  async function getXP(): number{
+    console.log("We are in getXP(), client side");
+    if (await (await $auth0Client).isAuthenticated()){
+      console.log("We are authenticated, client side");
+      const response = await fetch(SERVER_URL + "getxp/" + $user.username);
+      console.log($user);
+      const responseBody = await response.text();
+      const tempXP = parseInt(responseBody);
+      console.log("tempXP: " + tempXP);
+      if(!isNaN(tempXP)){
+        return tempXP;
+      }
+      return 0;
+    }
   }
 
   function handlePowerup(powerup: PowerupStrings) {

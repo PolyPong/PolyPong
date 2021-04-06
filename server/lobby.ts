@@ -21,6 +21,7 @@ import dbHelper from "./db.ts";
 
 class Lobby {
   userlist: Map<string, WebSocket>;
+  usernameList: Map<string, string>;
   lobby_id: string;
   game: GameServer;
   ready_count = 0;
@@ -28,6 +29,7 @@ class Lobby {
 
   constructor(lobby_id: string) {
     this.userlist = new Map();
+    this.usernameList = new Map();
     this.lobby_id = lobby_id;
     this.game = new GameServer(new Map()); // will be replaced by setGame
   }
@@ -36,8 +38,13 @@ class Lobby {
     this.game = game;
   }
 
-  joinGame(user_id: string, ws: WebSocket) {
+  joinGame(user_id: string, ws: WebSocket, username: string | undefined) {
     this.userlist.set(user_id, ws);
+    if (username !== undefined){
+      this.usernameList.set(user_id, username);
+    }
+
+    console.log("Username List: " + this.usernameList);
 
     const response: LobbyJoinedPayload = {
       type: "lobby_joined_info",
@@ -127,7 +134,7 @@ const doStuff = async (ws: any) => {
           ws.send(JSON.stringify(response));
           continue;
         }
-        lobby.joinGame(message.user_id, ws);
+        lobby.joinGame(message.user_id, ws, message.username);
         continue;
       } else if (message.type === "create_lobby") {
         const lobby_id = createLobby();
@@ -211,7 +218,24 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
+
+
+        for (const username of lobby.usernameList.values()){
+          console.log(username);
+          dbHelper.levelUp(username, 1);
+        }
+          
         lobby.userlist.delete(message.user_id);
+        lobby.usernameList.delete(message.user_id);
+
+
+        if (lobby.userlist.size === 1){
+          console.log("There is only one player left, the game is over");
+          for (const username of lobby.usernameList.values()){
+            console.log(username);
+            dbHelper.levelUp(username, 1);
+          }
+        }
 
         const payload: ServerSaysStopGame = {
           type: "stop_game",

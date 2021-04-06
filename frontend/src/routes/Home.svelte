@@ -31,7 +31,7 @@
       }
 
       if (res.status === 200) {
-        $user.username = res.body;
+        $user.username = await res.text();
       }
     } else {
       // Not authenticated so we stay on this page

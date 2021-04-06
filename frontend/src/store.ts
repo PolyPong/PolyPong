@@ -49,10 +49,13 @@ export const global_leaderboard = writable<LeaderboardEntry[]>([]);
 export const local_leaderboard = writable<LeaderboardEntry[]>([]);
 
 export const joinGame = (input: string | undefined, user_id: string) => {
+  const username = get(user)?.username;
+
   const payload: JoinGamePayload = {
     type: "join_game",
     lobby_id: !!input ? input : get(lobby_id),
     user_id,
+    username: username,
   };
   get(ws).send(JSON.stringify(payload));
   lobby_id.set(!!input ? input : get(lobby_id));
