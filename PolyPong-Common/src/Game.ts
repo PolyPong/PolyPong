@@ -111,9 +111,8 @@ export class Paddle {
   shape: Shape;
   paddleColor: Color = Color.White;
 
-  moving: boolean;
-  // false for left, true for right
-  direction: boolean;
+  moving_left: boolean;
+  moving_right: boolean;
 
   constructor(
     x: number,
@@ -121,16 +120,16 @@ export class Paddle {
     visible: boolean,
     shape: Shape,
     paddleColor: Color,
-    moving: boolean,
-    direction: boolean,
+    moving_left: boolean,
+    moving_right: boolean,
   ) {
     this.x = x;
     this.width = width;
     this.visible = visible;
     this.shape = shape;
     this.paddleColor = paddleColor;
-    this.moving = moving;
-    this.direction = direction;
+    this.moving_left = moving_left;
+    this.moving_right = moving_right;
   }
 }
 

@@ -253,50 +253,50 @@
   function update() {
     // Handles paddle movement side-to-side using the left and right arrow keys,
     // only lets the paddle move along the length of its respective side (bounded by the side length)
-    if (
-      leftArrowPressed &&
-      $game.players[$game_info.my_player_number].paddle.x -
-        $game.players[$game_info.my_player_number].paddle.width -
-        Paddle.velocity >
-        -$game.sideLength / 2
-    ) {
-      $game.players[$game_info.my_player_number].paddle.x -= Paddle.velocity;
-    } else if (
-      rightArrowPressed &&
-      $game.players[$game_info.my_player_number].paddle.x + Paddle.velocity <
-        $game.sideLength / 2
-    ) {
-      $game.players[$game_info.my_player_number].paddle.x += Paddle.velocity;
-    }
+    // if (
+    //   leftArrowPressed &&
+    //   $game.players[$game_info.my_player_number].paddle.x -
+    //     $game.players[$game_info.my_player_number].paddle.width -
+    //     Paddle.velocity >
+    //     -$game.sideLength / 2
+    // ) {
+    //   $game.players[$game_info.my_player_number].paddle.x -= Paddle.velocity;
+    // } else if (
+    //   rightArrowPressed &&
+    //   $game.players[$game_info.my_player_number].paddle.x + Paddle.velocity <
+    //     $game.sideLength / 2
+    // ) {
+    //   $game.players[$game_info.my_player_number].paddle.x += Paddle.velocity;
+    // }
 
     // simulate other players movement
     for (var i = 0; i < $game.players.length; i++) {
       // skip updating self since already handled above
-      if (i == $game_info.my_player_number) continue;
+      // if (i == $game_info.my_player_number) continue;
 
       // let paddle = $game.players[i].paddle;
-      if ($game.players[i].paddle.moving) {
-        // moving right
-        if ($game.players[i].paddle.direction) {
-          // constrain movement to length of side
-          if (
-            $game.players[i].paddle.x + Paddle.velocity <
-            $game.sideLength / 2
-          ) {
-            $game.players[i].paddle.x += Paddle.velocity;
-          }
+      if ($game.players[i].paddle.moving_right && $game.players[i].paddle.moving_left) {
+        continue;
+      }
+
+      if ($game.players[i].paddle.moving_right) {
+        // constrain movement to length of side
+        if (
+          $game.players[i].paddle.x + Paddle.velocity <
+          $game.sideLength / 2
+        ) {
+          $game.players[i].paddle.x += Paddle.velocity;
         }
-        // moving left
-        else {
-          // constrain movement to length of side
-          if (
-            $game.players[i].paddle.x -
-              $game.players[i].paddle.width -
-              Paddle.velocity >
-            -$game.sideLength / 2
-          ) {
-            $game.players[i].paddle.x -= Paddle.velocity;
-          }
+      }
+      if ($game.players[i].paddle.moving_left) {
+        // constrain movement to length of side
+        if (
+          $game.players[i].paddle.x -
+            $game.players[i].paddle.width -
+            Paddle.velocity >
+          -$game.sideLength / 2
+        ) {
+          $game.players[i].paddle.x -= Paddle.velocity;
         }
       }
     }
@@ -747,8 +747,11 @@
   // }
 
   // Adding an EventListener to window to listen for keys being pressed
-  window.addEventListener("keydown", keyDownHandler);
-  window.addEventListener("keyup", keyUpHandler);
+  // window.addEventListener("keydown", keyDownHandler);
+  // window.addEventListener("keyup", keyUpHandler);
+  onkeydown = onkeyup = handleKeyPresses
+  // Adding an EventListener to check if window in focus
+  window.addEventListener("blur", blurHandler);
 
   const sendUpdate = (msg) => {
     const payload: ClientUpdate = {
@@ -762,75 +765,143 @@
     $ws.send(JSON.stringify(payload));
   };
 
-  // Activated when we press a key down
-  function keyDownHandler(event: any) {
-    if (!leftArrowPressed && !rightArrowPressed) {
-      switch (event.keyCode) {
-        case 37: // Left arrow key
-          leftArrowPressed = true;
-          $game.players[$game_info.my_player_number].paddle.moving = true;
-          $game.players[$game_info.my_player_number].paddle.direction = false;
-          sendUpdate("paddle_press_left");
-          break;
-        case 39: // Right arrow key
-          rightArrowPressed = true;
-          $game.players[$game_info.my_player_number].paddle.moving = true;
-          $game.players[$game_info.my_player_number].paddle.direction = true;
-          sendUpdate("paddle_press_right");
-          break;
-        case 49: // 1
-          console.log("Pressed 1 " + $power_up_one_used);
-          if (!$power_up_one_used) {
-            $power_up_one_used = true;
-            handlePowerup($power_ups_str[0]);
-          }
-          break;
-        case 50: // 2
-          console.log("Pressed 2");
-          if (!$power_up_two_used) {
-            $power_up_two_used = true;
-            handlePowerup($power_ups_str[1]);
-          }
-          break;
-
-        case 51: // 3
-          console.log($power_ups_str);
-          if (!$power_up_three_used) {
-            $power_up_three_used = true;
-            handlePowerup($power_ups_str[2]);
-          }
-          break;
-        // case 57: // 9
-        //   console.log("9");
-      }
+  var keyMap: any = {};
+  function handleKeyPresses(event: any) {
+    keyMap[event.keyCode] = event.type == "keydown";
+    if (keyMap[37]) {
+      leftArrowPressed = true;
+      $game.players[$game_info.my_player_number].paddle.moving_left = true;
+      sendUpdate("paddle_press_left");
     }
-  }
-
-  // Activated when we release the key
-  function keyUpHandler(event: any) {
-    switch (event.keyCode) {
-      case 37: // Left arrow key
-        leftArrowPressed = false;
-        $game.players[$game_info.my_player_number].paddle.moving = false;
-        sendUpdate("paddle_release_left");
-        break;
-      case 39: // Right arrow key
-        rightArrowPressed = false;
+    else {
+      leftArrowPressed = false;
+      $game.players[$game_info.my_player_number].paddle.moving_left = false;
+      sendUpdate("paddle_release_left");
+    }
+    if (keyMap[39]) {
+      rightArrowPressed = true;
+      $game.players[$game_info.my_player_number].paddle.moving_right = true;
+      sendUpdate("paddle_press_right");
+    }
+    else {
+      rightArrowPressed = false;
         console.log("In keyUp Handler: ");
         console.log(JSON.stringify($game));
         console.log(JSON.stringify($game.players[$game_info.my_player_number]));
-        $game.players[$game_info.my_player_number].paddle.moving = false;
+        $game.players[$game_info.my_player_number].paddle.moving_right = false;
         sendUpdate("paddle_release_right");
-        break;
-      case 49: // 1
-        console.log("Key Let Go");
-      case 50: // 2
-        console.log("Key Let Go");
-      case 51: // 3
-        console.log("Key Let Go");
-      case 57: // 9
-        console.log("Key Let Go");
     }
+    if (keyMap[49]) {
+      console.log("Pressed 1 " + $power_up_one_used);
+      if (!$power_up_one_used) {
+        $power_up_one_used = true;
+        handlePowerup($power_ups_str[0]);
+      }
+    }
+    else {
+      console.log("Key Let Go");
+    }
+    if (keyMap[50]) {
+      console.log("Pressed 2");
+      if (!$power_up_two_used) {
+        $power_up_two_used = true;
+        handlePowerup($power_ups_str[1]);
+      }
+    }
+    else {
+      console.log("Key Let Go");
+    }
+    if (keyMap[51]) {
+      console.log($power_ups_str);
+      if (!$power_up_three_used) {
+        $power_up_three_used = true;
+        handlePowerup($power_ups_str[2]);
+      }
+    }
+    else {
+      console.log("Key Let Go");
+    }
+  }
+
+  // Activated when we press a key down
+  // function keyDownHandler(event: any) {
+  //   if (!leftArrowPressed && !rightArrowPressed) {
+  //     switch (event.keyCode) {
+  //       case 37: // Left arrow key
+  //         leftArrowPressed = true;
+  //         $game.players[$game_info.my_player_number].paddle.moving_left = true;
+  //         sendUpdate("paddle_press_left");
+  //         break;
+  //       case 39: // Right arrow key
+  //         rightArrowPressed = true;
+  //         $game.players[$game_info.my_player_number].paddle.moving_right = true;
+  //         sendUpdate("paddle_press_right");
+  //         break;
+  //       case 49: // 1
+  //         console.log("Pressed 1 " + $power_up_one_used);
+  //         if (!$power_up_one_used) {
+  //           $power_up_one_used = true;
+  //           handlePowerup($power_ups_str[0]);
+  //         }
+  //         break;
+  //       case 50: // 2
+  //         console.log("Pressed 2");
+  //         if (!$power_up_two_used) {
+  //           $power_up_two_used = true;
+  //           handlePowerup($power_ups_str[1]);
+  //         }
+  //         break;
+  //       case 51: // 3
+  //         console.log($power_ups_str);
+  //         if (!$power_up_three_used) {
+  //           $power_up_three_used = true;
+  //           handlePowerup($power_ups_str[2]);
+  //         }
+  //         break;
+  //       // case 57: // 9
+  //       //   console.log("9");
+  //     }
+  //   }
+  // }
+
+  // // Activated when we release the key
+  // function keyUpHandler(event: any) {
+  //   switch (event.keyCode) {
+  //     case 37: // Left arrow key
+  //       leftArrowPressed = false;
+  //       $game.players[$game_info.my_player_number].paddle.moving_left = false;
+  //       sendUpdate("paddle_release_left");
+  //       break;
+  //     case 39: // Right arrow key
+  //       rightArrowPressed = false;
+  //       console.log("In keyUp Handler: ");
+  //       console.log(JSON.stringify($game));
+  //       console.log(JSON.stringify($game.players[$game_info.my_player_number]));
+  //       $game.players[$game_info.my_player_number].paddle.moving_right = false;
+  //       sendUpdate("paddle_release_right");
+  //       break;
+  //     case 49: // 1
+  //       console.log("Key Let Go");
+  //     case 50: // 2
+  //       console.log("Key Let Go");
+  //     case 51: // 3
+  //       console.log("Key Let Go");
+  //     case 57: // 9
+  //       console.log("Key Let Go");
+  //   }
+  // }
+
+  // Activated when the window loses focus
+  function blurHandler(event: any) {
+    console.log("Game lost focus!");
+    leftArrowPressed = false;
+    rightArrowPressed = false;
+    // reset player moving
+    $game.players[$game_info.my_player_number].paddle.moving_left = false;
+    $game.players[$game_info.my_player_number].paddle.moving_right = false;
+    // reset key being pressed
+    keyMap[37] = keyMap[39] = false;
+    sendUpdate("lost_focus")
   }
 
   function sleep(ms: number) {
