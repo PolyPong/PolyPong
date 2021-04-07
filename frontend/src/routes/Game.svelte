@@ -700,14 +700,12 @@
     var aI = setInterval(function () {
       drawText(text);
     }, duration / 100);
-    console.log("We are setting the animation interval: " + aI);
     animationInterval.push(aI);
   }
 
   function drawText(text: string) {
     textAlpha += 0.01;
     ctx.fillStyle = "rgba(255,69,0, " + textAlpha + ")"; // CSS: orangered, hex value is #ff4500
-    console.log("We are drawing to the screen: " + text);
     ctx.fillText(text, 0, 0);
     if (Math.round(textAlpha * 100) / 100 == 1) {
       animationInterval.forEach(clearInterval);
@@ -796,7 +794,6 @@
     }
     else {
       rightArrowPressed = false;
-        console.log("In keyUp Handler: ");
         console.log(JSON.stringify($game));
         console.log(JSON.stringify($game.players[$game_info.my_player_number]));
         $game.players[$game_info.my_player_number].paddle.moving_right = false;
@@ -810,7 +807,7 @@
       }
     }
     else {
-      console.log("Key Let Go");
+      // console.log("Key Let Go");
     }
     if (keyMap[50]) {
       console.log("Pressed 2");
@@ -820,7 +817,7 @@
       }
     }
     else {
-      console.log("Key Let Go");
+      // console.log("Key Let Go");
     }
     if (keyMap[51]) {
       console.log($power_ups_str);
@@ -830,7 +827,7 @@
       }
     }
     else {
-      console.log("Key Let Go");
+      // console.log("Key Let Go");
     }
   }
 

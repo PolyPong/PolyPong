@@ -50,7 +50,11 @@ export class GameClient extends Game {
     // }
     if (player_number || player_number === 0) {
       this.players[player_number] = state.players[player_number];
+    } else if (player_number === undefined){
+      this.players = state.players;
     }
+
+
     this.ball.visible = state.ball.visible;
     this.backgroundColor = state.backgroundColor;
 
