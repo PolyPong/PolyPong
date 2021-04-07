@@ -373,10 +373,10 @@
       console.log("XP String: " + xpString);
       animateText(xpString, 8000);
       await sleep(8500);
-      $lobby_id = "";
+      // $lobby_id = "";
       router.goto("/login");
     }
-    $lobby_id = "";
+    // $lobby_id = "";
     router.goto("/home");
   }
 
