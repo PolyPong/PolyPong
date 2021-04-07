@@ -207,6 +207,14 @@
   }
 
   function startGame(sides: number, player_number: number, ball: Ball) {
+    // Adding an EventListener to window to listen for keys being pressed
+    // window.addEventListener("keydown", keyDownHandler);
+    // window.addEventListener("keyup", keyUpHandler);
+    window.addEventListener("keydown", handleKeyPresses);
+    window.addEventListener("keyup", handleKeyPresses);
+    // Adding an EventListener to check if window in focus
+    window.addEventListener("blur", blurHandler);
+
     // Create new games with 'sides' number of players
 
     $game = new GameClient(sides, ball);
@@ -654,6 +662,9 @@
   }
 
   function handleGameOver() {
+    window.removeEventListener("keydown", handleKeyPresses);
+    window.removeEventListener("keyup", handleKeyPresses);
+    window.removeEventListener("blur", blurHandler);
     clearInterval(gameLoopRunning);
     clearInterval(distractingBackgroundInterval);
 
@@ -745,13 +756,6 @@
   // function drawDodecagon() {
   //   startGame(12);
   // }
-
-  // Adding an EventListener to window to listen for keys being pressed
-  // window.addEventListener("keydown", keyDownHandler);
-  // window.addEventListener("keyup", keyUpHandler);
-  onkeydown = onkeyup = handleKeyPresses
-  // Adding an EventListener to check if window in focus
-  window.addEventListener("blur", blurHandler);
 
   const sendUpdate = (msg) => {
     const payload: ClientUpdate = {
