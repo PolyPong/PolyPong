@@ -201,9 +201,9 @@
         $ws.send(JSON.stringify(payload));
         ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
 
-        if ($game_info.sides === 2) {
-          $lobby_id = "";
-        }
+        // if ($game_info.sides === 2) {
+        //   $lobby_id = "";
+        // }
       }
       await tick();
     }, 50);
