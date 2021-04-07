@@ -165,7 +165,7 @@ class Lobby {
 // this dies if the server dies
 const LOBBIES: Map<string, Lobby> = new Map();
 const LobbyNames: Set<string> = new Set();
-const names = ["Turing","Jobs","Gates","Torvalds","Stallman","Davis","Brin"];
+const names = ["DICE%208th%20Floor","ETLC%20Solarium","Cameron%20Library","SUB","CCIS","Windsor%20Library","ECERF","Telus%20Building"];
 names.forEach((n) => LobbyNames.add(n));
 
 for (const lobbyName of LobbyNames){

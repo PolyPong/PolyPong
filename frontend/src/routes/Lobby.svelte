@@ -207,22 +207,21 @@
 
   <div>
     <p>Link to join:</p>
-    <textarea readonly bind:this={copyLink}>
-      {SERVER_URL + "lobby/" + $lobby_id}
-    </textarea>
-    <button
+    <textarea class="text-area" rows="1" readonly bind:this={copyLink}>{SERVER_URL + "lobby/" + $lobby_id}</textarea>
+    <p>{SERVER_URL + "lobby/" + $lobby_id}</p>
+    <button class="button button4"
       on:click={() => {
         copyLink.select();
         document.execCommand("copy");
       }}
     >
-      Copy to clipboard
+      Copy Link to Clipboard to Invite Friends
     </button>
   </div>
 
-  <button class="button button4" style="vertical-align: middle;">
+  <!-- <button class="button button4" style="vertical-align: middle;">
     Copy Link to Invite Friends
-  </button>
+  </button> -->
 
   {#if !client_ready}
     <hr />
@@ -428,6 +427,20 @@
     text-align: left;
   }
 
+  .text-area {
+    font-family: SuperLegendBoy;
+    text-align: left;
+    font-size: 22px;
+    color: white;
+    background-color: #353839;
+    border: none;
+    resize: none;
+    height:0;
+    position: absolute;
+    z-index: -1;
+    width:0;
+  }
+
   .button {
     font-family: SuperLegendBoy;
     border: 2px solid #ffffff;
@@ -450,7 +463,7 @@
   }
 
   .button4 {
-    width: 50%;
+    width: 70%;
     margin-left: auto;
     margin-right: auto;
   }
@@ -465,7 +478,7 @@
   .powerUpButton {
     font-family: SuperLegendBoy;
     border: 2px solid #ffffff;
-    height: auto;
+    height: 200px;
     color: white;
     padding: 15px 15px;
     text-align: center;

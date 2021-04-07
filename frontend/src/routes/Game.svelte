@@ -177,6 +177,7 @@
         // await sleep(8000);
 
         if ($game_info.sides === 2) {
+          $lobby_id = "";
           clearScreenOriginCentered();
           animateText("You Win!", 8000);
           await sleep(8500);
@@ -199,7 +200,6 @@
           lobby_id: $lobby_id,
         };
         $ws.send(JSON.stringify(payload));
-        $lobby_id = "";
         ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
       }
       await tick();
@@ -246,7 +246,8 @@
 
   export function gameLoop() {
     update(); // For updating the state of the game
-    render(); // For rendering the updated state of the game (ie. clears the screen and draws the new state onto the canvas)
+    render(); // For rendering the updated state of the game 
+              // (ie. clears the screen and draws the new state onto the canvas)
   }
 
   // Update the state of the game, using what the server sends us
@@ -348,6 +349,7 @@
   }
 
   async function drawGameOver() {
+    $lobby_id = "";
     clearScreenOriginCentered();
     animateText("Game Over", 8000);
     await sleep(8500);
