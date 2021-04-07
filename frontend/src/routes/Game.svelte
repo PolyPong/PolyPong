@@ -177,7 +177,6 @@
         // await sleep(8000);
 
         if ($game_info.sides === 2) {
-          $lobby_id = "";
           clearScreenOriginCentered();
           animateText("You Win!", 8000);
           await sleep(8500);
@@ -201,6 +200,10 @@
         };
         $ws.send(JSON.stringify(payload));
         ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
+
+        if ($game_info.sides === 2) {
+          $lobby_id = "";
+        }
       }
       await tick();
     }, 50);
@@ -357,7 +360,7 @@
   }
 
   async function drawGameOver() {
-    $lobby_id = "";
+    
     clearScreenOriginCentered();
     animateText("Game Over", 8000);
     await sleep(8500);
@@ -370,8 +373,10 @@
       console.log("XP String: " + xpString);
       animateText(xpString, 8000);
       await sleep(8500);
+      $lobby_id = "";
       router.goto("/login");
     }
+    $lobby_id = "";
     router.goto("/home");
   }
 
