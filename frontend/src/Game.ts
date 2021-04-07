@@ -48,8 +48,9 @@ export class GameClient extends Game {
     //   this.ball.visible = state.ball.visible;
     //   this.backgroundColor = state.backgroundColor;
     // }
-
-    this.players = state.players;
+    if (player_number || player_number === 0) {
+      this.players[player_number] = state.players[player_number];
+    }
     this.ball.visible = state.ball.visible;
     this.backgroundColor = state.backgroundColor;
 
