@@ -300,17 +300,21 @@
     <br />
     <hr />
 
-    <p>
-      When you are ready and have your powerups selected, click the button
-      below:
-    </p>
-    <button
-      class="button button9"
-      style="vertical-align: middle;"
-      on:click={() => clientReady()}
-    >
-      Let's Play!
-    </button>
+    {#if $usernames.length > 1}
+      <p>
+        When you are ready and have your powerups selected, click the button
+        below:
+      </p>
+      <button
+        class="button button9"
+        style="vertical-align: middle;"
+        on:click={() => clientReady()}
+      >
+        Let's Play!
+      </button>
+    {:else}
+      <p>Waiting for one more player to join the lobby...</p>
+    {/if}
   {:else}
     <br />
     <hr />

@@ -49,7 +49,7 @@
         username: username,
       };
       $ws.send(JSON.stringify(payload));
-      return "Are you sure you want to exit the game?";
+      // return "Are you sure you want to exit the game?";
     }
 
   });

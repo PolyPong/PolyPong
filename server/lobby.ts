@@ -260,6 +260,10 @@ const doStuff = async (ws: any) => {
         await lobby.joinGame(message.user_id, ws, message.username);
         continue;
       } else if (message.type === "exit_game"){
+
+        // Known bug: If two players are in one lobby and one of the players
+        // loses connection or closes the window, the lobby is deleted and the player
+        // left in the lobby is in a non-existent lobby (ie. nobody else can join them)
         
         const lobby = LOBBIES.get(message.lobby_id);
         if (!lobby) {
@@ -301,6 +305,16 @@ const doStuff = async (ws: any) => {
         lobby.printState();
 
         const usernamesToSend: [string, number][] = await lobby.getListOfUsernames(message.username);
+
+        console.log("Length: " + usernamesToSend.length)
+        if (usernamesToSend.length === 1){
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          lobby.broadcast(JSON.stringify(response), undefined);
+          continue;
+        }
 
         const response: LobbyJoinedPayload = {
           type: "lobby_joined_info",

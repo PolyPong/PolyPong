@@ -79,6 +79,7 @@ const gotMessage = async (m: MessageEvent) => {
       }
       lobby_id.set(message.lobby_id);
     } else if (message.type === "lobby_joined_info") {
+      console.log("We is here " + message.usernames);
       usernames.set(message.usernames);
       console.log("Usernames: " + usernames);
     } else if (message.type === "game_started") {
@@ -105,6 +106,12 @@ const gotMessage = async (m: MessageEvent) => {
       });
       stop_game_loop.set(true);
     } else if (message.type === "error"){
+      if (message.message === "lobby not found") {
+        lobby_id.set("");
+        alert("This lobby does not exist. Either this is an invalid lobby ID, or the only other player in the lobby lost connection.");
+        router.goto("/home");
+      }
+
       if(message.message === "Game in Progress"){
         lobby_id.set("");
         alert("This game has already started");
