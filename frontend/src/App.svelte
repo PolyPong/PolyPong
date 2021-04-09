@@ -13,8 +13,9 @@
   import Callback from "./routes/Callback.svelte";
   import { onMount } from "svelte";
   import auth from "./authService";
-  import { user, auth0Client } from "./store";
+  import { user, auth0Client, lobby_id, user_id, ws } from "./store";
   import LobbySelection from "./routes/LobbySelection.svelte";
+  import type {ExitGamePayload} from "@polypong/polypong-common";
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -36,6 +37,21 @@
     // createclient should do this part automatically
     // await auth0Client.getTokenSilently();
     user.set(await (await $auth0Client).getUser());
+
+
+    window.onbeforeunload = () => {
+      console.log("We are unloading the page");
+      const username = $user?.username;
+      const payload: ExitGamePayload = {
+        type: "exit_game",
+        lobby_id: $lobby_id,
+        user_id: $user_id,
+        username: username,
+      };
+      $ws.send(JSON.stringify(payload));
+      return "Are you sure you want to exit the game?";
+    }
+
   });
 
 

@@ -365,6 +365,13 @@ export interface JoinGamePayload {
   username: string | undefined;
 }
 
+export interface ExitGamePayload {
+  type: "exit_game";
+  lobby_id: string;
+  user_id: string;
+  username: string | undefined;
+}
+
 export interface LobbyCreatedPayload {
   type: "lobby_created";
   lobby_id: string;

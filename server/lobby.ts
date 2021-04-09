@@ -38,6 +38,16 @@ class Lobby {
     this.game = new GameServer(new Map(), new Map()); // will be replaced by setGame
   }
 
+  printState(){
+    console.log("The current state of the lobby is: ")
+    console.log("User List: " + this.userlist);
+    console.log("User Ready List: " + this.userReadyList);
+    console.log("Username List: " + this.usernameList);
+    console.log("Lobby lobby_count: " + this.lobby_count);
+    console.log("Game ready_count: " + this.ready_count);
+    console.log("Game in progress: " + this.game_in_progress);
+  }
+
   setGame(game: GameServer) {
     console.log("we have set the game");
     this.game = game;
@@ -65,6 +75,17 @@ class Lobby {
     console.log("Userlist in Join Game: " + this.userlist);
     console.log("Userlist in Join Game: " + JSON.stringify(this.userlist));
 
+    const usernamesToSend: [string, number][] = await this.getListOfUsernames(username);
+
+    const response: LobbyJoinedPayload = {
+      type: "lobby_joined_info",
+      usernames: usernamesToSend,
+    };
+    this.broadcast(JSON.stringify(response), undefined);
+    ws.send("success joining game");
+  }
+
+  async getListOfUsernames(username: string | undefined): Promise<[string, number][]> {
     const usernamesToSend: [string, number][] = [];
     let i = 1;
     for (let user of this.userlist.keys()){
@@ -82,15 +103,9 @@ class Lobby {
       }
       i++;
     }
-
     console.log(usernamesToSend);
+    return usernamesToSend;
 
-    const response: LobbyJoinedPayload = {
-      type: "lobby_joined_info",
-      usernames: usernamesToSend,
-    };
-    this.broadcast(JSON.stringify(response), undefined);
-    ws.send("success joining game");
   }
 
   broadcast(message: string, ignore: string | undefined) {
@@ -244,6 +259,54 @@ const doStuff = async (ws: any) => {
         }
         await lobby.joinGame(message.user_id, ws, message.username);
         continue;
+      } else if (message.type === "exit_game"){
+        
+        const lobby = LOBBIES.get(message.lobby_id);
+        if (!lobby) {
+          const response: ErrorPayload = {
+            type: "error",
+            message: "lobby not found",
+          };
+          ws.send(JSON.stringify(response));
+          continue;
+        }
+
+        lobby.printState();
+
+        if (message.user_id && message.lobby_id){
+          lobby.userlist.delete(message.user_id);
+          lobby.usernameList.delete(message.user_id);
+          if (message.user_id in lobby.userReadyList){
+            lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id),1);
+            lobby.lobby_count -= 1;
+          }
+
+          if (lobby.game_in_progress){
+            console.log("A user just left while a game is in progress");
+            console.log("We may wish to display a message and start a new game without the player that lost connection");
+          }
+
+          if (lobby.userlist.size < 2) {
+            lobby.game_in_progress = false;
+            lobby.lobby_count = 0;
+            lobby.ready_count = 0;
+            if (!(LobbyNames.has(message.lobby_id))){
+              LOBBIES.delete(message.lobby_id);
+            }
+          }
+          console.log(message.user_id + " just exited the lobby/game with lobby_id: " + message.lobby_id);
+        }
+
+        console.log("");
+        lobby.printState();
+
+        const usernamesToSend: [string, number][] = await lobby.getListOfUsernames(message.username);
+
+        const response: LobbyJoinedPayload = {
+          type: "lobby_joined_info",
+          usernames: usernamesToSend,
+        };
+        lobby.broadcast(JSON.stringify(response), undefined);
       } else if (message.type === "create_lobby") {
         const lobby_id = createLobby();
         const response: LobbyCreatedPayload = {
@@ -333,7 +396,10 @@ const doStuff = async (ws: any) => {
           
         lobby.userlist.delete(message.user_id);
         lobby.usernameList.delete(message.user_id);
-
+        if (message.user_id in lobby.userReadyList){
+          lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id),1);
+          lobby.lobby_count -= 1;
+        }
 
         if (lobby.userlist.size < 2){
           console.log("There is only one player left, the game is over");
