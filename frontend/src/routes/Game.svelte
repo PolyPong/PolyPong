@@ -90,10 +90,12 @@
     w = document.documentElement.clientWidth;
     h = document.documentElement.clientHeight;
 
-    // canvas.width = w - 100;
-    // canvas.height = h - 150;
     canvas.width = 400;
     canvas.height = 400;
+
+    // canvas.width = w - 100;
+    // canvas.height = h - 150;
+
     ctx = canvas.getContext("2d")! as CanvasRenderingContext2D;
 
     if (await (await $auth0Client).isAuthenticated()) {
@@ -177,6 +179,9 @@
         // await sleep(8000);
 
         if ($game_info.sides === 2) {
+          window.removeEventListener("keydown", handleKeyPresses);
+          window.removeEventListener("keyup", handleKeyPresses);
+          window.removeEventListener("blur", blurHandler);
           clearScreenOriginCentered();
           animateText("You Win!", 8000);
           await sleep(8500);
@@ -238,7 +243,7 @@
     h = document.documentElement.clientHeight;
     // canvas.width = w - 100;
     // canvas.height = h - 150;
-    // ctx.scale(w/canvas.width, h/canvas.height)
+    // ctx.scale((canvas.width)/400, (canvas.width)/400)
 
     $game.radius = 175; // Set the radius of the game
 
@@ -1033,7 +1038,6 @@
       {/if}
     {/await}
   {/await}
-  <a href="/">go to /</a>
 
   <canvas
     id="drawing"
