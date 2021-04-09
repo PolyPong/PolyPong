@@ -15,7 +15,7 @@ import { router } from "tinro";
     ...Object.entries(Color).map(([a, b]) => ({ [b]: a }))
   );
 
-  let skinSelected = "white";
+  let skinSelected = "#fafafa";
   let authenticated = false;
 
   onMount(async () => {
@@ -24,7 +24,31 @@ import { router } from "tinro";
     if (authenticated) {
       await (await $auth0Client).getTokenSilently();
     }
+    getUsername();
   });
+
+  async function getUsername() {
+    if (await (await $auth0Client).isAuthenticated()) {
+      const token = await (await $auth0Client).getTokenSilently();
+
+      const res = await fetch(SERVER_URL + "whatismyname", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+      if (res.status === 204) {
+        router.goto("/signup");
+        return;
+      }
+
+      if (res.status === 200) {
+        $user.username = await res.text();
+      }
+    } else {
+      // Not authenticated so we stay on this page
+    }
+  }
 
   function highlightSkins(idOfSkin: string) {
     if (idOfSkin == skinSelected) {
@@ -69,8 +93,7 @@ import { router } from "tinro";
 <body>
   <h1 id="header" style="background-color: #353839;">PolyPong</h1>
   <hr />
-  <br />
-  <p>Selected Skin:</p>
+  <h2>Skins:</h2>
 
   {#await $auth0Client}
     <div>Seeing if you're logged in... Hold on</div>
@@ -79,40 +102,48 @@ import { router } from "tinro";
       <div>Seeing if you're logged in... Hold on</div>
     {:then isauthenticated}
       {#if isauthenticated}
+      <p>{$user.username}'s unlocked skins:</p>
         {#await fetch(SERVER_URL + "getavailableskins/" + $user.username)}
-          <div>getting available skins...</div>
+          <div>Getting available skins...</div>
         {:then res}
           {#await res.json()}
-            <div>getting available skins...</div>
+            <div>Getting available skins...</div>
           {:then skins}
-            {#each skins as skin}
-              <button class="button"
-                style={`color:${skin};`}
-                on:click={() => setSkin(skin)}>{colors[skin]}</button
-              >
-            {/each}
+            {#if skins.length == 0}
+              <p>You haven't unlocked any skins yet</p>
+            {:else}
+              <div class="grid-container">
+                {#each skins as skin}
+                  <button class="button"
+                    style={`color:${skin};`}
+                    on:click={() => setSkin(skin)}>{colors[skin]}</button
+                  >
+                {/each}
+              </div>
+            {/if}
           {/await}
         {/await}
       {:else}
         <div>
-          it seems like you're not logged in. You're stuck with the white skin
-          then
+          It seems like you're not logged in. As a result, you are stuck with the white skin until you log in and unlock some new skins!
         </div>
       {/if}
     {/await}
   {/await}
 
-  {#if {authenticated}}
-    <a href="/login">
-      <!-- This assumes the user is logged in -->
-      <button class="button button8">Logged In Home</button>
-    </a>
-  {:else}
-    <a href="/home">
-      <!-- This assumes the user is logged in -->
-      <button class="button button8">Guest Home</button>
-    </a>
-  {/if}
+  <br/>
+  <br/>
+  <br/>
+  
+
+  <p>You have selected the {colors[skinSelected]} paddle color!</p>
+
+  
+  <a href="/home">
+    <!-- This assumes the user is logged in -->
+    <button class="button button8">Home</button>
+  </a>
+  
 
 </body>
 
@@ -156,75 +187,32 @@ import { router } from "tinro";
     margin: 10px 0px;
     cursor: pointer;
     background-color: #353839;
-    width: 20%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
   }
 
   .button:hover{
     background-color: white;
-  }
-
-  .button4 {
     color: #353839;
-    background-color: white;
-    border: 2px solid white;
-  }
-  .button4:hover {
-    background-color: white;
-    color: #353839;
-  }
-
-  .button5 {
-    color: red;
-    border: 2px solid red;
-  }
-  .button5:hover {
-    background-color: red;
-    color: white;
-  }
-
-  .button6 {
-    color: blue;
-    border: 2px solid blue;
-  }
-  .button6:hover {
-    background-color: blue;
-    color: white;
-  }
-
-  .button7 {
-    color: orange;
-    border: 2px solid orange;
-  }
-  .button7:hover {
-    background-color: orange;
-    color: white;
-  }
+  }  
 
   .button8 {
     color: white;
     background-color: #353839;
     border: 2px solid white;
+    width: 20%;
   }
   .button8:hover {
     background-color: white;
     color: #353839;
   }
 
-  .input {
-    font-family: SuperLegendBoy;
-    height: auto;
-    width: 50%;
-    padding: 15px 0px;
-    text-align: center;
-    border: 2px solid white;
-    background-color: #353839;
-    font-size: 22px;
-    margin: 10px 0px;
+  .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-gap: 25px;        
   }
 
-  input:focus {
-    color: white;
-  }
+  
 </style>

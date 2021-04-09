@@ -6,13 +6,42 @@
   import type { CheckExists } from "@polypong/polypong-common";
   import { onMount } from "svelte";
 
+  const SERVER_URL =
+    import.meta.env.MODE === "production"
+      ? "https://polyserver.polypong.ca:8443/"
+      : "http://localhost:5000/";
+
   async function logIn() {
     auth.loginWithRedirect(await $auth0Client); // Do not pass in null in the options field or the code will break
   }
 
   onMount(() => {
-    // loggedInOrRegister();
+    getUsername();
   });
+
+  async function getUsername() {
+    if (await (await $auth0Client).isAuthenticated()) {
+      const token = await (await $auth0Client).getTokenSilently();
+
+      const res = await fetch(SERVER_URL + "whatismyname", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+      if (res.status === 204) {
+        router.goto("/signup");
+        return;
+      }
+
+      if (res.status === 200) {
+        $user.username = await res.text();
+      }
+    } else {
+      // Not authenticated so we stay on this page
+    }
+  }
+
 </script>
 
 <body>

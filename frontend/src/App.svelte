@@ -32,14 +32,14 @@
       await (await $auth0Client).getTokenSilently();
     }
 
-    loggedInOrRegister();
+    getUsername();
     // createclient should do this part automatically
     // await auth0Client.getTokenSilently();
     user.set(await (await $auth0Client).getUser());
   });
 
 
-  async function loggedInOrRegister() {
+  async function getUsername() {
     if (await (await $auth0Client).isAuthenticated()) {
       const token = await (await $auth0Client).getTokenSilently();
 
