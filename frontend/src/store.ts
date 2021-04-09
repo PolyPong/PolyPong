@@ -49,8 +49,11 @@ export const usernameExists = writable<boolean>(false);
 export const global_leaderboard = writable<LeaderboardEntry[]>([]);
 export const local_leaderboard = writable<LeaderboardEntry[]>([]);
 
+export const usernames = writable<[string, number][]>([]);
+
 export const joinGame = (input: string | undefined, user_id: string) => {
   const username = get(user)?.username;
+  console.log("Username in store.ts righ before sending a join game: " + username);
 
   const payload: JoinGamePayload = {
     type: "join_game",
@@ -75,6 +78,9 @@ const gotMessage = async (m: MessageEvent) => {
         console.log(`${message.user_id} has joined`);
       }
       lobby_id.set(message.lobby_id);
+    } else if (message.type === "lobby_joined_info") {
+      usernames.set(message.usernames);
+      console.log("Usernames: " + usernames);
     } else if (message.type === "game_started") {
       console.log("We got a game_started message from the server");
       game_info.set({

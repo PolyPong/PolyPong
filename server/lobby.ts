@@ -43,7 +43,7 @@ class Lobby {
     this.game = game;
   }
 
-  joinGame(user_id: string, ws: WebSocket, username: string | undefined) {
+  async joinGame(user_id: string, ws: WebSocket, username: string | undefined) {
 
     if (this.game_in_progress){
       console.log("We are in game in progress")
@@ -64,15 +64,32 @@ class Lobby {
     console.log("Username List: " + this.usernameList);
     console.log("Userlist in Join Game: " + this.userlist);
     console.log("Userlist in Join Game: " + JSON.stringify(this.userlist));
+
+    const usernamesToSend: [string, number][] = [];
+    let i = 1;
     for (let user of this.userlist.keys()){
       console.log("User in userlist: " + user);
+      username = this.usernameList.get(user);
+      if (username){
+        const xp = await dbHelper.getXP(username);
+        if (xp){
+          usernamesToSend.push([username, xp]);
+        } else {
+          usernamesToSend.push([username, 0]);
+        }
+      } else {
+        usernamesToSend.push(["Player " + i, 0]);
+      }
+      i++;
     }
+
+    console.log(usernamesToSend);
 
     const response: LobbyJoinedPayload = {
       type: "lobby_joined_info",
-      user_id,
+      usernames: usernamesToSend,
     };
-    this.broadcast(JSON.stringify(response), user_id);
+    this.broadcast(JSON.stringify(response), undefined);
     ws.send("success joining game");
   }
 
@@ -225,7 +242,7 @@ const doStuff = async (ws: any) => {
             }
           }
         }
-        lobby.joinGame(message.user_id, ws, message.username);
+        await lobby.joinGame(message.user_id, ws, message.username);
         continue;
       } else if (message.type === "create_lobby") {
         const lobby_id = createLobby();

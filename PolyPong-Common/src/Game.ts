@@ -355,7 +355,7 @@ export interface CreateUser {
 
 export interface LobbyJoinedPayload {
   type: "lobby_joined_info";
-  user_id: string;
+  usernames: [string, number][];
 }
 
 export interface JoinGamePayload {

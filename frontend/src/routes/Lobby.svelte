@@ -28,6 +28,7 @@
     power_up_one_used,
     power_up_two_used,
     power_up_three_used,
+    usernames,
   } from "../store";
 
   const SERVER_URL =
@@ -38,6 +39,9 @@
   export let id: string;
   let lobby_input: string;
   let powerUpsStr: any[] = [];
+  let allPowerUpNamesShort: string[] = ["bigger", "smaller", "curved", "selfInvisible", "othersInvisible", "ballInvisible", "anotherBall", "changeShape", "bomb", "catchAndAim", "distracting", "split", "tracePath"];
+  let allPowerUpNamesLong: string[] = ["Bigger Paddle", "Smaller Paddle", "Curved Paddle", "Invisible Paddle, Self", "Invisible Paddle, Others", "Invisible Ball", "Add Ball", "Change Ball Shape", "Bomb", "Catch and Aim", "Distracting Background", "Split Paddle", "Trace Ball Path"];
+
   let client_ready: boolean = false;
 
   let expandedPaddleButton: HTMLElement;
@@ -71,7 +75,7 @@
     $ws.send(JSON.stringify(payload));
   };
 
-  function highlightPowerUps(idOfElement: any) {
+  function highlightPowerUps(idOfElement: string) {
     // expandedPaddleButton.style =
     var id = document.getElementById(idOfElement);
     if (
@@ -123,7 +127,7 @@
 </script>
 
 <body>
-  {#if !!$lobby_id}
+  <!-- {#if !!$lobby_id}
     <div>here's the lobby id: {$lobby_id}</div>
     <button on:click={startGame}>Start Game</button>
   {:else}
@@ -147,56 +151,101 @@
     >
       join game
     </button>
-  {/if}
+  {/if} -->
   <h1 id="header" style="background-color: #353839;">PolyPong</h1>
   <hr />
   <h2>Lobby</h2>
 
   <hr />
 
-  <ol>
-    <div style="float: left; width: 40%;">
-      <li class="alignleft" id="playerOne">Arun</li>
-      <li class="alignright" style="list-style-type: none">8888</li>
-      <br />
-      <li class="alignleft" value="2" id="playerTwo">Josh</li>
-      <li class="alignright" style="list-style-type: none">7777</li>
-      <br />
-      <li class="alignleft" value="3" id="playerThree">Micheal</li>
-      <li class="alignright" style="list-style-type: none">1234</li>
-      <br />
-      <li class="alignleft" value="4" id="playerFour">asdf</li>
-      <li class="alignright" style="list-style-type: none">1000</li>
-      <br />
-      <li class="alignleft" value="5" id="playerFive">qwer</li>
-      <li class="alignright" style="list-style-type: none">1200</li>
-      <br />
-      <li class="alignleft" value="6" id="playerSix">ABCD</li>
-      <li class="alignright" style="list-style-type: none">1233</li>
-      <br />
-    </div>
-    <div style="float: right; width: 40%;">
-      <li class="alignleft" value="7" id="playerSeven">zazz</li>
-      <li class="alignright" style="list-style-type: none">999</li>
-      <br />
-      <li class="alignleft" value="8" id="playerEight">emdw</li>
-      <li class="alignright" style="list-style-type: none">787</li>
-      <br />
-      <li class="alignleft" value="9" id="playerNine">bmus</li>
-      <li class="alignright" style="list-style-type: none">757</li>
-      <br />
-      <li class="alignleft" value="10" id="playerTen">Waiting...</li>
-      <li class="alignright" style="list-style-type: none" />
-      <br />
-      <li class="alignleft" value="11" id="playerEleven" />
-      <li class="alignright" style="list-style-type: none" />
-      <br />
-      <li class="alignleft" value="12" id="playerTwelve" />
-      <li class="alignright" style="list-style-type: none" />
-      <br />
-    </div>
-  </ol>
+  <h3>Current Players:</h3>
 
+  <!-- {#each $usernames as [username, xp], index ([username,xp])}
+    {#if index < 6}
+      <div style="float: left; width: 40%;">
+        <div style="text-align: left">
+          {index}. {username}
+          <span style="float:right;">{xp}</span>
+        </div>
+      </div>
+    {:else}
+      <div style="float: right; width: 40%;">
+        <div style="text-align: left">
+          {index}. {username}
+          <span style="float:right;">{xp}</span>
+        </div>
+      </div>
+    {/if}
+  {/each} -->
+
+
+  {#if $usernames.length > 6}
+    <ol>
+      <div style="float: left; width: 40%;">
+        <li class="alignleft" style="list-style-type: none">Username</li>
+        <li class="alignright" style="list-style-type: none">XP</li>
+        <br/>
+        <br/>
+        {#each $usernames as [username, xp], index}
+          {#if index < 6}
+            <li class="alignleft" value={index+1}>{username}</li>
+            <li class="alignright" style="list-style-type: none">{xp}</li>
+            <br />
+            {#if (index+1) == $usernames.length}
+              <li class="alignleft" value={index+1}>Waiting...</li>
+              <br />
+            {/if}
+          {/if} 
+        {/each}
+      </div>
+    </ol>
+
+    <ol>
+      <div style="float: right; width: 40%;">
+        <!-- {#if $usernames.length >= 6} -->
+          <li class="alignleft" style="list-style-type: none">Username</li>
+          <li class="alignright" style="list-style-type: none">XP</li>
+          <br/>
+          <br/>
+          {#each $usernames as [username, xp], index}
+            {#if index >= 6}
+              <li class="alignleft" value={index+1}>{username}</li>
+              <li class="alignright" style="list-style-type: none">{xp}</li>
+              <br />
+              {#if index < 11}
+                {#if (index+1) == $usernames.length}
+                  <li class="alignleft" value={index+2}>Waiting...</li>
+                  <br />
+                {/if}
+              {/if}
+            {/if} 
+          {/each}
+        <!-- {/if} -->
+      </div>
+    </ol>
+  {:else}
+    <ol>
+      <div style="margin: auto; width: 50%;">
+        <li class="alignleft" style="list-style-type: none">Username</li>
+        <li class="alignright" style="list-style-type: none">XP</li>
+        <br/>
+        <br/>
+        {#each $usernames as [username, xp], index}
+          {#if index < 6}
+            <li class="alignleft" value={index+1}>{username}</li>
+            <li class="alignright" style="list-style-type: none">{xp}</li>
+            <br />
+          {/if} 
+          {#if (index+1) == $usernames.length}
+            <li class="alignleft" value={index+2}>Waiting...</li>
+            <br />
+          {/if}
+        {/each}
+      </div>
+    </ol>
+  {/if}
+
+  <br />
   <br />
   <br />
   <br />
@@ -206,9 +255,9 @@
   <br />
 
   <div>
-    <p>Link to join:</p>
+    <p>Link to join the lobby you are in:</p>
     <textarea class="text-area" rows="1" readonly bind:this={copyLink}>{SERVER_URL + "lobby/" + $lobby_id}</textarea>
-    <p>{SERVER_URL + "lobby/" + $lobby_id}</p>
+    <p style="text-decoration: underline;">{SERVER_URL + "lobby/" + $lobby_id}</p>
     <button class="button button4"
       on:click={() => {
         copyLink.select();
@@ -217,7 +266,14 @@
     >
       Copy Link to Clipboard to Invite Friends
     </button>
+
+    <!-- {#if !!$lobby_id}
+      <p style="font-size: 10px;">(Lobby ID: {$lobby_id})</p>
+    {/if} -->
   </div>
+
+  <br>
+  
 
   <!-- <button class="button button4" style="vertical-align: middle;">
     Copy Link to Invite Friends
@@ -225,152 +281,20 @@
 
   {#if !client_ready}
     <hr />
+    <br>
     <h2>Choose 3 Powerups:</h2>
     <br />
 
-    <div>
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="bigger"
-        bind:this={expandedPaddleButton}
-        on:click={() => highlightPowerUps("bigger")}
-      >
-        <img src="/images/Bigger_Paddle.png" width="90" height="90" />
-        <p>Bigger Paddle</p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="smaller"
-        on:click={() => highlightPowerUps("smaller")}
-      >
-        <img src="/images/Smaller_Paddle.png" width="90" height="90" />
-        <p>Smaller Paddle</p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="curved"
-        on:click={() => highlightPowerUps("curved")}
-      >
-        <img src="/images/Curved_Paddle.png" width="90" height="90" />
-        <p>Curved Paddle</p>
-      </button>
-    </div>
-
-    <div>
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="selfInvisible"
-        on:click={() => highlightPowerUps("selfInvisible")}
-      >
-        <img src="/images/Invisible_Paddle.png" width="90" height="90" />
-        <p>Invisible Paddle, Self<br /><br /></p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="othersInvisible"
-        on:click={() => highlightPowerUps("othersInvisible")}
-      >
-        <img src="/images/Invisible_Paddle.png" width="90" height="90" />
-        <p>Invisible Paddle, Others<br /><br /></p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="ballInvisible"
-        on:click={() => highlightPowerUps("ballInvisible")}
-      >
-        <img src="/images/Invisible_Paddle.png" width="90" height="90" />
-        <p>Invisible Ball<br /><br /></p>
-      </button>
-    </div>
-
-    <div>
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="anotherBall"
-        on:click={() => highlightPowerUps("anotherBall")}
-      >
-        <img src="/images/Add_a_Ball_into_the_Mix.png" width="90" height="90" />
-        <p>Add a Ball into the Mix</p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="changeShape"
-        on:click={() => highlightPowerUps("changeShape")}
-      >
-        <img
-          src="/images/Change_Ball_Shape_-_Star.png"
-          width="90"
-          height="90"
-        />
-        <p>Change Ball Shape - Star</p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="bomb"
-        on:click={() => highlightPowerUps("bomb")}
-      >
-        <img src="/images/Bomb.png" width="90" height="90" />
-        <p>Bomb<br /><br /></p>
-      </button>
-    </div>
-
-    <div>
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="catchAndAim"
-        on:click={() => highlightPowerUps("catchAndAim")}
-      >
-        <img src="/images/Catch_And_Aim.png" width="90" height="90" />
-        <p>Catch And Aim</p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="distracting"
-        on:click={() => highlightPowerUps("distracting")}
-      >
-        <img src="/images/Distracting_Background.png" width="90" height="90" />
-        <p>Distracting Background</p>
-      </button>
-
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="split"
-        on:click={() => highlightPowerUps("split")}
-      >
-        <img src="/images/Split_Paddle.png" width="90" height="90" />
-        <p>Split Paddle<br /><br /></p>
-      </button>
-    </div>
-
-    <div>
-      <button
-        class="powerUpButton"
-        style="background-color: #353839; width: 25%;"
-        id="tracePath"
-        on:click={() => highlightPowerUps("tracePath")}
-      >
-        <img src="/images/Catch_And_Aim.png" width="90" height="90" />
-        <p>Trace Ball Path<br /><br /></p>
-      </button>
+    <div class="grid-container">
+      {#each allPowerUpNamesShort as powerUpName, index}
+        <button class="powerUpButton grid-item" id="{powerUpName}"
+          on:click={() => highlightPowerUps(powerUpName)}
+        >
+          <img src="/images/{powerUpName}.png" width="90" height="90" />
+          <p>{allPowerUpNamesLong[index]}</p>
+        </button>
+          
+      {/each}
     </div>
 
     <br />
@@ -475,21 +399,39 @@
     float: right;
   }
 
-  .powerUpButton {
+  /* .powerUpButton {
     font-family: SuperLegendBoy;
     border: 2px solid #ffffff;
-    height: 200px;
+    height: 300px;
     color: white;
     padding: 15px 15px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 22px;
+    font-size: 20px;
     margin: 5px 5px;
     cursor: pointer;
+    width: 100%;
     background-color: #353839;
-    width: 20%;
     margin-left: auto;
     margin-right: auto;
+  } */
+
+  .powerUpButton {
+    font-family: SuperLegendBoy;
+    border: 2px solid #ffffff;
+    height: 300px;
+    color: white;
+    text-align: center;
+    display: inline-block;
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #353839;
+  }
+
+  .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-gap: 25px;        
   }
 </style>

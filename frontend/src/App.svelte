@@ -14,17 +14,53 @@
   import { onMount } from "svelte";
   import auth from "./authService";
   import { user, auth0Client } from "./store";
-import LobbySelection from "./routes/LobbySelection.svelte";
+  import LobbySelection from "./routes/LobbySelection.svelte";
+
+  const SERVER_URL =
+    import.meta.env.MODE === "production"
+      ? "https://polyserver.polypong.ca:8443/"
+      : "http://localhost:5000/";
 
   router.mode.hash();
 
   // let auth0Client;
 
   onMount(async () => {
+    console.log("We are in onMount");
+    if (await (await $auth0Client).isAuthenticated()) {
+      console.log("The user is autheticated");
+      await (await $auth0Client).getTokenSilently();
+    }
+
+    loggedInOrRegister();
     // createclient should do this part automatically
     // await auth0Client.getTokenSilently();
     user.set(await (await $auth0Client).getUser());
   });
+
+
+  async function loggedInOrRegister() {
+    if (await (await $auth0Client).isAuthenticated()) {
+      const token = await (await $auth0Client).getTokenSilently();
+
+      const res = await fetch(SERVER_URL + "whatismyname", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+      if (res.status === 204) {
+        router.goto("/signup");
+        return;
+      }
+
+      if (res.status === 200) {
+        $user.username = await res.text();
+      }
+    } else {
+      // Not authenticated so we stay on this page
+    }
+  }
 </script>
 
 <!-- <div>

@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { ws, user_id } from "../store";
+  import { ws, user_id, user } from "../store";
   import Stats from "./Stats.svelte";
 
   const SERVER_URL =
@@ -18,7 +18,7 @@
     id.style.color = "#353839";
   }
 
-  const username = "arun2";
+  const username = $user.username;
 </script>
 
 <body>

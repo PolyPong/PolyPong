@@ -6,40 +6,12 @@
   import type { CheckExists } from "@polypong/polypong-common";
   import { onMount } from "svelte";
 
-  const SERVER_URL =
-    import.meta.env.MODE === "production"
-      ? "https://polyserver.polypong.ca:8443/"
-      : "http://localhost:5000/";
-
   async function logIn() {
     auth.loginWithRedirect(await $auth0Client); // Do not pass in null in the options field or the code will break
   }
 
-  async function loggedInOrRegister() {
-    if (await (await $auth0Client).isAuthenticated()) {
-      const token = await (await $auth0Client).getTokenSilently();
-
-      const res = await fetch(SERVER_URL + "whatismyname", {
-        method: "GET",
-        headers: {
-          Authorization: token,
-        },
-      });
-      if (res.status === 204) {
-        router.goto("/signup");
-        return;
-      }
-
-      if (res.status === 200) {
-        $user.username = await res.text();
-      }
-    } else {
-      // Not authenticated so we stay on this page
-    }
-  }
-
   onMount(() => {
-    loggedInOrRegister();
+    // loggedInOrRegister();
   });
 </script>
 
@@ -50,11 +22,19 @@
 
   <div>
     <a href="/lobby">
-      <button class="button button2">Play As Guest</button>
+      <button class="button button2" 
+        on:click={async () => {
+          const payload = {
+            type: "create_lobby",
+          };
+          $ws.send(JSON.stringify(payload));
+          console.log("Attempting to create lobby");
+        }}
+      >Create Private Game</button>
     </a>
 
     <a href="/lobbySelection">
-      <button class="button button3">Join Existing Lobby</button>
+      <button class="button button3">Join Public Game</button>
     </a>
  
   </div>
@@ -72,10 +52,7 @@
         </a>
       {:else}
         <div>
-          <a href="/signup">
-            <button class="button button2">Sign Up</button>
-          </a>
-          <button class="button button3" on:click={logIn}>Log In</button>
+          <button class="button button1" on:click={logIn}>Sign Up/Log In</button>
         </div>
       {/if}
     {/await}
