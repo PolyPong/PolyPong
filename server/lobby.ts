@@ -419,6 +419,11 @@ const doStuff = async (ws: any) => {
           console.log(username);
           dbHelper.levelUp(username, 1);
         }
+
+        const lossUsername = lobby.usernameList.get(message.user_id);
+        if (lossUsername){
+          dbHelper.addLoss(lossUsername);
+        }
           
         lobby.userlist.delete(message.user_id);
         lobby.usernameList.delete(message.user_id);
@@ -432,6 +437,7 @@ const doStuff = async (ws: any) => {
           for (const username of lobby.usernameList.values()){
             console.log(username);
             dbHelper.levelUp(username, 1);
+            dbHelper.addWin(username);
           }
         }
 

@@ -50,6 +50,18 @@ router.get("/getselectedskin/:userid", async (ctx) => {
   ctx.response.body = skin;
 });
 
+router.get("/getwins/:userid", async (ctx) => {
+  const { userid } = getQuery(ctx, { mergeParams: true });
+  const wins = await dbHelper.getWins(userid);
+  ctx.response.body = wins;
+});
+
+router.get("/getlosses/:userid", async (ctx) => {
+  const { userid } = getQuery(ctx, { mergeParams: true });
+  const losses = await dbHelper.getLosses(userid);
+  ctx.response.body = losses;
+});
+
 
 router.post("/setskin", async (ctx) => {
   const skinstr = await ctx.request.body({ type: "text" }).value;

@@ -4,11 +4,40 @@
   import Stats from "./Stats.svelte";
 
   let globalLeaderboard = false;
+  let xp: number = 0;
+  let wins: number = 0;
+  let losses: number = 0;
+  let gamesPlayed: number = 0;
+
+  const username = $user.username;
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
       ? "https://polyserver.polypong.ca:8443/"
       : "http://localhost:5000/";
+
+  onMount(async () => {
+    if(username){
+      const xpresponse = await fetch(SERVER_URL + "getxp/" + username);
+      const xpresponseBody = await xpresponse.text();
+      xp = parseInt(xpresponseBody);
+
+      const winresponse = await fetch(SERVER_URL + "getwins/" + username);
+      const winresponseBody = await winresponse.text();
+      wins = parseInt(winresponseBody);
+
+
+      const lossresponse = await fetch(SERVER_URL + "getlosses/" + username);
+      const lossresponseBody = await lossresponse.text();
+      losses = parseInt(lossresponseBody);
+
+      gamesPlayed = wins+losses;
+      console.log(wins);
+      console.log(losses);
+      console.log(gamesPlayed);
+
+    }
+  });
 
   function toggleBackground(idOfLabel, ...ids) {
     if (idOfLabel == "me"){
@@ -25,7 +54,6 @@
     id.style.color = "#353839";
   }
 
-  const username = $user.username;
 </script>
 
 <body>
@@ -35,10 +63,16 @@
 
   <h2>My Stats</h2>
 
-  <p style="text-align:center">Games Played: 70</p>
-  <p style="text-align:center">Win/Loss Ratio: 0.88</p>
-  <p style="text-align:center">Games Won: 62</p>
-  <p style="text-align:center">XP Level: 22</p>
+  {#if username}
+    <p style="text-align:center">Games Played: {gamesPlayed}</p>
+    {#if wins !== 0 || losses !== 0}
+      <p style="text-align:center">Win/Loss Ratio: {(wins)/(wins+losses)}</p>
+    {/if}
+    <p style="text-align:center">Games Won: {wins}</p>
+    <p style="text-align:center">XP Level: {xp}</p>
+  {:else}
+  <p style="text-align:center; padding: 50px;">To see your stats, create an account or log in!</p>
+  {/if}
   
   <!-- <table class="center" width="100%">
     <tr height="50px">
@@ -115,7 +149,7 @@
         {/await}
       {/await}
     {:else}
-      <p>You are not logged in, please try logging in again</p>
+      <p style="padding: 50px;">To see your position on the leaderboards, create an account or log in!</p>
     {/if}
   {/if}
 

@@ -124,6 +124,38 @@ export const levelUp = async (username: string, levels: number) => {
   return await users.updateOne({ username: { $eq: username } }, { $inc: { xp: levels } });
 }
 
+// this should be determined by the server, not the game client
+export const addWin = async (username: string) => {
+  return await users.updateOne({ username: { $eq: username } }, { $inc: { wins: 1 } });
+}
+
+// this should be determined by the server, not the game client
+export const addLoss = async (username: string) => {
+  return await users.updateOne({ username: { $eq: username } }, { $inc: { losses: 1 } });
+}
+
+
+export const getWins: (username: string) => Promise<number> = async (username: string) => {
+  const user = await getUser(username);
+  if (!user) {
+    return -1;
+  }
+  console.log("The user exists, their wins are " + user.wins);
+  return user.wins;
+}
+
+export const getLosses: (username: string) => Promise<number> = async (username: string) => {
+  const user = await getUser(username);
+  if (!user) {
+    return -1;
+  }
+  console.log("The user exists, their losses are " + user.losses);
+  return user.losses;
+}
+
+
+
+
 
 export const addUser: (username: string, email: string) => Document = async (
   username: string,
@@ -300,5 +332,9 @@ export default {
   getGlobalLeaderboard,
   getLocalLeaderboard,
   setSkin,
-  getSelectedSkin
+  getSelectedSkin,
+  addWin,
+  addLoss,
+  getWins,
+  getLosses,
 }
