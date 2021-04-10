@@ -15,7 +15,7 @@ import { router } from "tinro";
     ...Object.entries(Color).map(([a, b]) => ({ [b]: a }))
   );
 
-  let skinSelected = "#fafafa";
+  let skinSelected: string = "#fafafa";
   let authenticated = false;
 
   onMount(async () => {
@@ -23,6 +23,11 @@ import { router } from "tinro";
     console.log(authenticated);
     if (authenticated) {
       await (await $auth0Client).getTokenSilently();
+      const response = await fetch(SERVER_URL + "getselectedskin/" + $user.username);
+      if (response.body){
+        skinSelected = await response.text();
+      }
+      
     }
     getUsername();
   });
@@ -123,8 +128,11 @@ import { router } from "tinro";
             {/if}
           {/await}
         {/await}
+        <br/>
+
+        <p>You have selected the {colors[skinSelected]} paddle color!</p>
       {:else}
-        <div>
+        <div style="padding: 50px;">
           It seems like you're not logged in. As a result, you are stuck with the white skin until you log in and unlock some new skins!
         </div>
       {/if}
@@ -134,9 +142,6 @@ import { router } from "tinro";
   <br/>
   <br/>
   <br/>
-  
-
-  <p>You have selected the {colors[skinSelected]} paddle color!</p>
 
   
   <a href="/home">

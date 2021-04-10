@@ -44,6 +44,13 @@ router.get("/getavailableskins/:userid", async (ctx) => {
   ctx.response.body = skins;
 });
 
+router.get("/getselectedskin/:userid", async (ctx) => {
+  const { userid } = getQuery(ctx, { mergeParams: true });
+  const skin = await dbHelper.getSelectedSkin(userid);
+  ctx.response.body = skin;
+});
+
+
 router.post("/setskin", async (ctx) => {
   const skinstr = await ctx.request.body({ type: "text" }).value;
   if (!(Object.values(Color).includes(skinstr as Color))) {
