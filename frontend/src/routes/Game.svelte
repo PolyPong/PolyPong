@@ -661,15 +661,7 @@
     }
 
     if (!($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2))){
-      const payload: ClientUpdate = {
-        type: "client_update",
-        event: $game.jsonify(),
-        player_number: $game_info.my_player_number,
-        lobby_id: $lobby_id,
-        player_id: $user_id,
-        message: "ball_update",
-      };
-      $ws.send(JSON.stringify(payload));
+      sendUpdate("ball_update");
     }
 
     // Increase ball's velocity
