@@ -165,7 +165,7 @@ class Lobby {
           this.lobby_count -= 1;
         }
 
-        if (this.userlist.size < 2) {
+        if (this.userlist.size < 1) {
           this.game_in_progress = false;
           this.lobby_count = 0;
           this.ready_count = 0;
@@ -248,7 +248,7 @@ const doStuff = async (ws: any) => {
             this.lobby_count -= 1;
           }
   
-          if (this.userlist.size < 2) {
+          if (this.userlist.size < 1) {
             this.game_in_progress = false;
             this.lobby_count = 0;
             this.ready_count = 0;
@@ -302,7 +302,7 @@ const doStuff = async (ws: any) => {
           }
 
 
-          if (lobby.userlist.size < 2) {
+          if (lobby.userlist.size < 1) {
             lobby.game_in_progress = false;
             lobby.lobby_count = 0;
             lobby.ready_count = 0;
@@ -462,7 +462,7 @@ const doStuff = async (ws: any) => {
         }
         lobby.ready_count = 0;
 
-        if (lobby.userlist.size < 2) {
+        if (lobby.userlist.size < 1) {
           console.log("Size of userlist less than 1");
           if (!(LobbyNames.has(lobby_id))){
             console.log(lobby_id + " is not in LobbyNames");
