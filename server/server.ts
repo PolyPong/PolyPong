@@ -5,13 +5,14 @@ import {
   Response,
   Router,
   Status,
-} from "https://deno.land/x/oak/mod.ts";
-import { oakCors } from "https://deno.land/x/cors/mod.ts";
-import { getQuery } from "https://deno.land/x/oak/helpers.ts";
-import dbHelper, { setSkinResponse } from "./db.ts";
+} from "https://deno.land/x/oak@v6.5.0/mod.ts";
+import { superoak } from "https://deno.land/x/superoak@4.1.0/mod.ts";
+import { oakCors } from "https://deno.land/x/cors@v1.2.1/mod.ts";
+import { getQuery } from "https://deno.land/x/oak@v6.5.0/helpers.ts";
+import dbHelper, { setSkinResponse, users } from "./db.ts";
 import { Color } from "../PolyPong-Common/src/Game.ts";
 
-import { verify, decode } from "https://deno.land/x/djwt/mod.ts";
+import { verify, decode } from "https://deno.land/x/djwt@v2.2/mod.ts";
 
 const SECRET = Deno.env.get("SECRET") ?? "secret was not set";
 
@@ -27,11 +28,7 @@ app.addEventListener("listen", ({ secure, hostname, port }) => {
 const router = new Router();
 
 router.get("/ws", handleSocket);
-router.get("/test", ({ response }: { response: Response }) => {
-  response.body = {
-    message: "https://xkcd.com/1739/",
-  };
-});
+
 router.get("/getxp/:userid", async (ctx) => {
   const { userid } = getQuery(ctx, { mergeParams: true });
   const xp = await dbHelper.getXP(userid);
@@ -204,6 +201,32 @@ if (MODE === "production") {
     keyFile: "/app/server/key.pem",
     secure: true,
   });
-} else {
+} else if (import.meta.main) {
   await app.listen({ port });
 }
+
+const test_setup = async () => {
+  // clean db for test
+  await users.deleteMany({})
+  // add user test
+  await dbHelper.addUser("arun", "test@example.com");
+}
+
+Deno.test("whatismyname", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request
+    .get("/whatismyname")
+    .set("Authorization", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJoWmJMdFNuWWZjQlY4ZktzdkpRRiJ9.eyJodHRwczovL3BvbHlzZXJ2ZXIucG9seXBvbmcuY2EvZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaXNzIjoiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDMzODA5NzgyNjkwNjI1MzUyNTUiLCJhdWQiOlsiaHR0cHM6Ly9wb2x5c2VydmVyLnBvbHlwb25nLmNhIiwiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjE3NzY4NjYxLCJleHAiOjE2MTc4NTUwNjEsImF6cCI6Im1IYXpnbTZmUktYT2dvTHhGWVJodnN0WEpSbDFkU0dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9Cg.sRn45skCZAGdXCuPBD8u-k5lFSWpuqCd0v4bbl-YQnLso7UlYELLzRfURUFeUuGVMub1mEsnboyrb8623sQHiYRTWjj_X4pAyFLWBmQ96aPBSvsu_joh9X5j-pGJGs_UKitiMp_ugMU6Nr9bsklfslMRoO4YOn3i-uQlH8WPCbMFrVN4V7Nru18T9_YHPgQPKUxHau4hGmT4nbDe3WM466vSWoIUS-Ful2drStwUT9ug7O6gkBZtx3AkTL7toqjgzb8jQu_Rg0DK9hfNC9cukAYIBeP8v36QSnDGwtLMjEuDuCtICt6nr_ecpM15J2WdSsgMFF1dwsBfhkDMPjyI9A")
+    .expect(200)
+    .expect("arun");
+})
+
+Deno.test("leaderboard", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request
+    .get("/leaderboard")
+    .expect(200)
+    .expect('[{"username":"arun","xp":0}]');
+})
