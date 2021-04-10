@@ -39,6 +39,7 @@
 
     window.onbeforeunload = () => {
       console.log("We are unloading the page");
+      console.log("Lobby ID, client side: " + $lobby_id);
       const username = $user?.username;
       const payload: ExitGamePayload = {
         type: "exit_game",

@@ -12,6 +12,7 @@
     loss_info,
     auth0Client,
     power_ups_str,
+    power_ups_str_long,
     power_up_one_used,
     power_up_two_used,
     power_up_three_used,
@@ -180,6 +181,7 @@
     serverSaysStopGameInterval = setInterval(async () => {
       if ($stop_game_loop) {
         $stop_game_loop = false;
+        console.log("We get to the stop game loop");
 
         clearInterval(gameLoopRunning);
         clearInterval(distractingBackgroundInterval);
@@ -187,6 +189,7 @@
         // await sleep(8000);
 
         if ($game_info.sides === 2) {
+          console.log("Two players left and one just lost");
           window.removeEventListener("keydown", handleKeyPresses);
           window.removeEventListener("keyup", handleKeyPresses);
           window.removeEventListener("blur", blurHandler);
@@ -207,6 +210,7 @@
           router.goto("/home");
         }
 
+        console.log("We are sending the client payload");
         const payload: ClientStopped = {
           type: "client_stopped",
           lobby_id: $lobby_id,
@@ -1057,12 +1061,23 @@
 
   <br />
 
+
   <p>Inventory:</p>
 
-  <p>Press 1 to use: {$power_ups_str[0]}</p>
+  {#if !$power_up_one_used}
+    <p>Press 1 to use: {$power_ups_str_long[0]}</p>
+  {/if}
   <!-- <p>Note this does not currently update when the power up is used</p>-->
-  <p>Press 2 to use: {$power_ups_str[1]}</p>
-  <p>Press 3 to use: {$power_ups_str[2]}</p>
+  {#if !$power_up_two_used}
+    <p>Press 2 to use: {$power_ups_str_long[1]}</p>
+  {/if}
+  {#if !$power_up_three_used}
+    <p>Press 3 to use: {$power_ups_str_long[2]}</p>
+  {/if}
+
+  {#if $power_up_one_used && $power_up_two_used && $power_up_three_used}
+    <p>No Powerups Remaining</p>
+  {/if}
 
   <!-- <p>Draw a:</p>
 

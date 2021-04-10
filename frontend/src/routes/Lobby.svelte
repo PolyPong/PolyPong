@@ -25,6 +25,7 @@
     ws,
     joinGame,
     power_ups_str,
+    power_ups_str_long,
     power_up_one_used,
     power_up_two_used,
     power_up_three_used,
@@ -104,6 +105,14 @@
     console.log("We are sending a lobby_client_ready request on the client");
 
     power_ups_str.set(powerUpsStr);
+
+    let allPowerUpNamesShort: string[] = ["bigger", "smaller", "curved", "selfInvisible", "othersInvisible", "ballInvisible", "anotherBall", "changeShape", "bomb", "catchAndAim", "distracting", "split", "tracePath"];
+    let allPowerUpNamesLong: string[] = ["Bigger Paddle", "Smaller Paddle", "Curved Paddle", "Invisible Paddle, Self", "Invisible Paddle, Others", "Invisible Ball", "Add Ball", "Change Ball Shape", "Bomb", "Catch and Aim", "Distracting Background", "Split Paddle", "Trace Ball Path"];
+    let powerUpNamesLong: string[] = []
+    for (const powerUp of powerUpsStr){
+      powerUpNamesLong.push(allPowerUpNamesLong[allPowerUpNamesShort.indexOf(powerUp)]);
+    }
+    power_ups_str_long.set(powerUpNamesLong);
     if (powerUpsStr.length > 0) {
       power_up_one_used.set(false);
     }

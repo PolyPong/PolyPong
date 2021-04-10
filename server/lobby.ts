@@ -289,7 +289,18 @@ const doStuff = async (ws: any) => {
           if (lobby.game_in_progress){
             console.log("A user just left while a game is in progress");
             console.log("We may wish to display a message and start a new game without the player that lost connection");
+            
+            const payload: ServerSaysStopGame = {
+              type: "stop_game",
+              player_number: message.player_number,
+              user_id: message.user_id,
+            }
+    
+            lobby.broadcast(JSON.stringify(payload), undefined)
+            lobby.ready_count = 0;
+          
           }
+
 
           if (lobby.userlist.size < 2) {
             lobby.game_in_progress = false;
@@ -452,7 +463,7 @@ const doStuff = async (ws: any) => {
         lobby.ready_count = 0;
 
         if (lobby.userlist.size < 2) {
-          console.log("Size of userlist less than 2");
+          console.log("Size of userlist less than 1");
           if (!(LobbyNames.has(lobby_id))){
             console.log(lobby_id + " is not in LobbyNames");
             LOBBIES.delete(lobby_id);
