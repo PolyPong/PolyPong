@@ -257,6 +257,7 @@ const doStuff = async (ws: any) => {
             }
           }
         }
+        console.log("About to enter joinGame()");
         await lobby.joinGame(message.user_id, ws, message.username);
         continue;
       } else if (message.type === "exit_game"){

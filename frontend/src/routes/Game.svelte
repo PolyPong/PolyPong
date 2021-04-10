@@ -83,7 +83,15 @@
   });
 
   onDestroy( () => {
-    // $ws = new WebSocket(WS_SERVER_URL);
+    window.removeEventListener("keydown", handleKeyPresses);
+    window.removeEventListener("keyup", handleKeyPresses);
+    window.removeEventListener("blur", blurHandler);
+    clearInterval(gameLoopRunning);
+    clearInterval(gameActiveInterval);
+    animationInterval.forEach(clearInterval);
+    clearInterval(allClientsReadyInterval);
+    clearInterval(serverSaysStopGameInterval);
+    clearInterval(distractingBackgroundInterval);
   });
 
   async function load() {
@@ -243,7 +251,7 @@
     h = document.documentElement.clientHeight;
     // canvas.width = w - 100;
     // canvas.height = h - 150;
-    // ctx.scale((canvas.width)/400, (canvas.width)/400)
+    // ctx.scale((canvas.width)/400, (canvas.height)/400)
 
     $game.radius = 175; // Set the radius of the game
 
