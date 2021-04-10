@@ -462,7 +462,7 @@ const doStuff = async (ws: any) => {
         }
         lobby.ready_count = 0;
 
-        if (lobby.userlist.size < 1) {
+        if (lobby.userlist.size < 2) {
           console.log("Size of userlist less than 1");
           if (!(LobbyNames.has(lobby_id))){
             console.log(lobby_id + " is not in LobbyNames");
