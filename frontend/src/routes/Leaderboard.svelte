@@ -3,12 +3,19 @@
   import { ws, user_id, user } from "../store";
   import Stats from "./Stats.svelte";
 
+  let globalLeaderboard = false;
+
   const SERVER_URL =
     import.meta.env.MODE === "production"
       ? "https://polyserver.polypong.ca:8443/"
       : "http://localhost:5000/";
 
   function toggleBackground(idOfLabel, ...ids) {
+    if (idOfLabel == "me"){
+      globalLeaderboard = false;
+    } else {
+      globalLeaderboard = true;
+    }
     for (let i = 0; i < ids.length; i++) {
       document.getElementById(ids[i]).style.backgroundColor = "#353839";
       document.getElementById(ids[i]).style.color = "#FFFFFF";
@@ -22,56 +29,104 @@
 </script>
 
 <body>
-  <div>
-    <span>global leaderboard</span>
-    {#await fetch(SERVER_URL + "leaderboard") then res}
-      <div>Getting global leaderboard Stats...</div>
-      {#await res.json() then leaderboard}
-        {#each leaderboard as entry}
-          <div>
-            {entry.username}
-            {entry.xp}
-          </div>
-        {/each}
-      {/await}
-    {/await}
-  </div>
-  <div>
-    <span>local leaderboard</span>
-    {#await fetch(SERVER_URL + "localleaderboard/" + username) then res}
-      <div>Getting local leaderboard...</div>
-      {#await res.json() then leaderboard}
-        {#each leaderboard as entry}
-          <div>
-            {entry.username}
-            {entry.xp}
-          </div>
-        {/each}
-      {/await}
-    {/await}
-  </div>
+
   <h1>PolyPong</h1>
   <hr />
+  <h2>Leaderboard</h2>
+
   <div class="content">
     <div>
-      <label id="me" class="label preselected"
-        ><input
+      <label id="me" class="label preselected">
+        <input
           type="radio"
           class="radio"
           name="radio2"
           checked
           on:click={() => toggleBackground("me", "me", "top_worldwide")}
-        />Me</label
-      >
-      <label id="top_worldwide" class="label"
-        ><input
+        />Your Position</label>
+      <label id="top_worldwide" class="label">
+        <input
           type="radio"
           class="radio"
           name="radio2"
           on:click={() =>
             toggleBackground("top_worldwide", "me", "top_worldwide")}
-        />Top</label
-      >
+        />Top in the World</label>
+    </div>
+  </div>
+  <br/>
+
+  {#if globalLeaderboard}
+    {#await fetch(SERVER_URL + "leaderboard") then res}
+      {#await res.json() then leaderboard}
+        <ol>
+          <div style="margin: auto; width: 50%;">
+            <li class="alignleft" style="list-style-type: none">Username</li>
+            <li class="alignright" style="list-style-type: none">XP Earned</li>
+            <br/>
+            <br/>
+            {#each leaderboard as entry, index}
+                <li class="alignleft" value={index+1}>{entry.username}</li>
+                <li class="alignright" style="list-style-type: none">{entry.xp}</li>
+                <br />
+            {/each}
+          </div>
+        </ol>
+      {/await}
+    {/await}
+  {:else}
+    {#if username}
+      {#await fetch(SERVER_URL + "localleaderboard/" + username) then res}
+        {#await res.json() then leaderboard}
+          <ol>
+            <div style="margin: auto; width: 50%;">
+              <li class="alignleft" style="list-style-type: none">Username</li>
+              <li class="alignright" style="list-style-type: none">XP Earned</li>
+              <br/>
+              <br/>
+              {#each leaderboard as entry}
+                  <li class="alignleft" value={entry.place}>{entry.username}</li>
+                  <li class="alignright" style="list-style-type: none">{entry.xp}</li>
+                  <br />
+              {/each}
+            </div>
+          </ol>
+        {/await}
+      {/await}
+    {:else}
+      <p>You are not logged in, please try logging in again</p>
+    {/if}
+  {/if}
+
+  <hr/>
+
+  <a href="/home">
+    <button class="button button4">Home</button>
+  </a>
+
+
+<!-- 
+
+  <h1>PolyPong</h1>
+  <hr />
+  <div class="content">
+    <div>
+      <label id="me" class="label preselected">
+        <input
+          type="radio"
+          class="radio"
+          name="radio2"
+          checked
+          on:click={() => toggleBackground("me", "me", "top_worldwide")}
+        />Me</label>
+      <label id="top_worldwide" class="label">
+        <input
+          type="radio"
+          class="radio"
+          name="radio2"
+          on:click={() =>
+            toggleBackground("top_worldwide", "me", "top_worldwide")}
+        />Top</label>
     </div>
     <br />
     <br />
@@ -99,8 +154,7 @@
           class="radio"
           name="radio1"
           on:click={() => toggleBackground("time3", "time1", "time2", "time3")}
-        />Year</label
-      >
+        />Year</label>
     </div>
     <br />
     <br />
@@ -121,9 +175,9 @@
   </div>
 
   <a href="/login">
-    <!-- This assumes the user is logged in -->
+  --><!-- This assumes the user is logged in --><!--
     <button class="button button4">Home</button>
-  </a>
+  </a> -->
 </body>
 
 <style>
@@ -145,6 +199,7 @@
     text-align: center;
     color: white;
     background-color: #353839;
+    width: 100%;
   }
 
   p {
@@ -156,7 +211,8 @@
   ol {
     display: inline-block;
     font-size: 22px;
-    text-align: left;
+    text-align: center;
+    width: 100%;
   }
 
   /* Makes radio buttons (the circle part) disappear */
@@ -182,7 +238,6 @@
   }
 
   .content {
-    max-width: 500px;
     margin: auto;
   }
 
@@ -214,5 +269,12 @@
     width: 20%;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .alignleft {
+    float: left;
+  }
+  .alignright {
+    float: right;
   }
 </style>
