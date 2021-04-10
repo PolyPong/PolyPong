@@ -246,11 +246,11 @@ Deno.test("database test", async () => {
 
   // set skin
   const newskin = await setSkin("test@example.com", Color.DeepOrange);
-  assertEquals(newskin, Color.DeepOrange);
+  assertEquals(newskin, setSkinResponse.Success);
 
   // set skin that's not allowed yet because low xp
   const newskin2 = await setSkin("test@example.com", Color.Red);
-  assertEquals(newskin2, Color.DeepOrange);
+  assertEquals(newskin2, setSkinResponse.LevelTooLow);
 
 
   // global leaderboard
