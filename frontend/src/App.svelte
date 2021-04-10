@@ -8,8 +8,6 @@
   import Powerups from "./routes/Powerups.svelte";
   import Settings from "./routes/Settings.svelte";
   import Signup from "./routes/Signup.svelte";
-  import Stats from "./routes/Stats.svelte";
-  import Login from "./routes/Login.svelte";
   import Callback from "./routes/Callback.svelte";
   import { onMount } from "svelte";
   import auth from "./authService";
@@ -132,14 +130,6 @@
 
   <Route path="/signup">
     <Signup />
-  </Route>
-
-  <Route path="/stats">
-    <Stats />
-  </Route>
-
-  <Route path="/login">
-    <Login />
   </Route>
 
   <Route path="/lobbySelection">

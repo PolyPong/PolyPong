@@ -73,7 +73,7 @@
   {#await $auth0Client then client}
     {#await client.isAuthenticated() then loggedin}
       {#if loggedin}
-        <a href="/stats">
+        <a href="/leaderboard">
           <button class="button button2">My Stats and Leaderboard</button>
         </a>
         <a href="/settings">

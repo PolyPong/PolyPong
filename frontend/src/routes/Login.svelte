@@ -11,10 +11,10 @@
       </a>
     </div>
     <div>
-      <a href="/stats">
+      <a href="/leaderboard">
         <button class="button button2">My Stats and Leaderboard</button>
       </a>
-      <a href="/stats">
+      <a href="/settings">
         <button class="button button3">Settings</button>
       </a>
     </div>

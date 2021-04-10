@@ -32,6 +32,27 @@
 
   <h1>PolyPong</h1>
   <hr />
+
+  <h2>My Stats</h2>
+
+  <p style="text-align:center">Games Played: 70</p>
+  <p style="text-align:center">Win/Loss Ratio: 0.88</p>
+  <p style="text-align:center">Games Won: 62</p>
+  <p style="text-align:center">XP Level: 22</p>
+  
+  <!-- <table class="center" width="100%">
+    <tr height="50px">
+      <td style="text-align:left">Games Played: 70</td>
+      <td style="text-align:left">Win/Loss Ratio: 0.88</td>
+    </tr>
+
+    <tr height="50px">
+      <td style="text-align:left">Games Won: 62</td>
+      <td style="text-align:left">XP Level: 22</td>
+    </tr>
+  </table> -->
+
+  <hr />
   <h2>Leaderboard</h2>
 
   <div class="content">
@@ -174,7 +195,7 @@
     </div>
   </div>
 
-  <a href="/login">
+  <a href="/home">
   --><!-- This assumes the user is logged in --><!--
     <button class="button button4">Home</button>
   </a> -->

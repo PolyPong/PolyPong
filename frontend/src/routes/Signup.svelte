@@ -114,7 +114,7 @@
   <br />
   <br />
 
-  <!-- <a href="/login"> -->
+  <!-- <a href="/home"> -->
   <button class="button button8" on:click={signUpUser}>Create Account</button>
   <!-- </a> -->
 </body>

@@ -202,7 +202,7 @@
             console.log("XP String: " + xpString);
             animateText(xpString, 8000);
             await sleep(8500);
-            router.goto("/login");
+            router.goto("/home");
           }
           router.goto("/home");
         }
@@ -387,7 +387,7 @@
       animateText(xpString, 8000);
       await sleep(8500);
       // $lobby_id = "";
-      router.goto("/login");
+      router.goto("/home");
     }
     // $lobby_id = "";
     router.goto("/home");
