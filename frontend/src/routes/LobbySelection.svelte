@@ -3,7 +3,7 @@
 
     // import {joinGame, ws, user_id} from "../store"
 
-    const LobbyNames: string[] = ["DICE 8th Floor","ETLC Solarium","Cameron Library","SUB","CCIS","Windsor Library","ECERF","Telus Building"];
+    const LobbyNames: string[] = ["DICE","Solarium","Cameron","SUB","CCIS","Windsor","ECERF","Telus", "Tory", "Butterdome", "Quad", "Lister"];
 
     const joinGameButton = (input: string | undefined) => {
         router.goto("/lobby/" + input);
@@ -25,7 +25,13 @@
         {/each}
     </div>
 
+    <br/>
     <hr />
+    <br/>
+
+    <a href="/home">
+        <button class="button1 button4">Home</button>
+    </a>
 
 </body>
 
@@ -66,6 +72,30 @@
         background-color: white;
         color: #353839;
     }
+
+    .button1 {
+    font-family: SuperLegendBoy;
+    border: 2px solid #ffffff;
+    height: auto;
+    color: white;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 22px;
+    margin: 10px 0px;
+    cursor: pointer;
+    background-color: #353839;
+    width: 95%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+  }
+
+  .button1:hover {
+    background-color: #ffffff; /* White */
+    color: #353839;
+  }
+
 
     .grid-container {
         display: grid;

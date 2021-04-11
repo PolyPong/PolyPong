@@ -114,6 +114,7 @@
     beginningXP = await getXP();
     console.log("Beginning XP: " + beginningXP);
 
+
     // First we send a game_over message from Game.svelte to lobby.ts
     // Then, lobby.ts sends over a game_started message, which is processed in store.ts
     // In store.ts, when we receive game_started message, we update game_info and set game_active to true
@@ -195,6 +196,7 @@
           window.removeEventListener("blur", blurHandler);
           clearScreenOriginCentered();
           animateText("You Win!", 8000);
+          playSound("You-Win");
           await sleep(8500);
 
           if (await (await $auth0Client).isAuthenticated()) {
@@ -204,6 +206,7 @@
             let xpString: string = "+" + earnedXP + " XP Earned!";
             console.log("XP String: " + xpString);
             animateText(xpString, 8000);
+            playSound("XP");
             await sleep(8500);
             router.goto("/home");
           }
@@ -380,6 +383,7 @@
     
     clearScreenOriginCentered();
     animateText("Game Over", 8000);
+    playSound("Game-Over");
     await sleep(8500);
 
     if (await (await $auth0Client).isAuthenticated()) {
@@ -1030,10 +1034,34 @@
       }, Ball.pathDuration);
     }
   }
+
+  function playSound(id: string){
+    const mySound = document.getElementById(id);   
+    mySound.play();
+    //document.getElementById("sound").innerHTML="<audio autoplay loop> <source src=\"/sounds/XP.wav\" type=\"audio/wav\">Your browser does not support the audio element.</audio>";
+  }
 </script>
 
 <!-- <body onload="load()" onresize="getSize()"> -->
 <body>
+  <audio id="XP" volume="0.25">   
+    <source src="/sounds/XP.wav" />   
+  </audio>
+  <audio id="You-Win" volume="0.25">   
+    <source src="/sounds/You-Win.wav" />   
+  </audio>
+  <audio id="Game-Over" volume="0.25">   
+    <source src="/sounds/Game-Over.wav" />   
+  </audio>
+
+  <!-- <iframe class="audio" loop autoplay controls style = "display:none;">
+    <source src="/sounds/XP.wav" type="audio/wav"/>
+  </iframe> -->
+
+  <!-- <audio autoplay loop>
+    <source src="/sounds/XP.wav" type="audio/wav">
+    Your browser does not support the audio element.
+  </audio> -->
   <h1 id="header" style="background-color: #353839;">PolyPong</h1>
   <hr />
   {#await $auth0Client then client}
