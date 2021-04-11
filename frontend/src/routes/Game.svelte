@@ -64,6 +64,7 @@
   let beginningXP: number = 0;
   let endingXP: number = 0;
   let earnedXP: number = 0;
+  let myShape: Shape = Shape.Regular;
   
 
   // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
@@ -175,6 +176,21 @@
 
         console.log("We are setting the interval for gameLoop");
         gameLoopRunning = setInterval(gameLoop, frameRate);
+
+        if(myShape === Shape.Regular){
+          
+        } else {
+          $game.players[$game_info.my_player_number].paddle.shape = myShape;
+          if (myShape === Shape.Bumpy){
+            sendUpdate("bumpy");
+          }
+          else if (myShape === Shape.CurvedInwards){
+            sendUpdate("curvedInwards");
+          }
+          else if (myShape === Shape.CurvedOutwards){
+            sendUpdate("curvedOutwards");
+          }
+        }
       }
       await tick();
     }, 50);
@@ -1103,12 +1119,15 @@
       }, 5000);
 
     } else if (powerup === "bumpy") {
+      myShape = Shape.Bumpy;
       $game.players[$game_info.my_player_number].paddle.shape = Shape.Bumpy;
       sendUpdate("bumpy");
     } else if (powerup === "curvedInwards") {
+      myShape = Shape.CurvedInwards;
       $game.players[$game_info.my_player_number].paddle.shape = Shape.CurvedInwards;
       sendUpdate("curvedInwards");
     } else if (powerup === "curvedOutwards") {
+      myShape = Shape.CurvedOutwards;
       $game.players[$game_info.my_player_number].paddle.shape = Shape.CurvedOutwards;
       sendUpdate("curvedOutwards");
     } else if (powerup === "tracePath") {
