@@ -124,10 +124,11 @@ export class GameClient extends Game {
     // } else if (message == "selfInvisible"){
 
 
-    } else if (message === "game_started") {
-      if (player_number || player_number === 0) {
-        this.players = state.players;
-      }
+    } else if (message === "game_start") {
+      this.players = state.players;
+      // if (player_number || player_number === 0) {
+      //   this.players = state.players;
+      // }
 
     } else if (player_number || player_number === 0) {
       // for (var i = 0; i < this.players.length; i++)
