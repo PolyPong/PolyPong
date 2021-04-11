@@ -73,11 +73,11 @@ export class GameClient extends Game {
       this.ball.y = state.ball.y;
       this.ball.dx = state.ball.dx;
       this.ball.dy = state.ball.dy;
-    } else if (message == "bigger"){
+    } else if (message === "bigger"){
       if(player_number){
         this.players[player_number].paddle.width = state.players[player_number].paddle.width;
       }
-    } else if (message == "smaller"){
+    } else if (message === "smaller"){
       console.log("smaller received client-side");
       console.log();
       console.log();
@@ -93,11 +93,11 @@ export class GameClient extends Game {
           this.players[i].paddle.width = state.players[i].paddle.width;
         }
       }
-    } else if (message == "selfInvisible"){
+    } else if (message === "selfInvisible"){
       if(player_number){
         this.players[player_number].paddle.visible = state.players[player_number].paddle.visible;
       }
-    } else if (message == "othersInvisible"){
+    } else if (message === "othersInvisible"){
       console.log("othersInvisible received client-side");
       console.log();
       console.log();
@@ -112,9 +112,9 @@ export class GameClient extends Game {
           this.players[i].paddle.visible = state.players[i].paddle.visible;
         }
       }
-    } else if (message == "ballInvisible"){
+    } else if (message === "ballInvisible"){
       this.ball.visible = state.ball.visible;
-    } else if (message == "distracting"){
+    } else if (message === "distracting"){
       this.backgroundColor = state.backgroundColor;
 
     // Future powerups need to be handled here so they are updated server-side before being broadcast
@@ -124,8 +124,10 @@ export class GameClient extends Game {
     // } else if (message == "selfInvisible"){
 
 
-    } else if (message = "game_start") {
-      this.players = state.players;
+    } else if (message === "game_start") {
+      if (player_number || player_number === 0) {
+        this.players = state.players;
+      }
 
     } else if (player_number || player_number === 0) {
       // for (var i = 0; i < this.players.length; i++)
