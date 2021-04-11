@@ -792,26 +792,32 @@
     keyMap[event.keyCode] = event.type == "keydown";
     
     if (keyMap[37]) {
-      leftArrowPressed = true;
-      $game.players[$game_info.my_player_number].paddle.moving_left = true;
-      sendUpdate("paddle_press_left");
+      if (leftArrowPressed === false){
+        leftArrowPressed = true;
+        $game.players[$game_info.my_player_number].paddle.moving_left = true;
+        sendUpdate("paddle_press_left");
+      }
     }
     else {
-      leftArrowPressed = false;
-      $game.players[$game_info.my_player_number].paddle.moving_left = false;
-      sendUpdate("paddle_release_left");
+      if (leftArrowPressed === true) {
+        leftArrowPressed = false;
+        $game.players[$game_info.my_player_number].paddle.moving_left = false;
+        sendUpdate("paddle_release_left");
+      }
     }
     if (keyMap[39]) {
-      rightArrowPressed = true;
-      $game.players[$game_info.my_player_number].paddle.moving_right = true;
-      sendUpdate("paddle_press_right");
+      if (rightArrowPressed === false){
+        rightArrowPressed = true;
+        $game.players[$game_info.my_player_number].paddle.moving_right = true;
+        sendUpdate("paddle_press_right");
+      }
     }
     else {
-      rightArrowPressed = false;
-        console.log(JSON.stringify($game));
-        console.log(JSON.stringify($game.players[$game_info.my_player_number]));
+      if (rightArrowPressed === true){
+        rightArrowPressed = false;
         $game.players[$game_info.my_player_number].paddle.moving_right = false;
         sendUpdate("paddle_release_right");
+      }
     }
     if (keyMap[49]) {
       console.log("Pressed 1 " + $power_up_one_used);
