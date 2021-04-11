@@ -213,7 +213,7 @@ export const createLobby: () => string = () => {
 
 const doStuff = async (ws: any) => {
   for await (const event of ws) {
-    console.log("got message", event);
+    // console.log("got message", event);
     // in case parsing fails, we wrap in a try/catch
 
     // if(isWebSocketCloseEvent(event)){

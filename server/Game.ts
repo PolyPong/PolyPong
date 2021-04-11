@@ -92,6 +92,10 @@ export class GameServer extends Game {
 
   mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage) {
 
+    console.log("We are in merge State on the server side");
+    console.log("Player number: " + player_number);
+    console.log("Message: " + message);
+
     if (message === "ball_update") {
       this.ball.x = game.ball.x;
       this.ball.y = game.ball.y;
@@ -140,8 +144,8 @@ export class GameServer extends Game {
       
       // this.players[player_number] = game.players[player_number];
 
-      console.log("moving player number: " + player_number)
-      console.log("client x: " + game.players[player_number].paddle.x)
+      console.log("moving player number: " + player_number);
+      console.log("client x: " + game.players[player_number].paddle.x);
 
       this.players[player_number].paddle.x = game.players[player_number].paddle.x;
       this.players[player_number].paddle.moving_left = game.players[player_number].paddle.moving_left;
