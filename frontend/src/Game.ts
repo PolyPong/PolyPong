@@ -124,7 +124,7 @@ export class GameClient extends Game {
     // } else if (message == "selfInvisible"){
 
 
-    } else if (message === "game_start") {
+    } else if (message === "game_started") {
       if (player_number || player_number === 0) {
         this.players = state.players;
       }
