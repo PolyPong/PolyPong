@@ -18,7 +18,7 @@
     power_up_three_used,
   } from "../store";
   import { onMount, tick, onDestroy } from "svelte";
-  import { Ball, Color, Paddle } from "@polypong/polypong-common";
+  import { Ball, Color, Paddle, Shape } from "@polypong/polypong-common";
   import type {
     ClientUpdate,
     KeyDownEvent,
@@ -470,17 +470,85 @@
       if ($game.players[i].paddle.visible) {
         ctx.beginPath();
         ctx.strokeStyle = $game.players[i].paddle.paddleColor;
+        if ($game.players[i].paddle.shape === Shape.Regular){
+          // Starting from the exact center, we move down the canvas (positive Y is down)
+          // and across to where the right side of the paddle is
+          // Old note, ignore: In place of 0, we need $game.players[i].paddle.x
+          ctx.moveTo($game.players[i].paddle.x, getPaddleY());
+          // We then go to the left (since negative X is left) by
+          // the paddle width ($game.players[i].paddle.width)
+          ctx.lineTo(
+            $game.players[i].paddle.x - $game.players[i].paddle.width,
+            getPaddleY()
+          );
+        } else if ($game.players[i].paddle.shape === Shape.Bumpy) {
+          for (let j = 0; j < 5; j++){
+            const zeroOrOne = j % 2;
+            ctx.moveTo(
+              $game.players[i].paddle.x - $game.players[i].paddle.width*(j)/5, 
+              getPaddleY()+2-zeroOrOne*4
+            );
+            ctx.lineTo(
+              $game.players[i].paddle.x - $game.players[i].paddle.width*(j+1)/5,
+              getPaddleY()+2-zeroOrOne*4
+            );
+          }
+        } else if ($game.players[i].paddle.shape === Shape.CurvedOutwards) {
 
-        // Starting from the exact center, we move down the canvas (positive Y is down)
-        // and across to where the right side of the paddle is
-        // Old note, ignore: In place of 0, we need $game.players[i].paddle.x
-        ctx.moveTo($game.players[i].paddle.x, getPaddleY());
-        // We then go to the left (since negative X is left) by
-        // the paddle width ($game.players[i].paddle.width)
-        ctx.lineTo(
-          $game.players[i].paddle.x - $game.players[i].paddle.width,
-          getPaddleY()
-        );
+          for (let j = 0; j < 5; j++){
+            if (j < 3){
+              ctx.moveTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j)/5, 
+                getPaddleY()+5-j*5
+              );
+              ctx.lineTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j+1)/5,
+                getPaddleY()+5-j*5
+              );
+            } else {
+              ctx.moveTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j)/5, 
+                getPaddleY()-15+j*5
+              );
+              ctx.lineTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j+1)/5,
+                getPaddleY()-15+j*5
+              );
+            }
+          }
+        } else if ($game.players[i].paddle.shape === Shape.CurvedInwards) {
+
+          for (let j = 0; j < 5; j++){
+            if (j < 3){
+              ctx.moveTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j)/5, 
+                getPaddleY()-5+j*5
+              );
+              ctx.lineTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j+1)/5,
+                getPaddleY()-5+j*5
+              );
+            } else {
+              ctx.moveTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j)/5, 
+                getPaddleY()+15-j*5
+              );
+              ctx.lineTo(
+                $game.players[i].paddle.x - $game.players[i].paddle.width*(j+1)/5,
+                getPaddleY()+15-j*5
+              );
+            }
+          }
+          
+          // ctx.moveTo($game.players[i].paddle.x, getPaddleY());
+          // // We then go to the left (since negative X is left) by
+          // // the paddle width ($game.players[i].paddle.width)
+          // ctx.lineTo(
+          //   $game.players[i].paddle.x - $game.players[i].paddle.width,
+          //   getPaddleY()
+          // );
+
+        }
         ctx.stroke();
         ctx.closePath();
       }
@@ -1033,6 +1101,16 @@
         console.log($game.backgroundColor);
         sendUpdate("distracting");
       }, 5000);
+
+    } else if (powerup === "bumpy") {
+      $game.players[$game_info.my_player_number].paddle.shape = Shape.Bumpy;
+      sendUpdate("bumpy");
+    } else if (powerup === "curvedInwards") {
+      $game.players[$game_info.my_player_number].paddle.shape = Shape.CurvedInwards;
+      sendUpdate("curvedInwards");
+    } else if (powerup === "curvedOutwards") {
+      $game.players[$game_info.my_player_number].paddle.shape = Shape.CurvedOutwards;
+      sendUpdate("curvedOutwards");
     } else if (powerup === "tracePath") {
       $game.ball.pathShown = true;
       setTimeout(function () {

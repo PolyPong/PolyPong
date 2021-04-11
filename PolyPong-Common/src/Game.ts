@@ -203,8 +203,7 @@ export type PowerupStrings = "bigger"
   | "selfInvisible" 
   | "othersInvisible"
   | "ballInvisible"
-  | "curved"
-  | "curvedOutwards"
+  | "curvedInwards"
   | "curvedOutwards"
   | "bumpy"
   | "split"
@@ -427,7 +426,7 @@ export interface ClientUpdate {
   message: ClientUpdateMessage
 }
 
-export type ClientUpdateMessage = "game_start" | "paddle_movement" | "ball_update" | "bigger" | "smaller" | "selfInvisible" | "othersInvisible" | "ballInvisible" | "distracting";
+export type ClientUpdateMessage = "game_start" | "paddle_movement" | "ball_update" | "bigger" | "smaller" | "selfInvisible" | "othersInvisible" | "ballInvisible" | "distracting" | "bumpy" | "curvedInwards" | "curvedOutwards";
 
 export interface ServerUpdate {
   type: "server_update";
