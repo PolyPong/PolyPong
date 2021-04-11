@@ -195,6 +195,7 @@ export const getXPByEmail: (email: string) => Promise<number | undefined> = asyn
   return result?.xp
 };
 
+
 Deno.test("database test", async () => {
 
   // clean db for test
@@ -338,3 +339,5 @@ export default {
   getWins,
   getLosses,
 }
+
+export { users }
