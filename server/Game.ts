@@ -133,10 +133,10 @@ export class GameServer extends Game {
     // } else if (message == "selfInvisible"){
 
 
-    } else if (message === "game_start") {
-      if (player_number || player_number === 0) {
-        this.players[player_number] = game.players[player_number];
-      }
+    // } else if (message === "game_start") {
+    //   if (player_number || player_number === 0) {
+    //     this.players[player_number] = game.players[player_number];
+    //   }
 
     } else if (player_number || player_number === 0) {
       // else if (message === "" )
