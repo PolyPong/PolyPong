@@ -18,7 +18,8 @@ export class GameServer extends Game {
   sides: number;
   paddleCoverageRatio: number = 0.25;
   sideLength: number;
-  ball: Ball = new Ball();
+  // ball: Ball = new Ball();
+  balls: Ball[] = [];
   numBalls: number = 1;
   backgroundColor: Color = Color.BackgroundColor;
   activePowerups: Powerup[] = [];
@@ -31,6 +32,8 @@ export class GameServer extends Game {
     this.sides = userlist.size;
     this.usernameList = usernameList;
     this.sideLength = 2 * this.radius * Math.sin(Math.PI / this.sides);
+    // create initial ball
+    this.balls.push(new Ball());
 
     for (const [user_id, ws] of userlist.entries()) {  
       const player = new Player(
@@ -76,7 +79,7 @@ export class GameServer extends Game {
         type: "game_started",
         sides: this.sides,
         your_player_number: this.players.indexOf(player),
-        ball: this.ball,
+        ball: this.balls[0],
       };
       // player.websocketConnection!.send(JSON.stringify(payload));
       const socket = userlist.get(player.username);
@@ -97,10 +100,12 @@ export class GameServer extends Game {
     console.log("Message: " + message);
 
     if (message === "ball_update") {
-      this.ball.x = game.ball.x;
-      this.ball.y = game.ball.y;
-      this.ball.dx = game.ball.dx;
-      this.ball.dy = game.ball.dy;
+      for (var i = 0; i < this.balls.length; i++) {
+        this.balls[i].x = game.balls[i].x;
+        this.balls[i].y = game.balls[i].y;
+        this.balls[i].dx = game.balls[i].dx;
+        this.balls[i].dy = game.balls[i].dy;
+      }
     } else if (message === "bigger"){
       if(player_number){
         this.players[player_number].paddle.width = game.players[player_number].paddle.width;
@@ -121,8 +126,10 @@ export class GameServer extends Game {
           this.players[i].paddle.visible = game.players[i].paddle.visible;
         }
       }
-    } else if (message === "ballInvisible"){
-      this.ball.visible = game.ball.visible;
+    } else if (message === "ballInvisible") {
+      for (var i = 0; i < this.balls.length; i++) {
+        this.balls[i].visible = game.balls[i].visible;
+      }
     } else if (message === "distracting"){
       this.backgroundColor = game.backgroundColor;
 
