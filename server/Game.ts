@@ -140,6 +140,9 @@ export class GameServer extends Game {
       
       // this.players[player_number] = game.players[player_number];
 
+      console.log("moving player number: " + player_number)
+      console.log("client x: " + game.players[player_number].paddle.x)
+
       this.players[player_number].paddle.x = game.players[player_number].paddle.x;
       this.players[player_number].paddle.moving_left = game.players[player_number].paddle.moving_left;
       this.players[player_number].paddle.moving_right = game.players[player_number].paddle.moving_right;

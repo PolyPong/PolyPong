@@ -134,6 +134,8 @@ export class GameClient extends Game {
       // this.players[player_number].paddle.direction = game.players[player_number].paddle.direction;
       
       // this.players[player_number] = game.players[player_number];
+      console.log("moving player number: " + player_number)
+      console.log("client x: " + state.players[player_number].paddle.x)
 
       this.players[player_number].paddle.x = state.players[player_number].paddle.x;
       this.players[player_number].paddle.moving_left = state.players[player_number].paddle.moving_left;
