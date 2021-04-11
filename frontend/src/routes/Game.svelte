@@ -49,7 +49,7 @@
   const paddleCoverageRatio: number = 1 / 4;
   const ballScaleFactor: number = 1 / 30;
   // const frameRate = 1000/60;  // 60 FPS
-  const frameRate = 1000 / 30;
+  const frameRate = 1000 / 60;
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -786,6 +786,7 @@
   var keyMap: any = {};
   function handleKeyPresses(event: any) {
     keyMap[event.keyCode] = event.type == "keydown";
+    
     if (keyMap[37]) {
       leftArrowPressed = true;
       $game.players[$game_info.my_player_number].paddle.moving_left = true;
@@ -952,13 +953,13 @@
         Paddle.widthMultiplier;
       $game.players[$game_info.my_player_number].paddle.x += (Paddle.widthMultiplier-1)/2;
       //console.log("New paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
-      sendUpdate("");
+      sendUpdate("bigger");
       setTimeout(function () {
         $game.players[$game_info.my_player_number].paddle.width =
           $game.players[$game_info.my_player_number].paddle.width /
           Paddle.widthMultiplier;
         $game.players[$game_info.my_player_number].paddle.x -= (Paddle.widthMultiplier-1)/2;
-        sendUpdate("");
+        sendUpdate("bigger");
       }, Paddle.changeWidthDuration);
     } else if (powerup === "smaller") {
       for (let i = 0; i < $game_info.sides; i++) {
@@ -967,7 +968,7 @@
             $game.players[i].paddle.width / Paddle.widthMultiplier;
         }
       }
-      sendUpdate("");
+      sendUpdate("smaller");
       setTimeout(function () {
         for (let i = 0; i < $game_info.sides; i++) {
           if (i !== $game_info.my_player_number) {
@@ -975,14 +976,14 @@
               $game.players[i].paddle.width * Paddle.widthMultiplier;
           }
         }
-        sendUpdate("");
+        sendUpdate("smaller");
       }, Paddle.changeWidthDuration);
     } else if (powerup === "selfInvisible") {
       $game.players[$game_info.my_player_number].paddle.visible = false;
-      sendUpdate("");
+      sendUpdate("selfInvisible");
       setTimeout(function () {
         $game.players[$game_info.my_player_number].paddle.visible = true;
-        sendUpdate("");
+        sendUpdate("selfInvisible");
       }, Paddle.invisibleDuration);
     } else if (powerup === "othersInvisible") {
       for (let i = 0; i < $game_info.sides; i++) {
@@ -990,21 +991,21 @@
           $game.players[i].paddle.visible = false;
         }
       }
-      sendUpdate("");
+      sendUpdate("othersInvisible");
       setTimeout(function () {
         for (let i = 0; i < $game_info.sides; i++) {
           if (i !== $game_info.my_player_number) {
             $game.players[i].paddle.visible = true;
           }
         }
-        sendUpdate("");
+        sendUpdate("othersInvisible");
       }, Paddle.invisibleDuration);
     } else if (powerup === "ballInvisible") {
       $game.ball.visible = false;
-      sendUpdate("");
+      sendUpdate("ballInvisible");
       setTimeout(function () {
         $game.ball.visible = true;
-        sendUpdate("");
+        sendUpdate("ballInvisible");
       }, Ball.invisibleDuration);
     } else if (powerup === "distracting") {
       
@@ -1013,14 +1014,14 @@
       $game.backgroundColor = Object.values(Color)[index];
       console.log(Object.values(Color)[index]);
       console.log($game.backgroundColor);
-      sendUpdate("");
+      sendUpdate("distracting");
       distractingBackgroundInterval = setInterval(function () {
         let index = Math.floor(Math.random() * Object.entries(Color).length);
         console.log(index);
         $game.backgroundColor = Object.values(Color)[index];
         console.log(Object.values(Color)[index]);
         console.log($game.backgroundColor);
-        sendUpdate("");
+        sendUpdate("distracting");
       }, 5000);
     } else if (powerup === "tracePath") {
       $game.ball.pathShown = true;

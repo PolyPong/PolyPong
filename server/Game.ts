@@ -19,8 +19,6 @@ export class GameServer extends Game {
   paddleCoverageRatio: number = 0.25;
   sideLength: number;
   ball: Ball = new Ball();
-
-  ballVisible: boolean = true;
   numBalls: number = 1;
   backgroundColor: Color = Color.BackgroundColor;
   activePowerups: Powerup[] = [];
@@ -94,26 +92,68 @@ export class GameServer extends Game {
 
   mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage) {
 
-    if (player_number || player_number === 0) {
-      // for (var i = 0; i < this.players.length; i++)
-      //   this.players[i].paddle.x = game.players[i].paddle.x;
-      // this.players[player_number].paddle.moving = game.players[player_number].paddle.moving;
-      // this.players[player_number].paddle.direction = game.players[player_number].paddle.direction;
-      if (player_number || player_number === 0) {
-        this.players[player_number] = game.players[player_number];
-      }
-      console.log("We are merging client state into the server, ball visibility should change")
-      this.ball.visible = game.ball.visible;
-      this.backgroundColor = game.backgroundColor;
-    }
-
     if (message === "ball_update") {
       this.ball.x = game.ball.x;
       this.ball.y = game.ball.y;
       this.ball.dx = game.ball.dx;
       this.ball.dy = game.ball.dy;
-    }
+    } else if (message == "bigger"){
+      if(player_number){
+        this.players[player_number].paddle.width = game.players[player_number].paddle.width;
+      }
+    } else if (message == "smaller"){
+      for (var i = 0; i < this.players.length; i++) {
+        if(player_number && i !== player_number){
+          this.players[i].paddle.width = game.players[i].paddle.width;
+        }
+      }
+    } else if (message == "selfInvisible"){
+      if(player_number){
+        this.players[player_number].paddle.visible = game.players[player_number].paddle.visible;
+      }
+    } else if (message == "othersInvisible"){
+      for (var i = 0; i < this.players.length; i++) {
+        if(player_number && i !== player_number){
+          this.players[i].paddle.visible = game.players[i].paddle.visible;
+        }
+      }
+    } else if (message == "ballInvisible"){
+      this.ball.visible = game.ball.visible;
+    } else if (message == "distracting"){
+      this.backgroundColor = game.backgroundColor;
 
+    // Future powerups need to be handled here so they are updated server-side before being broadcast
+    // The state is updated on a one-by-one basis to prevent race conditions: multiple client updates
+    // affecting the same variable server-side (overwriting each other and making the state of the game 
+    // inaccurate).
+    // } else if (message == "selfInvisible"){
+
+
+    } else if (message = "game_start") {
+      this.players = game.players;
+
+    } else if (player_number || player_number === 0) {
+      // for (var i = 0; i < this.players.length; i++)
+      //   this.players[i].paddle.x = game.players[i].paddle.x;
+      // this.players[player_number].paddle.moving = game.players[player_number].paddle.moving;
+      // this.players[player_number].paddle.direction = game.players[player_number].paddle.direction;
+      
+      // this.players[player_number] = game.players[player_number];
+
+      this.players[player_number].paddle.x = game.players[player_number].paddle.x;
+      this.players[player_number].paddle.moving_left = game.players[player_number].paddle.moving_left;
+      this.players[player_number].paddle.moving_right = game.players[player_number].paddle.moving_right;
+      
+      
+
+    } else {
+      console.log();
+      console.log("Not sure what happened here");
+      console.log();
+      console.log("Game: " + JSON.stringify(game));
+      console.log("Player Number: " + JSON.stringify(player_number));
+      console.log("Message: " + JSON.stringify(message));
+    }
 
   }
 }

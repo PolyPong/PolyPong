@@ -15,7 +15,6 @@ export abstract class Game {
   // hey Michael, I commented this out because
   //index.ts:14:5 - error TS2564: Property 'sideLength' has no initializer and is not definitely assigned in the constructor.
   ball: Ball = new Ball();
-  ballVisible: boolean = true;
   numBalls: number = 1;
   backgroundColor: Color = Color.BackgroundColor;
   activePowerups: Powerup[] = [];
@@ -26,7 +25,7 @@ export abstract class Game {
   abstract mergeState(game: Game, player_number: number, message: ClientUpdateMessage): void;
 
   jsonify() {
-    const { ball, activePowerups, players, backgroundColor, ballVisible, numBalls } = this;
+    const { ball, activePowerups, players, backgroundColor, numBalls } = this;
     // for (const p of players) {
     //   p.websocketConnection = null;
     // }
@@ -34,7 +33,6 @@ export abstract class Game {
       ball,
       players, 
       backgroundColor,
-      ballVisible,
       numBalls,
     }
   }
@@ -429,7 +427,7 @@ export interface ClientUpdate {
   message: ClientUpdateMessage
 }
 
-export type ClientUpdateMessage = "paddle_movement" | "ball_update" | "i_died" | undefined;
+export type ClientUpdateMessage = "game_start" | "paddle_movement" | "ball_update" | "bigger" | "smaller" | "selfInvisible" | "othersInvisible" | "ballInvisible" | "distracting";
 
 export interface ServerUpdate {
   type: "server_update";
