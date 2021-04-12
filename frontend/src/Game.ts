@@ -5,12 +5,15 @@ export class GameClient extends Game {
   sides: number;
   paddleCoverageRatio: number = 0.25;
   sideLength: number;
-  ball: Ball;
+  // ball: Ball;
+  balls: Ball[];
 
   constructor(sides: number, ball: Ball) {
     super();
     this.sides = sides;
-    this.ball = ball;
+    // this.ball = ball;
+    this.balls = [];
+    this.balls.push(ball);
     // this.player_number = player_number;
     this.sideLength = 2 * this.radius * Math.sin(Math.PI / sides);
 
@@ -69,10 +72,12 @@ export class GameClient extends Game {
 
 
     if (message === "ball_update") {
-      this.ball.x = state.ball.x;
-      this.ball.y = state.ball.y;
-      this.ball.dx = state.ball.dx;
-      this.ball.dy = state.ball.dy;
+      for (var i = 0; i < this.balls.length; i++) {
+        this.balls[i].x = state.balls[i].x;
+        this.balls[i].y = state.balls[i].y;
+        this.balls[i].dx = state.balls[i].dx;
+        this.balls[i].dy = state.balls[i].dy;
+      }
     } else if (message === "bigger"){
       if(player_number || player_number === 0){
         this.players[player_number].paddle.width = state.players[player_number].paddle.width;
@@ -93,9 +98,11 @@ export class GameClient extends Game {
           this.players[i].paddle.visible = state.players[i].paddle.visible;
         }
       }
-    } else if (message === "ballInvisible"){
-      this.ball.visible = state.ball.visible;
-    } else if (message === "distracting"){
+    } else if (message === "ballInvisible") {
+      for (var i = 0; i < this.balls.length; i++) {
+        this.balls[i].visible = state.balls[i].visible;
+      }
+    } else if (message === "distracting") {
       this.backgroundColor = state.backgroundColor;
 
     // Future powerups need to be handled here so they are updated server-side before being broadcast
@@ -121,6 +128,10 @@ export class GameClient extends Game {
       // if (player_number || player_number === 0) {
       //   this.players = state.players;
       // }
+
+    } else if (message === "anotherBall") {
+      // a new ball was added, replace balls array with new array
+      this.balls = state.balls;
 
     } else if (player_number || player_number === 0) {
       // for (var i = 0; i < this.players.length; i++)
