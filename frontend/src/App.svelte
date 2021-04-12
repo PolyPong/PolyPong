@@ -40,15 +40,17 @@
     window.onbeforeunload = () => {
       console.log("We are unloading the page");
       console.log("Lobby ID, client side: " + $lobby_id);
-      const username = $user?.username;
-      const payload: ExitGamePayload = {
-        type: "exit_game",
-        lobby_id: $lobby_id,
-        user_id: $user_id,
-        username: username,
-      };
-      $ws.send(JSON.stringify(payload));
-      // return "Are you sure you want to exit the game?";
+      if ($lobby_id !== ""){
+        const username = $user?.username;
+        const payload: ExitGamePayload = {
+          type: "exit_game",
+          lobby_id: $lobby_id,
+          user_id: $user_id,
+          username: username,
+        };
+        $ws.send(JSON.stringify(payload));
+        // return "Are you sure you want to exit the game?";
+      }
     }
 
   });
