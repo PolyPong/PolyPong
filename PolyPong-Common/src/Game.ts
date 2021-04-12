@@ -14,7 +14,8 @@ export abstract class Game {
   paddleCoverageRatio: number = 0.25;
   // hey Michael, I commented this out because
   //index.ts:14:5 - error TS2564: Property 'sideLength' has no initializer and is not definitely assigned in the constructor.
-  ball: Ball = new Ball();
+  // ball: Ball = new Ball();
+  balls: Ball[] = [];
   numBalls: number = 1;
   backgroundColor: Color = Color.BackgroundColor;
   activePowerups: Powerup[] = [];
@@ -25,12 +26,12 @@ export abstract class Game {
   abstract mergeState(game: Game, player_number: number, message: ClientUpdateMessage): void;
 
   jsonify() {
-    const { ball, activePowerups, players, backgroundColor, numBalls } = this;
+    const { balls, players, backgroundColor, numBalls } = this;
     // for (const p of players) {
     //   p.websocketConnection = null;
     // }
     return {
-      ball,
+      balls,
       players, 
       backgroundColor,
       numBalls,
@@ -426,7 +427,7 @@ export interface ClientUpdate {
   message: ClientUpdateMessage
 }
 
-export type ClientUpdateMessage = "game_start" | "paddle_movement" | "ball_update" | "bigger" | "smaller" | "selfInvisible" | "othersInvisible" | "ballInvisible" | "distracting" | "bumpy" | "curvedInwards" | "curvedOutwards";
+export type ClientUpdateMessage = "game_start" | "paddle_movement" | "ball_update" | "bigger" | "smaller" | "selfInvisible" | "othersInvisible" | "ballInvisible" | "distracting" | "bumpy" | "curvedInwards" | "curvedOutwards" | "anotherBall";
 
 export interface ServerUpdate {
   type: "server_update";

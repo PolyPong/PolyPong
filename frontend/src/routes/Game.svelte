@@ -288,7 +288,9 @@
     }
 
     // TODO adjust the ball size based on $game.radius
-    $game.ball.radius = $game.radius * ballScaleFactor;
+    for (var i = 0; i < $game.balls.length; i++) {
+      $game.balls[i].radius = $game.radius * ballScaleFactor;
+    }
   }
 
   export function gameLoop() {
@@ -351,12 +353,14 @@
 
     moveBall();
 
-    if (collisionDetect()) {
-      handleCollision();
-    }
+    for (var i = 0; i < $game.balls.length; i++) {
+      if (collisionDetect(i)) {
+        handleCollision(i);
+      }
 
-    if (gameOver()) {
-      handleGameOver();
+      if (gameOver(i)) {
+        handleGameOver();
+      }
     }
   }
 
@@ -390,8 +394,10 @@
     // TLDR: drawBall() stays outside the rotations until we are synchronizing ball information across clients
 
     // We want Game Over drawn correctly without rotation
-    if (gameOver()) {
-      drawGameOver();
+    for (var i = 0; i < $game.balls.length; i++) {
+      if (gameOver(i)) {
+        drawGameOver();
+      }
     }
   }
 
@@ -599,35 +605,39 @@
   }
 
   function moveBall() {
-    $game.ball.x += $game.ball.dx;
-    $game.ball.y += $game.ball.dy;
+    for (var i = 0; i < $game.balls.length; i++) {
+      $game.balls[i].x += $game.balls[i].dx;
+      $game.balls[i].y += $game.balls[i].dy;
+    }
   }
 
   function drawBall() {
     // If the ball is invisible (across all clients)
-    if ($game.ball.visible) {
-      ctx.beginPath();
-      ctx.arc($game.ball.x, $game.ball.y, $game.ball.radius, 0, Math.PI * 2);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
-    }
+    for (var i = 0; i < $game.balls.length; i++) {
+      if ($game.balls[i].visible) {
+        ctx.beginPath();
+        ctx.arc($game.balls[i].x, $game.balls[i].y, $game.balls[i].radius, 0, Math.PI * 2);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
 
-    // If the pathShown power up is active for this client
-    if ($game.ball.pathShown) {
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      canvas_arrow(
-        ctx, 
-        $game.ball.x, 
-        $game.ball.y, 
-        $game.ball.x + $game.ball.dx*100, 
-        $game.ball.y + $game.ball.dy*100);
-      // ctx.moveTo($game.ball.x, $game.ball.y);
-      // ctx.lineTo($game.ball.x + $game.ball.dx*100, $game.ball.y + $game.ball.dy*100)
-      ctx.strokeStyle = "#0095DD";
-      ctx.stroke();
-      ctx.closePath();
+      // If the pathShown power up is active for this client
+      if ($game.balls[i].pathShown) {
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        canvas_arrow(
+          ctx, 
+          $game.balls[i].x, 
+          $game.balls[i].y, 
+          $game.balls[i].x + $game.balls[i].dx*100, 
+          $game.balls[i].y + $game.balls[i].dy*100);
+        // ctx.moveTo($game.balls[i].x, $game.balls[i].y);
+        // ctx.lineTo($game.balls[i].x + $game.balls[i].dx*100, $game.balls[i].y + $game.balls[i].dy*100)
+        ctx.strokeStyle = "#0095DD";
+        ctx.stroke();
+        ctx.closePath();
+      }
     }
   }
 
@@ -646,23 +656,23 @@
   }
 
   // Collision detection function, returns true or false
-  function collisionDetect() {
+  function collisionDetect(ballIndex: number) {
 
     // For a two player game, all collision detection is done on one client (player 0)
     // Player 1 waits to receive an update from Player 0 to prevent overwriting and 
     // conflicting state between server and the two clients
-    if ($game_info.sides === 2 && $game_info.my_player_number === 0){
-      if( ($game.ball.x - $game.ball.dx - $game.ball.radius) < -canvas.width/2 || 
-        ($game.ball.x + $game.ball.dx + $game.ball.radius) > canvas.width/2){
+    if ($game_info.sides === 2 && $game_info.my_player_number === 0) {
+      if( ($game.balls[ballIndex].x - $game.balls[ballIndex].dx - $game.balls[ballIndex].radius) < -canvas.width/2 || 
+        ($game.balls[ballIndex].x + $game.balls[ballIndex].dx + $game.balls[ballIndex].radius) > canvas.width/2){
           return true;
       }
     }
 
     const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
     const transformedBallX =
-      $game.ball.x * Math.cos(theta) + $game.ball.y * Math.sin(theta);
+      $game.balls[ballIndex].x * Math.cos(theta) + $game.balls[ballIndex].y * Math.sin(theta);
     const transformedBallY =
-      -$game.ball.x * Math.sin(theta) + $game.ball.y * Math.cos(theta);
+      -$game.balls[ballIndex].x * Math.sin(theta) + $game.balls[ballIndex].y * Math.cos(theta);
 
     var topOfPaddle = getPaddleY() - Paddle.height / 2;
     var rightOfPaddle = $game.players[$game_info.my_player_number].paddle.x;
@@ -671,10 +681,10 @@
       $game.players[$game_info.my_player_number].paddle.x -
       $game.players[$game_info.my_player_number].paddle.width;
 
-    var topOfBall = transformedBallY - $game.ball.radius;
-    var rightOfBall = transformedBallX + $game.ball.radius;
-    var bottomOfBall = transformedBallY + $game.ball.radius;
-    var leftOfBall = transformedBallX - $game.ball.radius;
+    var topOfBall = transformedBallY - $game.balls[ballIndex].radius;
+    var rightOfBall = transformedBallX + $game.balls[ballIndex].radius;
+    var bottomOfBall = transformedBallY + $game.balls[ballIndex].radius;
+    var leftOfBall = transformedBallX - $game.balls[ballIndex].radius;
 
     // The issue wasn't drawing, it was actually to do with the stored coordinates
     // For collision detection, we now transform the X and Y ball co'ords received
@@ -707,21 +717,21 @@
   // and sent to the other client as an update
   // This is done to prevent the two clients from overwriting each other, 
   // causing the ball to never properly update dx and dy
-  function handleCollision() {
+  function handleCollision(ballIndex: number) {
 
     const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
     let angle = theta;
-    const transformedBallX = $game.ball.x * Math.cos(theta) + $game.ball.y * Math.sin(theta);
-    const transformedBallY = -$game.ball.x * Math.sin(theta) + $game.ball.y * Math.cos(theta);
-    const transformedBalldX = $game.ball.dx * Math.cos(theta) + $game.ball.dy * Math.sin(theta);
-    const transformedBalldY = -$game.ball.dx * Math.sin(theta) + $game.ball.dy * Math.cos(theta);
+    const transformedBallX = $game.balls[ballIndex].x * Math.cos(theta) + $game.balls[ballIndex].y * Math.sin(theta);
+    const transformedBallY = -$game.balls[ballIndex].x * Math.sin(theta) + $game.balls[ballIndex].y * Math.cos(theta);
+    const transformedBalldX = $game.balls[ballIndex].dx * Math.cos(theta) + $game.balls[ballIndex].dy * Math.sin(theta);
+    const transformedBalldY = -$game.balls[ballIndex].dx * Math.sin(theta) + $game.balls[ballIndex].dy * Math.cos(theta);
     
-    if ($game_info.sides === 2 && $game_info.my_player_number === 0 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2)) {
-      $game.ball.dx = -1 * ($game.ball.dx); // -1 to reverse the direction of the ball
-      $game.ball.dy = $game.ball.dy; // dy remains the same, we are just bouncing off the wall
+    if ($game_info.sides === 2 && $game_info.my_player_number === 0 && ((transformedBallX - transformedBalldX - $game.balls[ballIndex].radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.balls[ballIndex].radius) > canvas.width/2)) {
+      $game.balls[ballIndex].dx = -1 * ($game.balls[ballIndex].dx); // -1 to reverse the direction of the ball
+      $game.balls[ballIndex].dy = $game.balls[ballIndex].dy; // dy remains the same, we are just bouncing off the wall
       moveBall();
       moveBall();
-    } else if ($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2)){
+    } else if ($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.balls[ballIndex].radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.balls[ballIndex].radius) > canvas.width/2)){
       // If we are player 1 and the ball hits the wall/goes out of bounds, do not do anything - wait for update from player 0
     } else {
 
@@ -744,23 +754,23 @@
       // Else Angle = 0
 
       // Update X and Y velocity of the ball
-      $game.ball.dy = -1 * $game.ball.velocity * Math.cos(angle); // -1 to reverse the direction of the ball
-      $game.ball.dx = $game.ball.velocity * Math.sin(angle);
+      $game.balls[ballIndex].dy = -1 * $game.balls[ballIndex].velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+      $game.balls[ballIndex].dx = $game.balls[ballIndex].velocity * Math.sin(angle);
     }
 
-    if (!($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.ball.radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.ball.radius) > canvas.width/2))){
+    if (!($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.balls[ballIndex].radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.balls[ballIndex].radius) > canvas.width/2))){
       sendUpdate("ball_update");
     }
 
     // Increase ball's velocity
-    $game.ball.velocity += 0.2;
+    $game.balls[ballIndex].velocity += 0.2;
   }
 
-  function gameOver() {
+  function gameOver(ballIndex: number) {
     const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
     const transformedBallY =
-      -$game.ball.x * Math.sin(theta) + $game.ball.y * Math.cos(theta);
-    const topOfBall = transformedBallY - $game.ball.radius;
+      -$game.balls[ballIndex].x * Math.sin(theta) + $game.balls[ballIndex].y * Math.cos(theta);
+    const topOfBall = transformedBallY - $game.balls[ballIndex].radius;
     const bottomOfPaddle = getPaddleY() + Paddle.height / 2;
     return topOfBall > bottomOfPaddle;
   }
@@ -1095,10 +1105,14 @@
         sendUpdate("othersInvisible");
       }, Paddle.invisibleDuration);
     } else if (powerup === "ballInvisible") {
-      $game.ball.visible = false;
+      for (var i = 0; i < $game.balls.length; i++) {
+        $game.balls[i].visible = false;
+      }
       sendUpdate("ballInvisible");
       setTimeout(function () {
-        $game.ball.visible = true;
+        for (var i = 0; i < $game.balls.length; i++) {
+          $game.balls[i].visible = true;
+        }
         sendUpdate("ballInvisible");
       }, Ball.invisibleDuration);
     } else if (powerup === "distracting") {
@@ -1135,6 +1149,8 @@
       setTimeout(function () {
         $game.ball.pathShown = false;
       }, Ball.pathDuration);
+    } else if (powerup === "anotherBall") {
+      sendUpdate("anotherBall");
     }
   }
 
