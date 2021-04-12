@@ -67,11 +67,12 @@ export const getLocalLeaderboard = async (username: string, plusminus = 5) => {
   if (!xp) {
     return []
   }
-  const lessthanPromise = users.find({ xp: { $lt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).limit(plusminus).toArray();
-  const greaterthanProm = users.find({ xp: { $gt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).limit(plusminus).toArray();
+  const lessthanPromise = users.find({ xp: { $lt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).sort({ xp: -1 }).limit(plusminus).toArray();
+  const greaterthanProm = users.find({ xp: { $gt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).sort({ xp: 1 }).limit(plusminus).toArray();
 
   const [lessthan, greaterthan] = await Promise.all([lessthanPromise, greaterthanProm])
-  return [...greaterthan, { username, xp }, ...lessthan];
+
+  return [...greaterthan.reverse(), { username, xp }, ...lessthan];
 }
 
 export const getAvailableSkins: (username: string) => Promise<Color[]> = async (username: string) => {
@@ -305,17 +306,17 @@ Deno.test("database test", async () => {
 
   const localleaderboard = await getLocalLeaderboard("seventh");
   const expectedlocalleaderboard = [
-    { username: "first", xp: 1111111111 },
     { username: "second", xp: 222222222 },
     { username: "third", xp: 33333333 },
     { username: "fourth", xp: 4444444 },
     { username: "fifth", xp: 555555 },
+    { username: "sixth", xp: 66666 },
     { username: "seventh", xp: 7777 },
-    { username: "arun", xp: 869 },
     { username: "eighth", xp: 888 },
     { username: "ninth", xp: 887 },
     { username: "tenth", xp: 886 },
-    { username: "11", xp: 885 }
+    { username: "11", xp: 885 },
+    { username: "12", xp: 884 }
   ];
   assertEquals(localleaderboard, expectedlocalleaderboard);
 
