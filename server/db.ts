@@ -69,10 +69,26 @@ export const getLocalLeaderboard = async (username: string, plusminus = 5) => {
   }
   const lessthanPromise = users.find({ xp: { $lt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).sort({ xp: -1 }).limit(plusminus).toArray();
   const greaterthanProm = users.find({ xp: { $gt: xp } }, { projection: { _id: 0, username: 1, xp: 1 } }).sort({ xp: 1 }).limit(plusminus).toArray();
+  const countPromise = users.count({ xp: { $gt: xp } });
 
-  const [lessthan, greaterthan] = await Promise.all([lessthanPromise, greaterthanProm])
+  const [lessthan, greaterthan, count] = await Promise.all([lessthanPromise, greaterthanProm, countPromise])
 
-  return [...greaterthan.reverse(), { username, xp }, ...lessthan];
+  const position = count + 1;
+
+  const user = {
+    username,
+    xp,
+    position
+  };
+
+  const greater = greaterthan.map((e, i) => ({ ...e, position: i + 1 })).reverse().map(e => ({
+    ...e,
+    position: position - e.position
+  }));
+
+  const less = lessthan.map((e, i) => ({ ...e, position: position + i + 1 }))
+
+  return [...greater, user, ...less];
 }
 
 export const getAvailableSkins: (username: string) => Promise<Color[]> = async (username: string) => {
@@ -306,17 +322,17 @@ Deno.test("database test", async () => {
 
   const localleaderboard = await getLocalLeaderboard("seventh");
   const expectedlocalleaderboard = [
-    { username: "second", xp: 222222222 },
-    { username: "third", xp: 33333333 },
-    { username: "fourth", xp: 4444444 },
-    { username: "fifth", xp: 555555 },
-    { username: "sixth", xp: 66666 },
-    { username: "seventh", xp: 7777 },
-    { username: "eighth", xp: 888 },
-    { username: "ninth", xp: 887 },
-    { username: "tenth", xp: 886 },
-    { username: "11", xp: 885 },
-    { username: "12", xp: 884 }
+    { username: "second", xp: 222222222, position: 2 },
+    { username: "third", xp: 33333333, position: 3 },
+    { username: "fourth", xp: 4444444, position: 4 },
+    { username: "fifth", xp: 555555, position: 5 },
+    { username: "sixth", xp: 66666, position: 6 },
+    { username: "seventh", xp: 7777, position: 7 },
+    { username: "eighth", xp: 888, position: 8 },
+    { username: "ninth", xp: 887, position: 9 },
+    { username: "tenth", xp: 886, position: 10 },
+    { username: "11", xp: 885, position: 11 },
+    { username: "12", xp: 884, position: 12 }
   ];
   assertEquals(localleaderboard, expectedlocalleaderboard);
 
