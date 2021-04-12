@@ -175,7 +175,7 @@ export class Ball {
 
   velocity: number = 1;
 
-  radius: number = 10;
+  radius: number = 5+5/6;
 
   constructor() {
     let sign1 = (getRandom(0,1) > 0.5) ? 1 : -1;

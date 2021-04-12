@@ -375,7 +375,11 @@ const doStuff = async (ws: any) => {
           player_number,
           message: message.message,
         };
-        lobby!.broadcast(JSON.stringify(payload), player_id);
+        if (message.message === "anotherBall"){
+          lobby!.broadcast(JSON.stringify(payload), undefined);
+        } else {
+          lobby!.broadcast(JSON.stringify(payload), player_id);
+        }
       } else if (message.type === "lobby_client_ready") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);

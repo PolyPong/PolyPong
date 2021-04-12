@@ -288,9 +288,9 @@
     }
 
     // TODO adjust the ball size based on $game.radius
-    for (var i = 0; i < $game.balls.length; i++) {
-      $game.balls[i].radius = $game.radius * ballScaleFactor;
-    }
+    // for (var i = 0; i < $game.balls.length; i++) {
+    //   $game.balls[i].radius = $game.radius * ballScaleFactor;
+    // }
   }
 
   export function gameLoop() {
@@ -1188,6 +1188,7 @@
         $game.ball.pathShown = false;
       }, Ball.pathDuration);
     } else if (powerup === "anotherBall") {
+      sendUpdate("ball_update");
       sendUpdate("anotherBall");
     }
   }
