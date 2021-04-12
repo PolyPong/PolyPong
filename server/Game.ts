@@ -145,6 +145,10 @@ export class GameServer extends Game {
     //     this.players[player_number] = game.players[player_number];
     //   }
 
+    } else if (message === "anotherBall") {
+      // create a new ball
+      this.balls.push(new Ball());
+
     } else if (player_number || player_number === 0) {
       // else if (message === "" )
       // for (var i = 0; i < this.players.length; i++)

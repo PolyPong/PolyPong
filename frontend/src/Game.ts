@@ -137,6 +137,10 @@ export class GameClient extends Game {
       //   this.players = state.players;
       // }
 
+    } else if (message === "anotherBall") {
+      // a new ball was added, replace balls array with new array
+      this.balls = state.balls;
+
     } else if (player_number || player_number === 0) {
       // for (var i = 0; i < this.players.length; i++)
       //   this.players[i].paddle.x = game.players[i].paddle.x;
