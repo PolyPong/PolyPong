@@ -2,6 +2,7 @@
 #+Author: Arun Woosaree
 #+OPTIONS: toc:nil
 #+latex_class_options: [12pt]
+#+LATEX_HEADER: \usepackage{pdflscape}
 
 * Problem domain
 Multiplayer games or something
@@ -90,11 +91,12 @@ Josh mainly worked on the synchronization algorithm. We also pair programmed for
 simultaneously. He also implemented the remaining power ups
 
 * History of Changes
+#+begin_landscape
 #+begin_src sh :results output :exports results
-git --no-pager log --graph --all --oneline
+git --no-pager log --graph --all --oneline --pretty=format:"%h %ad%x09%an%x09%s" --date=short
 #+end_src
+#+end_landscape
 
-#+RESULTS:
 
 * Summary of Defects
 oh boy....
