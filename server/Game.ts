@@ -107,22 +107,22 @@ export class GameServer extends Game {
         this.balls[i].dy = game.balls[i].dy;
       }
     } else if (message === "bigger"){
-      if(player_number){
+      if(player_number || player_number === 0){
         this.players[player_number].paddle.width = game.players[player_number].paddle.width;
       }
     } else if (message === "smaller"){
       for (var i = 0; i < this.players.length; i++) {
-        if(player_number && i !== player_number){
+        if((player_number || player_number === 0) && i !== player_number){
           this.players[i].paddle.width = game.players[i].paddle.width;
         }
       }
     } else if (message === "selfInvisible"){
-      if(player_number){
+      if(player_number || player_number === 0){
         this.players[player_number].paddle.visible = game.players[player_number].paddle.visible;
       }
     } else if (message === "othersInvisible"){
       for (var i = 0; i < this.players.length; i++) {
-        if(player_number && i !== player_number){
+        if((player_number || player_number === 0) && i !== player_number){
           this.players[i].paddle.visible = game.players[i].paddle.visible;
         }
       }
@@ -144,11 +144,21 @@ export class GameServer extends Game {
     //   if (player_number || player_number === 0) {
     //     this.players[player_number] = game.players[player_number];
     //   }
-
     } else if (message === "anotherBall") {
       // create a new ball
       this.balls.push(new Ball());
-
+    } else if (message === "bumpy"){
+      if(player_number || player_number === 0){
+        this.players[player_number].paddle.shape = Shape.Bumpy;
+      }
+    } else if (message === "curvedInwards"){
+      if(player_number || player_number === 0){
+        this.players[player_number].paddle.shape = Shape.CurvedInwards;
+      }
+    } else if (message === "curvedOutwards"){
+      if(player_number || player_number === 0){
+        this.players[player_number].paddle.shape = Shape.CurvedOutwards;
+      }
     } else if (player_number || player_number === 0) {
       // else if (message === "" )
       // for (var i = 0; i < this.players.length; i++)

@@ -79,41 +79,22 @@ export class GameClient extends Game {
         this.balls[i].dy = state.balls[i].dy;
       }
     } else if (message === "bigger"){
-      if(player_number){
+      if(player_number || player_number === 0){
         this.players[player_number].paddle.width = state.players[player_number].paddle.width;
       }
     } else if (message === "smaller"){
-      console.log("smaller received client-side");
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log()
       for (var i = 0; i < this.players.length; i++) {
-        if(player_number && i !== player_number){
+        if( (player_number || player_number === 0) && i !== player_number){
           this.players[i].paddle.width = state.players[i].paddle.width;
         }
       }
     } else if (message === "selfInvisible"){
-      if(player_number){
+      if(player_number || player_number === 0){
         this.players[player_number].paddle.visible = state.players[player_number].paddle.visible;
       }
     } else if (message === "othersInvisible"){
-      console.log("othersInvisible received client-side");
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
-      console.log();
       for (var i = 0; i < this.players.length; i++) {
-        if(player_number && i !== player_number){
+        if((player_number || player_number === 0) && i !== player_number){
           this.players[i].paddle.visible = state.players[i].paddle.visible;
         }
       }
@@ -130,7 +111,18 @@ export class GameClient extends Game {
     // inaccurate).
     // } else if (message == "selfInvisible"){
 
-
+    } else if (message === "bumpy"){
+      if(player_number || player_number === 0){
+        this.players[player_number].paddle.shape = Shape.Bumpy;
+      }
+    } else if (message === "curvedInwards"){
+      if(player_number || player_number === 0){
+        this.players[player_number].paddle.shape = Shape.CurvedInwards;
+      }
+    } else if (message === "curvedOutwards"){
+      if(player_number || player_number === 0){
+        this.players[player_number].paddle.shape = Shape.CurvedOutwards;
+      }
     } else if (message === "game_start") {
       this.players = state.players;
       // if (player_number || player_number === 0) {
