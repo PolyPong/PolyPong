@@ -131,7 +131,14 @@ export class GameClient extends Game {
 
     } else if (message === "anotherBall") {
       // a new ball was added, replace balls array with new array
-      this.balls = state.balls;
+      //this.balls = state.balls;
+
+      // Only add the most recently added ball so that other balls don't 
+      // go "back in time"
+      for (let i = state.balls.length; i > this.balls.length; i--){
+        this.balls.push(state.balls[i-1]);
+      }
+      
 
     } else if (player_number || player_number === 0) {
       // for (var i = 0; i < this.players.length; i++)

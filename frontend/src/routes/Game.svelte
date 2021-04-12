@@ -65,6 +65,7 @@
   let endingXP: number = 0;
   let earnedXP: number = 0;
   let myShape: Shape = Shape.Regular;
+  let pathShown: boolean = false;
   
 
   // Note: keeping these in case paddles is not as easy as it currently is coded (please ignore for now but keep them just in case)
@@ -634,7 +635,7 @@
       }
 
       // If the pathShown power up is active for this client
-      if ($game.balls[i].pathShown) {
+      if (pathShown) {
         ctx.lineWidth = 3;
         ctx.beginPath();
         canvas_arrow(
@@ -1183,12 +1184,11 @@
       $game.players[$game_info.my_player_number].paddle.shape = Shape.CurvedOutwards;
       sendUpdate("curvedOutwards");
     } else if (powerup === "tracePath") {
-      for (let i = 0; i < $game.balls.length; i++) {
-        $game.balls[i].pathShown = true;
-        setTimeout(function () {
-          $game.balls[i].pathShown = false;
-        }, Ball.pathDuration);
-      }
+      pathShown = true;
+      setTimeout(function () {
+        pathShown = false;
+      }, Ball.pathDuration);
+      
     } else if (powerup === "anotherBall") {
       sendUpdate("ball_update");
       sendUpdate("anotherBall");
