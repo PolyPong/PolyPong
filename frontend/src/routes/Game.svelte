@@ -1183,10 +1183,12 @@
       $game.players[$game_info.my_player_number].paddle.shape = Shape.CurvedOutwards;
       sendUpdate("curvedOutwards");
     } else if (powerup === "tracePath") {
-      $game.ball.pathShown = true;
-      setTimeout(function () {
-        $game.ball.pathShown = false;
-      }, Ball.pathDuration);
+      for (let i = 0; i < $game.balls.length; i++) {
+        $game.balls[i].pathShown = true;
+        setTimeout(function () {
+          $game.balls[i].pathShown = false;
+        }, Ball.pathDuration);
+      }
     } else if (powerup === "anotherBall") {
       sendUpdate("ball_update");
       sendUpdate("anotherBall");
