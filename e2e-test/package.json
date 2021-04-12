@@ -1,0 +1,12 @@
+{
+  "name": "@polypong/e2e-test",
+  "version": "1.0.0",
+  "description": "End-to-end test for polypong",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "dependencies": {
+    "puppeteer": "^8.0.0"
+  }
+}
