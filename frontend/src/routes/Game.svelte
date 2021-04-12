@@ -592,10 +592,21 @@
       return 146;
     } else if ($game.sides === 7) {
       return 152;
-    } else {
-      return $game.radius - 100 + 8 * $game.sides;
-      // $game.radius - 450 / $game.sides + $game.sides;
+    } else if ($game.sides === 8) {
+      return 157;
+    } else if ($game.sides === 9) {
+      return 159;
+    } else if ($game.sides === 10) {
+      return 161;
+    } else if ($game.sides === 11) {
+      return 161;
+    } else if ($game.sides === 12) {
+      return 164;
     }
+    // else {
+    //   return $game.radius - 100 + 8 * $game.sides;
+    //   // $game.radius - 450 / $game.sides + $game.sides;
+    // }
   }
 
   function moveBall() {
