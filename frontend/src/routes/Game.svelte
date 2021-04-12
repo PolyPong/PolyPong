@@ -49,7 +49,7 @@
   const paddleCoverageRatio: number = 1 / 4;
   const ballScaleFactor: number = 1 / 30;
   // const frameRate = 1000/60;  // 60 FPS
-  const frameRate = 1000 / 10 ;
+  const frameRate = 1000 / 30 ;
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -737,14 +737,19 @@
     const transformedBalldX = $game.balls[ballIndex].dx * Math.cos(theta) + $game.balls[ballIndex].dy * Math.sin(theta);
     const transformedBalldY = -$game.balls[ballIndex].dx * Math.sin(theta) + $game.balls[ballIndex].dy * Math.cos(theta);
     
+    // Handle Wall Collisions - 2 Player Game Only
     if ($game_info.sides === 2 && $game_info.my_player_number === 0 && ((transformedBallX - transformedBalldX - $game.balls[ballIndex].radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.balls[ballIndex].radius) > canvas.width/2)) {
+      console.log("We are in wall collision detection, player 0");
       $game.balls[ballIndex].dx = -1 * ($game.balls[ballIndex].dx); // -1 to reverse the direction of the ball
       $game.balls[ballIndex].dy = $game.balls[ballIndex].dy; // dy remains the same, we are just bouncing off the wall
       moveBall();
       moveBall();
     } else if ($game.sides === 2 && $game_info.my_player_number === 1 && ((transformedBallX - transformedBalldX - $game.balls[ballIndex].radius) < -canvas.width/2 || (transformedBallX + transformedBalldX + $game.balls[ballIndex].radius) > canvas.width/2)){
-      // If we are player 1 and the ball hits the wall/goes out of bounds, do not do anything - wait for update from player 0
-    } else {
+              // If we are player 1 and the ball hits the wall/goes out of bounds, do not do anything - wait for update from player 0
+      console.log("We are in wall collision detection, player 1");
+    // Handle Regular Shape Paddle Collisions
+    } else if ($game.players[$game_info.my_player_number].paddle.shape === Shape.Regular){
+      console.log("We are in regular collision detection");
 
       // If the ball hits the left quarter of the paddle, make the ball go left
       if (
@@ -765,6 +770,28 @@
       // Else Angle = 0
 
       // Update X and Y velocity of the ball
+      $game.balls[ballIndex].dy = -1 * $game.balls[ballIndex].velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+      $game.balls[ballIndex].dx = $game.balls[ballIndex].velocity * Math.sin(angle);
+    
+    } else if ($game.players[$game_info.my_player_number].paddle.shape === Shape.Bumpy){
+      console.log("We are in bumpy collision detection");
+      const randAngle = Math.floor(Math.random() * (120 + 1) -60);
+      // Update X and Y velocity of the ball
+      angle = theta + randAngle*Math.PI/180;
+      $game.balls[ballIndex].dy = -1 * $game.balls[ballIndex].velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+      $game.balls[ballIndex].dx = $game.balls[ballIndex].velocity * Math.sin(angle);
+    } else if ($game.players[$game_info.my_player_number].paddle.shape === Shape.CurvedOutwards){
+      console.log("We are in curvedOutwards collision detection");
+      const returnAngle = -60 + 120*(transformedBallX - $game.players[$game_info.my_player_number].paddle.x + $game.players[$game_info.my_player_number].paddle.width)/$game.players[$game_info.my_player_number].paddle.width;
+      console.log("Return Angle: " + returnAngle);
+      angle = theta + returnAngle*Math.PI/180;
+      $game.balls[ballIndex].dy = -1 * $game.balls[ballIndex].velocity * Math.cos(angle); // -1 to reverse the direction of the ball
+      $game.balls[ballIndex].dx = $game.balls[ballIndex].velocity * Math.sin(angle);
+    } else if ($game.players[$game_info.my_player_number].paddle.shape === Shape.CurvedInwards){
+      console.log("We are in curvedInwards collision detection");
+      const returnAngle = +60 - 120*(transformedBallX - $game.players[$game_info.my_player_number].paddle.x + $game.players[$game_info.my_player_number].paddle.width)/$game.players[$game_info.my_player_number].paddle.width;
+      console.log("Return Angle: " + returnAngle);
+      angle = theta + returnAngle*Math.PI/180;
       $game.balls[ballIndex].dy = -1 * $game.balls[ballIndex].velocity * Math.cos(angle); // -1 to reverse the direction of the ball
       $game.balls[ballIndex].dx = $game.balls[ballIndex].velocity * Math.sin(angle);
     }
