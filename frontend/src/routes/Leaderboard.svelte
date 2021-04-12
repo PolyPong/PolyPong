@@ -139,8 +139,8 @@
               <li class="alignright" style="list-style-type: none">XP Earned</li>
               <br/>
               <br/>
-              {#each leaderboard as entry}
-                  <li class="alignleft" value={entry.place}>{entry.username}</li>
+              {#each leaderboard as entry, index}
+                  <li class="alignleft" value={entry.position}>{entry.username}</li>
                   <li class="alignright" style="list-style-type: none">{entry.xp}</li>
                   <br />
               {/each}

@@ -285,6 +285,7 @@
     // Set the width of each paddle to be a quarter of the side length
     for (var i = 0; i < $game.players.length; i++) {
       $game.players[i].paddle.width = $game.sideLength * paddleCoverageRatio;
+      $game.players[i].paddle.regularWidth = $game.sideLength * paddleCoverageRatio;
       // TODO: Need to handle if expanded paddle/shrunk paddle is applied here
     }
 
@@ -1098,9 +1099,9 @@
       //console.log("New paddle width: " + $game.players[$game_info.my_player_number].paddle.width);
       sendUpdate("bigger");
       setTimeout(function () {
+        console.log("New width, bigger PU being reset: " + $game.players[$game_info.my_player_number].paddle.regularWidth);
         $game.players[$game_info.my_player_number].paddle.width =
-          $game.players[$game_info.my_player_number].paddle.width /
-          Paddle.widthMultiplier;
+          $game.players[$game_info.my_player_number].paddle.regularWidth;
         $game.players[$game_info.my_player_number].paddle.x -= (Paddle.widthMultiplier-1)/2;
         sendUpdate("bigger");
       }, Paddle.changeWidthDuration);
@@ -1113,10 +1114,11 @@
       }
       sendUpdate("smaller");
       setTimeout(function () {
+        console.log("New width, smaller PU being reset: " + $game.players[$game_info.my_player_number].paddle.regularWidth);
         for (let i = 0; i < $game_info.sides; i++) {
           if (i !== $game_info.my_player_number) {
             $game.players[i].paddle.width =
-              $game.players[i].paddle.width * Paddle.widthMultiplier;
+              $game.players[$game_info.my_player_number].paddle.regularWidth;
           }
         }
         sendUpdate("smaller");

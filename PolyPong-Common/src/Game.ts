@@ -99,6 +99,7 @@ export const ColorLevels = {
 
 export class Paddle {
   width: number = 100;
+  regularWidth: number = 100;
   static widthMultiplier: number = 2;
   static changeWidthDuration: number = 30000;
   static invisibleDuration: number = 30000;
