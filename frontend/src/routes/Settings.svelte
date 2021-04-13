@@ -49,6 +49,7 @@ import { router } from "tinro";
 
       if (res.status === 200) {
         $user.username = await res.text();
+        console.log("In getUsername: " + $user.username);
       }
     } else {
       // Not authenticated so we stay on this page

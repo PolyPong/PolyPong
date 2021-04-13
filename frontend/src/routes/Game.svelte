@@ -1231,7 +1231,7 @@
   {#await $auth0Client then client}
     {#await client.isAuthenticated() then isauthenticated}
       {#if isauthenticated}
-        <div>hey you're authenticated</div>
+        <!-- <div>hey you're authenticated</div> -->
       {/if}
     {/await}
   {/await}

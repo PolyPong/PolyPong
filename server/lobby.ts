@@ -278,18 +278,20 @@ const doStuff = async (ws: any) => {
 
         lobby.printState();
 
+        // If the message contains a user_id and a lobby_id (ie. the person's lobby_id has not yet been reset to the empty string)
         if (message.user_id && message.lobby_id){
-          lobby.userlist.delete(message.user_id);
-          lobby.usernameList.delete(message.user_id);
-          if (message.user_id in lobby.userReadyList){
-            lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id),1);
-            lobby.lobby_count -= 1;
-          }
-
-          if (lobby.game_in_progress){
+          // If the game is currently in progress and the user is a part of the game
+          if (lobby.game_in_progress && lobby.userlist.get(message.user_id)){
             console.log("A user just left while a game is in progress");
             console.log("We may wish to display a message and start a new game without the player that lost connection");
             
+            lobby.userlist.delete(message.user_id);
+            lobby.usernameList.delete(message.user_id);
+            if (message.user_id in lobby.userReadyList){
+              lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id),1);
+              lobby.lobby_count -= 1;
+            }
+
             const payload: ServerSaysStopGame = {
               type: "stop_game",
               player_number: message.player_number,

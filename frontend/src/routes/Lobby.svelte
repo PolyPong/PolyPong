@@ -37,6 +37,11 @@
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
+      ? "https://polyserver.polypong.ca:8443/"
+      : "http://localhost:5000/";
+
+  const WEBSITE_URL =
+    import.meta.env.MODE === "production"
       ? "https://polypong.ca/#/"
       : "http://localhost:3000/#/";
 
@@ -61,10 +66,10 @@
       await (await $auth0Client).getTokenSilently();
     }
 
-    getUsername();
     // createclient should do this part automatically
     // await auth0Client.getTokenSilently();
     user.set(await (await $auth0Client).getUser());
+    getUsername();
 
 
 
@@ -94,6 +99,7 @@
 
       if (res.status === 200) {
         $user.username = await res.text();
+        console.log("In getUsername: " + $user.username);
       }
     } else {
       // Not authenticated so we stay on this page
@@ -303,8 +309,8 @@
 
   <div>
     <p>Link to join the lobby you are in:</p>
-    <textarea class="text-area" rows="1" readonly bind:this={copyLink}>{SERVER_URL + "lobby/" + $lobby_id}</textarea>
-    <p style="text-decoration: underline;">{SERVER_URL + "lobby/" + $lobby_id}</p>
+    <textarea class="text-area" rows="1" readonly bind:this={copyLink}>{WEBSITE_URL + "lobby/" + $lobby_id}</textarea>
+    <p style="text-decoration: underline;">{WEBSITE_URL + "lobby/" + $lobby_id}</p>
     <button class="button button4"
       on:click={() => {
         copyLink.select();

@@ -31,10 +31,10 @@
       await (await $auth0Client).getTokenSilently();
     }
 
-    getUsername();
     // createclient should do this part automatically
     // await auth0Client.getTokenSilently();
     user.set(await (await $auth0Client).getUser());
+    getUsername();
 
 
     window.onbeforeunload = () => {
@@ -73,6 +73,7 @@
 
       if (res.status === 200) {
         $user.username = await res.text();
+        console.log("In getUsername: " + $user.username);
       }
     } else {
       // Not authenticated so we stay on this page
