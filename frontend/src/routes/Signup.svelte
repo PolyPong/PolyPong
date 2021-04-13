@@ -77,20 +77,28 @@
   <!-- <label for="username" class="label2">Username:</label>
     <input type="text" class="input" id="username" name="username" /><br /><br /> -->
 
-  <label for="username" class="label2">Username:</label>
-  <input
-    type="text"
-    class="usernameExists"
-    id="username"
-    name="username"
-    on:change={() => { 
-      if ($usernameExists) {
-        $usernameExists = false;
-      }
-    }}
-  /><br /><br />
-
-  {#if $usernameExists}
+  {#if !$usernameExists}
+    <label for="username" class="label2">Username:</label>
+    <input
+      type="text"
+      class="input"
+      id="username"
+      bind:this={username}
+      name="username"
+    /><br /><br />
+  {:else}
+    <label for="username" class="label2">Username:</label>
+    <input
+      type="text"
+      class="usernameExists"
+      id="username"
+      bind:this={username}
+      name="username"
+      on:change={() => { 
+        if ($usernameExists) {
+          $usernameExists = false;
+        }}}
+    /><br /><br />
     <p class="redtext">
       Username already exists, please choose a different one
     </p>
