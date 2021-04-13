@@ -31,6 +31,9 @@
       console.log("Nothing entered");
     } else {
       console.log(input);
+      if ($usernameExists) {
+        $usernameExists = false;
+      }
       const token = await (await $auth0Client).getTokenSilently();
       // Check if username is in the database
       // Send over a check_exists request for the username to server and wait for response (response happens in store.ts)
@@ -94,10 +97,6 @@
       id="username"
       bind:this={username}
       name="username"
-      on:change={() => { 
-        if ($usernameExists) {
-          $usernameExists = false;
-        }}}
     /><br /><br />
     <p class="redtext">
       Username already exists, please choose a different one
