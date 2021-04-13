@@ -417,6 +417,7 @@
       let xpString: string = "+" + earnedXP + " XP Earned!";
       console.log("XP String: " + xpString);
       animateText(xpString, 8000);
+      playSound("XP");
       await sleep(8500);
       // $lobby_id = "";
       router.goto("/home");
@@ -1074,6 +1075,7 @@
     console.log("We are in getXP(), client side");
     if (await (await $auth0Client).isAuthenticated()){
       console.log("We are authenticated, client side");
+      console.log("The username we are sending in getXP: " + $user.username);
       const response = await fetch(SERVER_URL + "getxp/" + $user.username);
       console.log($user);
       const responseBody = await response.text();

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount, afterUpdate } from "svelte";
+  import { Route, router, meta } from "tinro";
   import {
     AddBall,
     Bomb,
@@ -30,6 +31,8 @@
     power_up_two_used,
     power_up_three_used,
     usernames,
+    auth0Client,
+    user,
   } from "../store";
 
   const SERVER_URL =
@@ -51,6 +54,20 @@
   afterUpdate(() => console.log($lobby_id));
 
   onMount(async () => {
+
+    console.log("We are in onMount");
+    if (await (await $auth0Client).isAuthenticated()) {
+      console.log("The user is autheticated");
+      await (await $auth0Client).getTokenSilently();
+    }
+
+    getUsername();
+    // createclient should do this part automatically
+    // await auth0Client.getTokenSilently();
+    user.set(await (await $auth0Client).getUser());
+
+
+
     if (id) {
       setTimeout(() => {
         joinGame(id, $user_id);
@@ -59,6 +76,29 @@
       }, 1000);
     }
   });
+
+  async function getUsername() {
+    if (await (await $auth0Client).isAuthenticated()) {
+      const token = await (await $auth0Client).getTokenSilently();
+
+      const res = await fetch(SERVER_URL + "whatismyname", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+      if (res.status === 204) {
+        router.goto("/signup");
+        return;
+      }
+
+      if (res.status === 200) {
+        $user.username = await res.text();
+      }
+    } else {
+      // Not authenticated so we stay on this page
+    }
+  }
 
   const joinGameButton = (input: string | undefined) => {
     if (!$ws) {
