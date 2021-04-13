@@ -29,7 +29,7 @@ import { router } from "tinro";
       }
       
     }
-    getUsername();
+    await getUsername();
   });
 
   async function getUsername() {

@@ -18,7 +18,7 @@
       : "http://localhost:5000/";
 
   onMount(async () => {
-    getUsername();
+    await getUsername();
 
     username = $user.username;
     if(username){

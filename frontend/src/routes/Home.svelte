@@ -16,7 +16,7 @@
   }
 
   onMount(() => {
-    getUsername();
+    await getUsername();
   });
 
   async function getUsername() {

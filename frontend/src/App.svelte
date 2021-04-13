@@ -34,7 +34,7 @@
     // createclient should do this part automatically
     // await auth0Client.getTokenSilently();
     user.set(await (await $auth0Client).getUser());
-    getUsername();
+    await getUsername();
 
 
     window.onbeforeunload = () => {
