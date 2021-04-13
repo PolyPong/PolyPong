@@ -1,4 +1,4 @@
-import { Application, Context } from "https://deno.land/x/oak/mod.ts";
+import { Application, Context } from "https://deno.land/x/oak@v6.5.0/mod.ts";
 import { v4 } from "https://deno.land/std@0.92.0/uuid/mod.ts";
 import { WebSocket, isWebSocketCloseEvent } from "https://deno.land/std@0.92.0/ws/mod.ts"
 
