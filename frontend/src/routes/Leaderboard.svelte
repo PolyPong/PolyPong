@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  import { ws, user_id, user } from "../store";
+  import { ws, user_id, user, auth0Client } from "../store";
+  import { router, meta } from "tinro";
   import Stats from "./Stats.svelte";
 
   let globalLeaderboard = false;
@@ -9,7 +10,7 @@
   let losses: number = 0;
   let gamesPlayed: number = 0;
 
-  const username = $user.username;
+  let username: string = "";
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -17,6 +18,9 @@
       : "http://localhost:5000/";
 
   onMount(async () => {
+    getUsername();
+
+    username = $user.username;
     if(username){
       const xpresponse = await fetch(SERVER_URL + "getxp/" + username);
       const xpresponseBody = await xpresponse.text();
@@ -38,6 +42,30 @@
 
     }
   });
+
+  async function getUsername() {
+    if (await (await $auth0Client).isAuthenticated()) {
+      const token = await (await $auth0Client).getTokenSilently();
+
+      const res = await fetch(SERVER_URL + "whatismyname", {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+      if (res.status === 204) {
+        router.goto("/signup");
+        return;
+      }
+
+      if (res.status === 200) {
+        $user.username = await res.text();
+        console.log("In getUsername: " + $user.username);
+      }
+    } else {
+      // Not authenticated so we stay on this page
+    }
+  }
 
   function toggleBackground(idOfLabel, ...ids) {
     if (idOfLabel == "me"){
