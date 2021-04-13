@@ -54,6 +54,9 @@
     <a href="/lobby">
       <button class="button button2" 
         on:click={async () => {
+          if($ws.readyState !== WebSocket.OPEN){
+            return;
+          }
           const payload = {
             type: "create_lobby",
           };
