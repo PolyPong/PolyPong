@@ -49,7 +49,7 @@
   const paddleCoverageRatio: number = 1 / 4;
   const ballScaleFactor: number = 1 / 30;
   // const frameRate = 1000/60;  // 60 FPS
-  const frameRate = 1000 / 30 ;
+  const frameRate = 1000 / 60;
 
   const SERVER_URL =
     import.meta.env.MODE === "production"

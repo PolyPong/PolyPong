@@ -15,7 +15,7 @@
     auth.loginWithRedirect(await $auth0Client); // Do not pass in null in the options field or the code will break
   }
 
-  onMount(() => {
+  onMount(async () => {
     await getUsername();
   });
 
