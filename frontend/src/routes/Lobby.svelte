@@ -48,8 +48,8 @@
   export let id: string;
   let lobby_input: string;
   let powerUpsStr: any[] = [];
-  let allPowerUpNamesShort: string[] = ["bigger", "smaller", "bumpy", "curvedInwards", "curvedOutwards", "selfInvisible", "othersInvisible", "ballInvisible", "anotherBall", "changeShape", "bomb", "catchAndAim", "distracting", "split", "tracePath"];
-  let allPowerUpNamesLong: string[] = ["Bigger Paddle", "Smaller Paddle", "Bumpy Paddle", "Curved Inwards", "Curved Outwards", "Invisible Paddle, Self", "Invisible Paddle, Others", "Invisible Ball", "Add Ball", "Change Ball Shape", "Bomb", "Catch and Aim", "Distracting Background", "Split Paddle", "Trace Ball Path"];
+  let allPowerUpNamesShort: string[] = ["bigger", "smaller", "bumpy", "curvedInwards", "curvedOutwards", "selfInvisible", "othersInvisible", "ballInvisible", "anotherBall", "distracting", "tracePath"];
+  let allPowerUpNamesLong: string[] = ["Bigger Paddle", "Smaller Paddle", "Bumpy Paddle", "Curved Inwards", "Curved Outwards", "Invisible Paddle, Self", "Invisible Paddle, Others", "Invisible Ball", "Add Ball", "Distracting Background", "Trace Ball Path"];
 
   let client_ready: boolean = false;
 
