@@ -5,3 +5,5 @@ server/key.pem
 server/test.ts
 doc/finalreport/awoosare-final-report.tex
 doc/finalreport/.auctex-auto/awoosare-final-report.el
+doc/test/test-plan.tex
+doc/test/.auctex-auto/test-plan.el

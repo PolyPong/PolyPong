@@ -1,0 +1,62 @@
+#+TITLE: ECE 493 Capstone Test Plan and Suite for PolyPong
+#+author: Arun Woosaree, Michael Antifaoff, Joshua Chang
+
+#+options: toc:nil
+
+* Test Plan
+** User Login
+*** FR1
+Setting up a repeatable test that covers everything for this feature would be
+difficult to say the least, because it would require burning email accounts.
+That is, once an email address is used to sign up, it cannot be re-used to test
+this functional requirement. As a result, a new email would need to be created
+each time we would want to run the test.  A compromise would be to delete the
+email in our database, so that the user is still new to us, even though the
+OAuth provider (In this case, Auth0) would still remember that the user had
+previously authorized our application. An automated test for this feature would
+be infeasible. A manual test should be designed instead.
+
+** User Registration
+*** FR2
+Setting up a test for login will also be slightly difficult. For security reasons,
+both GitHub and Google (the social login providers we chose) occasionally require
+a code to be entered which is sent by e-mail.  For this reason, an automated test
+would be infeasible. A manual test should be designed instead.
+
+** Play Game
+*** FR3 Create Game
+To test this functionality, at least three users are required to test the requirement
+that the game can start when three or more players are present as outlined in the
+Software Requirements Specification. This needs to happen in three separate browser windows
+either on the same computer, or on different computers. This makes an automated test
+difficult, so a manual test should be designed instead.
+*** FR4 Share Link
+*** FR5 Join Game
+*** FR6 Play Game
+** Leaderboard and Statistics
+*** FR7
+*** FR8
+*** FR9
+*** FR10
+** Power Ups
+*** FR11
+*** FR12
+*** FR13
+*** FR14
+*** FR15
+*** FR16
+*** FR17
+*** FR18
+*** FR19
+*** FR20
+*** FR21
+*** FR22
+*** FR23
+*** FR24
+*** FR25
+*** FR26
+** Skins
+*** FR27
+*** FR28
+
+* Test Suite
