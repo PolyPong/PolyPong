@@ -2,7 +2,7 @@
 #+Author: Arun Woosaree
 #+OPTIONS: toc:nil
 #+latex_class_options: [12pt]
-#+LATEX_HEADER: \usepackage{pdflscape}
+#+LATEX_HEADER: \usepackage{pdflscape} \usepackage{svg}
 
 * Problem domain
 The goal of our project is to provide a fun multiplayer social game that
@@ -148,35 +148,87 @@ quicker, instead of one party saying something to the effect of "it's a
 backend/frontend problem".  The obvious choice for the backend code then, is
 also TypeScript.
 
+At this point, it was clear that TypeScript is our language of choice -- for
+both the backend and the frontend code. It was time to choose what frameworks to
+use.  For the frontend, we decided to go with Svelte. The obvious choice would
+be to go with React. It's the most popular JavaScript frontend framework today,
+and for good reason. I also have previous experience working with React.
+However, that would be boring. I convinced my team to use Svelte (mostly because
+I wanted to try something new).  It's been under my radar for a while, and it
+looks cool. Instead of having a virtual DOM like React, the code is compiled to
+vanilla JavaScript, HTML, and CSS. Getting rid of the virtual DOM helps with
+performance: https://svelte.dev/blog/virtual-dom-is-pure-overhead However, while
+this is cool from a technical standpoint, it does not really mean much for us.
+For this project, the difference would not be noticeable.  I also thought that
+Svelte would be easier for the rest of my team to learn, since its syntax is
+similar to vanilla JavaScript, HTML, and CSS, while React has some quirks that
+might contribute to a steeper learning curve like JSX syntax, and its lifecycle
+methods.  JSX is HTML-like syntax in JavaScript code, which can be confusing
+since it is not the same as HTML. From the examples I have seen, Svelte code was
+simpler. Also, it was trivial to copy the initial mock-ups that Micheal had made
+in vanilla HTML and CSS, paste it in Svelte, make some minor tweaks, and build
+on top of it. I know for a fact that if we had chosen React, that process would
+have been a bit more involved.
 
+The next choice was to decide what technologies the backend would use.  The
+obvious choice here would be Node.js with the express framework. It's an
+industry standard, and works extremely well. However, I wanted to experiment and
+play with a newer runtime: Deno. Deno is written by the same guy who made
+Node.js: Ryan Dahl.  He announced it in 2018 during a talk where he explained
+some of the things he regretted about Node.js. Deno has some security features
+that come out of the box, unlike Node.js.  For example, it does not have network
+access, environment variable access, or access to the filesysttm by default.
+These features are opt-in only with a command-line flag. In contrast with
+Node.js, these permissions are implicitly allowed. Overall, we had no good
+reason to use Deno over a more established and popular runtime like Node.js, but
+it did not matter too much for what we were doing. The functionality we needed
+was there, and there was a routing library like express for Deno called oak.
+Plus, Deno has a really cute dinosaur logo:
+[[./Deno.png]]
 
-We use WebSockets for quick, bi-directional communication between the game server and clients
+With the frontend and backend language and frameworks chosen, we now had to
+decide how the client and server would communicate. When a game is active, we
+need a connection with low overhead and low latency. It would also ideally be
+bi-directional and the server or client would be able to send a message whenever
+it wants to, while also being ready to receive a message at any time. Because we
+chose to make our project run in the browser, our choices basically boiled down
+to using either WebSockets or WebRTC. WebRTC is usually used for peer-to-peer
+applications like video calling, however, it also supports the client-server
+model.  It uses the UDP protocol which has the benefit of really low latency,
+however, because it uses UDP, the connection is not reliable. Messages can be
+lost, and we would need to account for that in our code.  WebSockets on the
+other hand, use the TCP protocol, and are much easier to use and understand.
+TCP makes sure that each message is sent and received using acknowledgements. It
+also ensures that the messages are received in the same order that they are
+sent, which helps keeps things simple.  The WebSocket protocol is also
+reasonably fast, and we found it much easier to use than WebRTC.
 
-We decided to use Typescript as the main language for writing our frontend and backend code in.
-This allowed us to define common classes and interfaces that were shared between the frontend and backend code.
-This helped to standardize the code base, since the backend and frontend are use the same interfaces, we avoided problems where
-the data passed between the client and server could be mismatched.
+With the major architectural decisions made, it was time to decide what features
+we would add to our game. What would differentiate us from similar games?
+We got a hint of this in the section above, talking about the existing solutions.
+First, we wanted to give the player a sense of progression, should they choose
+to log in to our system. They can earn experience points, and unlock fancy
+new skins. Skins do not affect the functionality of the game, but it is well-known
+that people love to customize things in games with skins in games like Counter Strike: Global Offensive, Fortnite,
+and Rocket League. For example, at the time of writing, this shiny knife skin for Counter Strike
+can be bought for $420.69 USD:
+[[./csgo.png]]
 
-Furthermore, the Typescript language can be compiled to Javascript, which runs in modern browsers, so a user of our application
-does not have to install any new programs on their computer. Typescript gives us the advantages of having a type system,
-so some errors like referencing a null value can be avoided by statically analyzing the code before it is run.
-The type system also allowed us to standardize the classes and interfaces that the frontend and backend depended on.
+We decided against implementing any sort of monetization for our game.
+For one, dealing with payment information sounds like a nightmare.
+Also, we thought it would feel more rewarding if users actually earned the skins
+that they get to use by playing the game and earning experience points.
 
-For our frontend client library, we chose to use svelte as a framework for the website. There is no particular reason we
-chose Svelte over some other javascript framework like React, other than it is a newer framework and seemed interesting
-to use. We did find that using Svelte was kind of nice, since a lot of the code is in the same style as vanilla HTML and
-CSS, whereas with something like react has a little bit more of a learning curve with its JSX syntax and subtle differences.
-With svelte, we also converted a vanilla HTML and CSS prototype with minimal effort, whereas it would have taken longer
-to do with React, and we would have likely needed to rewrite more of our initial prototype.
+We also added a leaderboard feature so that users can compete amongst
+themselves, reaching for the highest score by playing the most games. Users
+should also be able to see statistics like their win/loss ratio and total games
+played. We did not find an alternative game that already has this feature.
+Powerups were another thing we wanted to add  to differentiate ourselves from
+the classic Pong experience.  Surely, there are other games out there with
+paddles, balls, and power ups, but in my quick searching, of the ones that were
+online and working, none had power ups. This was a similar story for the ability
+to play with more than four other players online.
 
-For our backend, we chose to use Deno. We could have used Node.JS instead, but we chose deno because it seemed cooler.
-Plus, it has Typescript support out of the box, and claims to be more secure. Honestly, our lives would have been easier if
-we went with Express, because Deno is not widely adopted yet, and the community is not as large, however, I like where
-Deno is going, and it was fun to work with. I'd probably still use it in a future project.
-
-
-We added powerups to add something different to the base pong-like experience, to help vary things.
-We think this helps us distinguish ourselves from the competition
 
 * Potential Impact on Society and the Environment
 To be honest, I don't see our project significantly changing someone else's life for better or worse.
@@ -231,336 +283,6 @@ simultaneously. He also implemented the remaining power ups
 #+begin_src sh :results output :exports results
 git --no-pager log --graph --all --oneline --pretty=format:"%h %ad%x09%an%x09%s" --date=short
 #+end_src
-
-#+RESULTS:
-#+begin_example
-,* 85a494c 2021-04-12	mantifao	Rename bomb - commit 2/2. Should now appear in the powerups selection screen
-,* 277950d 2021-04-12	mantifao	Rename bomb - commit 1/2
-,* 5972aad 2021-04-12	mantifao	Add images for shaped paddles
-,* db7877b 2021-04-11	Arunscape	local leaderboard returns indices :)
-,* 4f343f8 2021-04-11	mantifao	Fix bug causing shrunk paddles to become super expanded when setTimeout expired
-,*   3f52c62 2021-04-11	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[32m|[m[33m\[m  
-[32m|[m * d0cd47f 2021-04-11	Arunscape	fix local leaderboard bug SPOILER: I wasn't sorting lol
-,* [33m|[m 1ecf59f 2021-04-11	mantifao	pathTrace powerup now working with multiple balls
-[33m|[m[33m/[m  
-,* a41647a 2021-04-11	mantifao	Adjust path trace to work with multiple balls
-,* 1da988a 2021-04-11	mantifao	Another ball small bug fixes to make consistent across all clients
-,*   4b9ea1f 2021-04-11	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[34m|[m[35m\[m  
-[34m|[m * 17d3007 2021-04-11	Arunscape	nice we are testing everything on the frontend except for the game itself
-[34m|[m * 9e49e1e 2021-04-11	Arunscape	here's a login test
-,* [35m|[m 15accea 2021-04-11	mantifao	Collision detection now working for different shaped paddles
-[35m|[m[35m/[m  
-,* 84f1669 2021-04-11	mantifao	Fix bug where alert was coming up when lobby_id was ""
-,*   f93d8f9 2021-04-11	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[36m|[m[1;31m\[m  
-[36m|[m *   53d7e6a 2021-04-11	Phlana	Merge pull request #19 from PolyPong/add-ball
-[36m|[m [1;32m|[m[1;33m\[m  
-[36m|[m [1;32m|[m *   632209f 2021-04-11	Joshua Chang	add ball powerup finished
-[36m|[m [1;32m|[m [1;34m|[m[1;32m\[m  
-[36m|[m [1;32m|[m [1;34m|[m[1;32m/[m  
-[36m|[m [1;32m|[m[1;32m/[m[1;34m|[m   
-[36m|[m [1;32m|[m * a545f53 2021-04-11	Joshua Chang	additional ball
-[36m|[m [1;32m|[m * c0c9fa6 2021-04-11	Joshua Chang	array of balls working
-,* [1;32m|[m [1;35m|[m c9e64f5 2021-04-11	mantifao	Update getPaddleY() for 8-12 players
-[1;32m|[m[1;32m/[m [1;35m/[m  
-,* [1;35m|[m 32d989b 2021-04-11	mantifao	Shapes are now rendered consistently across rounds
-,* [1;35m|[m 760da7b 2021-04-11	mantifao	Fix bug where powerup names were not correctly displayed on client (were being displayed as undefined even when they were in the user's inventory)
-,* [1;35m|[m 75c96a8 2021-04-11	mantifao	CurvedInwards, CurvedOutwards and Bumpy render correctly for one round; fixed bug where player 0 could not update their state across the other clients (and other clients would end up overwriting player 0, leading to paddle stickiness and powerups not working for player 0)
-[1;35m|[m[1;35m/[m  
-,* 2dfb8d9 2021-04-11	mantifao	Skins should now be correctly rendered
-,* cd2b13f 2021-04-11	mantifao	Fixing skins
-,* 000e87c 2021-04-11	mantifao	Fixing bug where skins are not showing
-,* a7b9922 2021-04-11	mantifao	Update mergeState
-,* 502b95b 2021-04-10	mantifao	Reduce volume of client-server keypress communication
-,* ea03666 2021-04-10	mantifao	Remove some logs, add some logs
-,* ad870ba 2021-04-10	Joshua Chang	added debugging statments
-,* 80cd847 2021-04-10	mantifao	Better Lobby Names; sound effects that only work in certain browsers (Firefox works, Safari does not)
-,*   afdc17a 2021-04-10	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[1;36m|[m[31m\[m  
-[1;36m|[m * 59953fa 2021-04-10	Arunscape	here's how we do testing for oak
-,* [31m|[m bcfa680 2021-04-10	mantifao	Powerups now working properly across clients
-[31m|[m[31m/[m  
-,* 57446c5 2021-04-10	mantifao	Small code refactoring, no additional functionality, just cleaner code
-,*   500411e 2021-04-10	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[32m|[m[33m\[m  
-[32m|[m * 4c7ccd4 2021-04-10	Arunscape	test script for server
-[32m|[m * 1e94b08 2021-04-10	Arunscape	fix database tests
-,* [33m|[m 0eafcf4 2021-04-10	mantifao	Stats are updated and saved in the DB; queried using API and displayed to the user in Leaderboard.Svelte
-[33m|[m[33m/[m  
-,* 17d7cf7 2021-04-10	mantifao	This should fix one player game starting
-,* 048fa33 2021-04-10	mantifao	Fix lobby doesn't exist error
-,* 1a1467e 2021-04-10	mantifao	When a user exits a game, it restarts without them; minor changes so in-game powerups available are more clear
-,* 2a4c65e 2021-04-09	mantifao	Combine Stats.svelte with Leaderboard.svelte, Remove Login and Stats routes since Login.svelte is now a part of Home.svelte
-,* a5860b6 2021-04-09	mantifao	Update Settings.Svelte, tell the user what their current paddle color is
-,* b557edd 2021-04-09	mantifao	Leaderboard almost done, just need place returned for local leaderboard
-,* a155f05 2021-04-09	mantifao	Fixed canvas equal to null bug by clearing all the intervals and remove the event listener for keys and blur
-,* c3eb94b 2021-04-09	mantifao	Fixes bug where keyDownHandlers were not removed when a game was won (they were only removed when a game was lost). This was causing unnecessary client-server communication
-,* 543859b 2021-04-09	mantifao	Fixed a bug with lobby system: when two players are in a lobby and one lost connection, the other is now informed the lobby no longer exists; Fixed another bug where when a user exits the lobby, it is shown on all clients. Unless we find more bugs, lobby should be complete!
-,* bdf06cc 2021-04-09	mantifao	Lobby improvements, on closing a window, users are now removed from a lobby
-,* c40b848 2021-04-09	mantifao	Update settings and skin selection pages
-,* dc9dfec 2021-04-09	mantifao	Lobby redesign, works with link sharing and shows when users (registered or guest users) join a lobby
-,* 7ba7b18 2021-04-07	mantifao	Fixes a bug where skins were set correctly on the server, but not on the client so all paddles were white (instead of the correct skin color)
-,* 4c6b4c5 2021-04-07	mantifao	Remove lobby_id resetting
-,* 0a19ca8 2021-04-07	mantifao	XP bug should now be fixed
-,* 8fc7df1 2021-04-07	mantifao	Fix bug where XP was not assigned due to lobby_id being reset on the client before the last message from client to server was sent
-,*   bad880b 2021-04-07	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[34m|[m[35m\[m  
-[34m|[m * c187963 2021-04-06	Joshua Chang	replace fewer players when merging states
-[34m|[m * b15fddc 2021-04-06	Arunscape	we weren't specifying the port!!!
-[34m|[m * 3c71308 2021-04-06	Joshua Chang	add and remove event listeners when needed
-,* [35m|[m ac4755d 2021-04-07	mantifao	Fixed game breaking bug where second round of game couldn't start after first round ended
-[35m|[m [35m|[m *   1b69116 2021-04-06	Arunscape	WIP on master: 9f305e3 we weren't specifying the port!!!
-[35m|[m [35m|[m [36m|[m[1;31m\[m  
-[35m|[m [35m|[m [36m|[m * 82d832f 2021-04-06	Arunscape	index on master: 9f305e3 we weren't specifying the port!!!
-[35m|[m [35m|[m [36m|[m[36m/[m  
-[35m|[m [35m|[m * 9f305e3 2021-04-06	Arunscape	we weren't specifying the port!!!
-[35m|[m [35m|[m[35m/[m  
-[35m|[m * 1f029a4 2021-04-06	Joshua Chang	good paddle movement
-[35m|[m[35m/[m  
-,* d79b9bd 2021-04-06	mantifao	Fixed lobby selection bug
-,* fd04f02 2021-04-06	mantifao	Add package.json
-,* 61bace9 2021-04-06	mantifao	Skins are now working! Strong start on lobby selection, need to fix bug where two users cannot restart a game in the same lobby
-,* 64e089c 2021-04-05	mantifao	Skins are now working!
-,*   5717d7f 2021-04-05	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[1;32m|[m[1;33m\[m  
-[1;32m|[m * b6c363b 2021-04-05	Arunscape	final report draft
-[1;32m|[m * c368319 2021-04-05	Arunscape	bind:this for canvas
-,* [1;33m|[m 33f7a48 2021-04-05	mantifao	Game XP is now added and displayed to the user
-[1;33m|[m[1;33m/[m  
-,* c35b6f8 2021-04-05	mantifao	Code cleanup, adding comments
-,* cb34633 2021-04-05	mantifao	Update getPaddleY() for up to 7 players (need to finish 8-12 later)
-,* 55f9aa7 2021-04-05	mantifao	Add attribution
-,* 708e3ee 2021-04-05	mantifao	Path Trace powerup done, better initial ball speed
-,* 9849a65 2021-04-04	mantifao	Distracting background working, stops when player who applied it is eliminated (no menu, just random colors every 5 seconds)
-,* d8bed85 2021-04-04	Arunscape	this was confusing the compiler I guess
-,*   42495dc 2021-04-04	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[1;34m|[m[1;35m\[m  
-[1;34m|[m * 97409a6 2021-04-04	Arunscape	one space
-[1;34m|[m * 1866e33 2021-04-04	Arunscape	cleanup
-[1;34m|[m * d831fe9 2021-04-04	Arunscape	formatting
-,* [1;35m|[m e3b97e1 2021-04-04	mantifao	2 Player wall collision detection working
-[1;35m|[m[1;35m/[m  
-,*   2635ddd 2021-04-04	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[1;36m|[m[31m\[m  
-[1;36m|[m * e5a8ccb 2021-04-03	Arunscape	signup works now
-[1;36m|[m * 7c088c8 2021-04-03	Arunscape	oops
-[1;36m|[m * 6e5ccce 2021-04-03	Arunscape	oops
-[1;36m|[m * ac7d5c2 2021-04-03	Arunscape	signup theoretically works
-[1;36m|[m * 475f2fe 2021-04-03	Arunscape	missing }
-[1;36m|[m * a0a7a2c 2021-04-03	Arunscape	redirect user if logged in but account does not exist
-[1;36m|[m * 81cc3fd 2021-04-03	Arunscape	handle loginwithredirect callback
-,* [31m|[m 6074ad7 2021-04-04	mantifao	5 Powerups implemented (bigger, smaller and 3 invisibles)! Need testing to ensure they work as expected
-[31m|[m[31m/[m  
-,*   69fe1c4 2021-04-03	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[32m|[m[33m\[m  
-[32m|[m * 2b9e162 2021-04-03	Arunscape	copy, share link works now
-[32m|[m * 344cc95 2021-04-03	Arunscape	oops
-[32m|[m * a94864f 2021-04-03	Arunscape	create get username endpoint
-,* [33m|[m 53f0a36 2021-04-03	mantifao	Added list of powerups on each client
-[33m|[m[33m/[m  
-,* 70804d4 2021-04-02	mantifao	Update images, Lobby now waits for everybody and has power up selection
-,* 081f246 2021-04-02	Arunscape	global and local leaderboard now using rest methods, just need to get username now
-,* e8e23a8 2021-04-02	Arunscape	setskin works from the frontend now (in the sense that it saves the new value in the database)
-,* 1b40a09 2021-04-02	Arunscape	oops
-,* ad0b811 2021-04-02	Arunscape	we're using rest to handle this stateless data instead of passing it over the websocket
-,* c11e716 2021-04-02	Arunscape	set skin rest endpoint
-,* 72a2fb8 2021-04-02	Arunscape	remove unused code in server.ts
-,* 7306fc0 2021-04-01	Arunscape	local leaderboard rest endpoint
-,* 6009ccc 2021-04-01	Arunscape	global leaderboard rest endpoint
-,* ade41a6 2021-04-01	Arunscape	getavailableskins rest endpoint
-,* 759dd24 2021-04-01	Arunscape	use auth0client.isauthenticated
-,*   8f9836d 2021-04-01	Joshua Chang	Merge branch 'master' of https://github.com/ECE493Capstone/project
-[34m|[m[35m\[m  
-[34m|[m * bb8bda8 2021-04-01	Arunscape	login with redirect also, getTokenSilently() returns a proper token now
-[34m|[m * 9463ba2 2021-04-01	Arunscape	implement getxp endpoint using traditional rest for simplicity
-,* [35m|[m 5e54f66 2021-04-01	Joshua Chang	smoother paddle movement
-[35m|[m[35m/[m  
-[35m|[m * 4821c69 2021-04-01	mantifao	Work in progress to synchronize emails and usernames across client and server
-[35m|[m[35m/[m  
-,* a956424 2021-03-31	mantifao	Game background colour is now the same as rest of background
-,* 5628aca 2021-03-31	mantifao	Fix background color
-,*   ab60467 2021-03-31	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[1;31m|[m[1;32m\[m  
-[1;31m|[m * 5c0a06c 2021-03-30	Arunscape	leaderboard functionality
-[1;31m|[m * 4c4bf61 2021-03-30	Arunscape	leaderboard also theoretically works now
-[1;31m|[m * 0e8cf83 2021-03-30	Arunscape	add logic for getting skins and setting it (with authentication!) (untested lol)
-[1;31m|[m * c65fecf 2021-03-30	Arunscape	fix some linting and allow port to be specified as an environment variable
-[1;31m|[m * 26fff32 2021-03-30	Arunscape	add leaderboard functions for dbhelper, and tests for all of dbhelper
-[1;31m|[m * 6c3827e 2021-03-30	Arunscape	server can run locally again
-[1;31m|[m * d6916f4 2021-03-29	Arunscape	let's see if this is faster
-[1;31m|[m * 14b0ff6 2021-03-29	Arunscape	oops
-[1;31m|[m * 3812267 2021-03-29	Arunscape	ooh let's try this
-[1;31m|[m * 3177e7a 2021-03-29	Arunscape	pls
-[1;31m|[m * bd9b095 2021-03-29	Arunscape	ohhh it might be a CORS thing
-,* [1;32m|[m 0a6155f 2021-03-31	mantifao	When we finish one game, a new game is started!
-[1;32m|[m[1;32m/[m  
-,* a7d7ffa 2021-03-29	mantifao	Improve the animation
-,* 9c827df 2021-03-29	mantifao	Update getPaddleY() to work better, add Game Over text animation
-,* 1ec3a21 2021-03-29	Arunscape	try this port on cloudflare
-,* 09dd68a 2021-03-29	Arunscape	let's see if this works
-,* 32ff7d0 2021-03-29	Arunscape	try binding to 0.0.0.0
-,* dec0d48 2021-03-29	Arunscape	oops I spoke too soon
-,* 272adda 2021-03-29	Arunscape	aaand theoretically we should be live
-,* ec610f9 2021-03-29	Arunscape	it works
-,* e8d3dc4 2021-03-29	Arunscape	rename it so it works on cybera (because I'm already running another instance of mongo there)
-,* 9ccb72f 2021-03-29	Arunscape	this should work
-,* 54788c8 2021-03-29	Arunscape	create dockerfile
-,*   a852a09 2021-03-28	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[1;33m|[m[1;34m\[m  
-[1;33m|[m * 2917325 2021-03-28	Arunscape	oops
-[1;33m|[m * acd4dc4 2021-03-28	Arunscape	logic for levelling up and setting skins and getting available skins
-[1;33m|[m * fa4b545 2021-03-28	Arunscape	add some pretty colours
-,* [1;34m|[m cfae28a 2021-03-28	mantifao	Gameplay working and smooth, graphicaly glitches ironed out, Client can now detect when it has lost (but not yet sent to server or other clients)
-[1;34m|[m[1;34m/[m  
-,*   a25d53e 2021-03-28	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[1;35m|[m[1;36m\[m  
-[1;35m|[m * 260a729 2021-03-28	Arunscape	undo rotation
-,* [1;36m|[m 4bf30cc 2021-03-28	mantifao	Collision detection working across multiple clients, graphical glitches abound
-[1;36m|[m[1;36m/[m  
-,*   6940d71 2021-03-28	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
-[31m|[m[32m\[m  
-[31m|[m * 42f197a 2021-03-28	Arunscape	don't send websocket buffer
-,* [32m|[m 74d6856 2021-03-28	mantifao	Working on getting ball consistent
-[32m|[m[32m/[m  
-,* 1d95da8 2021-03-28	mantifao	Collision detection is poor but working
-,* 00757ec 2021-03-28	Arunscape	send unrotated dy dx for ball
-,* 8f4370a 2021-03-28	Arunscape	skip sending websocket buffer in the update lol
-,* 035bb48 2021-03-28	Arunscape	red paddle should move now on other clients
-,* 8e626d9 2021-03-28	mantifao	Collision detection now works client-side! Ball is also drawn correctly (but not synchronized)
-,* 5cf8b12 2021-03-27	Arunscape	idk :/
-,* ac0a03b 2021-03-27	Arunscape	oops
-,* 0e12240 2021-03-27	Arunscape	ball should be in sync now
-,* b8ae6e0 2021-03-27	Arunscape	ball moves in sync until there is a collision also collisions are broken
-,* 3814bc4 2021-03-27	Arunscape	refactor
-,* 61f7b36 2021-03-27	Arunscape	refactored game object
-,* dfee8ff 2021-03-26	mantifao	Include interface from PPC (removes error message)
-,* 3e67b26 2021-03-26	mantifao	Login now checks db, we let users set their username on first login
-,* 0dc17aa 2021-03-25	Arunscape	we can see other players' paddles moving now!!!
-,* a3da283 2021-03-22	mantifao	Log In on Home page now prints user email to console if authenticated
-,* 07f5092 2021-03-22	mantifao	Fix Auth0 bugs
-,* 9c3dd00 2021-03-22	mantifao	Update db.ts to import from PP-Common
-,* aa6ce39 2021-03-22	mantifao	auth0Client now in store.ts
-,* 4d4227e 2021-03-19	mantifao	Change default port to 3000
-,* ec001d6 2021-03-19	Arunscape	attempt to start game
-,* a395ced 2021-03-19	Arunscape	moved client side lobby websocket stuff to global scope in store.ts
-,* ccdf142 2021-03-16	Arunscape	why did I change these types lol
-,* 370549f 2021-03-12	Arunscape	delete old stuff
-,* 895b5d6 2021-03-12	Arunscape	format tsconfig
-,* 7a7f748 2021-03-12	Arunscape	idk
-,* 05fdd37 2021-03-12	Arunscape	Revert "install in preinstall?" mistakes were made...
-,* fbd103e 2021-03-12	Arunscape	install in preinstall?
-,* b22b713 2021-03-12	Arunscape	frontend can build now
-,* 603ebdd 2021-03-12	Arunscape	if I have to do another UML diagram I'll wanna fucking kms
-,* a0ca534 2021-03-12	Arunscape	render diagrams
-,* 65c19d3 2021-03-12	Arun Woosaree	Create fr26.puml
-,* 1b90018 2021-03-12	Arun Woosaree	Create fr25.puml
-,* 0ce9d9f 2021-03-12	Arun Woosaree	Update fr16.puml
-,* 82f5fab 2021-03-12	Arun Woosaree	Create fr24.puml
-,* 3dcd30e 2021-03-12	Arun Woosaree	Create fr23.puml
-,* a16f102 2021-03-12	Arun Woosaree	Create fr22.puml
-,* 74b20bb 2021-03-12	Arun Woosaree	Create fr21.puml
-,* 95b4032 2021-03-12	Arun Woosaree	Create fr20.puml
-,* b47b915 2021-03-12	Arun Woosaree	Create fr19.puml
-,* 38a674c 2021-03-12	Arun Woosaree	Create fr18.puml
-,* fed2552 2021-03-12	Arun Woosaree	Create fr17.puml
-,* 3402647 2021-03-12	Arun Woosaree	Create fr16.puml
-,* 747b23f 2021-03-12	Arun Woosaree	Create fr15.puml
-,* 6b0ac6b 2021-03-12	Arun Woosaree	Create fr14.puml
-,* 1b2907e 2021-03-12	Arun Woosaree	Create fr13.puml
-,* 61dd277 2021-03-12	Arun Woosaree	Create fr12.puml
-,* aa1e2b8 2021-03-12	Arunscape	we have a basic database
-,* 254af7d 2021-03-12	Arun Woosaree	Update fr27.puml
-,* 2649182 2021-03-12	Arun Woosaree	Update fr28.puml
-,* e18eca7 2021-03-12	Arunscape	changes
-,* d339d94 2021-03-12	Arunscape	delete fr12 for now
-,* 86248f7 2021-03-12	Arunscape	oops forgot to commit this one
-,* 5ba66dd 2021-03-12	Arunscape	add docker-compose
-,* 1f4c0b0 2021-03-12	Arun Woosaree	hopefully last time updating fr1sequence
-,* 758aaa0 2021-03-12	Arun Woosaree	Update fr1.puml
-,* f780ed8 2021-03-12	Arun Woosaree	Update fr6.puml
-,* 53a72bb 2021-03-12	Arunscape	final fr28 hopefully
-,* db93bfa 2021-03-12	Arunscape	final fr27 hopefully
-,* 56449d8 2021-03-12	Arunscape	final fr28 hopefully
-,* 92291c5 2021-03-11	Arunscape	final fr10 hopefully
-,* 69de270 2021-03-11	Arunscape	final fr9 hopefully
-,* 36c7fa2 2021-03-11	Arunscape	final fr8 hopefully
-,* 96d460d 2021-03-11	Arunscape	final fr7 hopefully
-,* b056895 2021-03-11	Arunscape	final fr6 hopefully
-,* 8caa1aa 2021-03-11	Arunscape	final fr5 hopefully
-,* ab61aa3 2021-03-11	Arunscape	final fr4 hopefully
-,* 818bbb0 2021-03-11	Arunscape	final fr3 hopefully
-,* 7e35a5f 2021-03-11	Arunscape	final fr2 hopefully
-,* 1d17042 2021-03-10	Arunscape	script to generate power up sequence diagrams when we figure out how they're supposed to work
-,* 91b3235 2021-03-10	Arunscape	tweaks
-,* 0875ad3 2021-03-10	Arunscape	remove need for jwt to view leaderboard
-,* c6a266b 2021-03-10	Arunscape	play game does not involve lobby
-,* e0930b3 2021-03-10	Arunscape	check for 3+ users fr3
-,* cbeddbd 2021-03-10	Arunscape	fr12sequence
-,* c21c408 2021-03-10	Arunscape	fr28sequence
-,* 7fb4f70 2021-03-10	Arunscape	fr27sequence
-,* 2879334 2021-03-10	Arunscape	fr10sequence
-,* 7360541 2021-03-10	Arunscape	fr9sequence
-,* 4e54651 2021-03-10	Arunscape	fr8sequence
-,* 51c2cc5 2021-03-10	Arunscape	fr7sequence
-,* 72d270e 2021-03-10	Arunscape	fr6sequence
-,* 49b9cd4 2021-03-10	Arunscape	fr5sequence
-,* 9d5c1ef 2021-03-10	Arunscape	fr4sequence
-,* 7aad86c 2021-03-10	Arunscape	fr3sequence
-,* fe90914 2021-03-10	Arunscape	fr3sequence
-,* dd09d87 2021-03-10	Arunscape	update fr2sequence
-,* 33bcadc 2021-03-10	Arunscape	update fr1sequence
-,* 8ac287e 2021-03-10	Arunscape	fr2sequence
-,* ff37e84 2021-03-10	Arunscape	fr1sequence
-,* c6c7837 2021-03-10	Arunscape	the websocket is now accessible from anywhere in the application
-,* 04c6bb7 2021-03-09	Arunscape	use the types I defined for transmitting messages
-,* de4b815 2021-03-09	Arunscape	add joinsuccesspayload to payload.ts
-,* c9a8575 2021-03-09	Arunscape	fixed the enter lobby id bug. now uses the textbox input
-,* e250620 2021-03-08	Arunscape	here's what the communication protocol might look like
-,* f9e9273 2021-03-08	Arunscape	hey we can now create a lobby, and join it with a unique id!!!
-,* b180a2f 2021-03-08	Arunscape	add uuid
-,* 0d70162 2021-03-05	Arunscape	package-lock go brrrrrrrrrrrrrr
-,* 95a3d19 2021-03-05	Arunscape	document how to install private package
-,* f2eb902 2021-03-05	Arunscape	create polypong-common package
-,* c6d248a 2021-03-05	Arunscape	v0.0.1
-,* 0a64f51 2021-03-05	Arunscape	move Game types to npm package
-,* 51b2d4e 2021-03-01	mantifao	Player number done; paddles rotate accordingly
-,* 0d60aee 2021-03-01	mantifao	Ball now scales based on client's window size
-,* c5d9a42 2021-03-01	mantifao	Added a ball and basic collision detection
-,* 7cc2cc0 2021-02-28	mantifao	Cleaned up code, paddles have colors!
-,* ffad707 2021-02-28	mantifao	Paddles are now bounded!
-,* 0dfdaf9 2021-02-28	mantifao	Bottom paddle moves! No boundary checking yet
-,* dccca91 2021-02-28	mantifao	Initial paddles are drawn
-,* 0fb8f2c 2021-02-27	mantifao	Adding classes but not yet working
-,* d81ecac 2021-02-27	mantifao	Shapes are drawn again
-,* 6f9fadb 2021-02-25	Arunscape	work breakdown structure
-,* 345723b 2021-02-17	Arunscape	idk what I changed but it works beautifully now. If the user is already signed in, they are no longer prompted for credentials
-,* e07fb58 2021-02-16	Arunscape	getting somewhere
-,* 34625da 2021-02-16	Arunscape	hm
-,* 61928d8 2021-02-16	Arunscape	add auth0 client library again
-,* d158d9c 2021-02-16	Arunscape	oh boy lots of changes
-,* 5c62216 2021-02-15	Arunscape	add auth0 client library
-,* ccea9cc 2021-02-08	Arunscape	frontend mockup but now in Svelte still kind of ugly because we're not reusing components, but hey, it's a start
-,* 739fbe9 2021-02-08	Arunscape	actually let's try svelte@next
-,* f51de3c 2021-02-08	Arunscape	add lockfile to gitignore for now
-,* 3573a86 2021-02-08	Arunscape	use typescript
-,* 0acc958 2021-02-08	Arunscape	init svelte
-,* 4369d8e 2021-02-08	Arunscape	move frontend mockup
-,* bd0191d 2021-02-08	Arunscape	copy over stuff from main branch
-,* 7b293ed 2021-02-06	Arunscape	signin works
-,* d38e4b4 2021-02-06	Arunscape	signin works
-,* 026077b 2021-02-05	mantifao	Create README.md
-,* 61a93f6 2021-02-05	mantifao	Delete .DS_Store
-,* 279df4a 2021-02-05	mantifao	Delete .DS_Store
-,* c3a08ef 2021-02-05	mantifao	Delete .DS_Store
-,* 58569af 2021-02-05	mantifao	Delete .DS_Store
-,* 1d00abd 2021-02-05	mantifao	Delete .DS_Store
-,* 1aab6ff 2021-02-05	mantifao	Delete .DS_Store
-,* fe524da 2021-02-05	mantifao	Add gitignore
-,* 72beaa3 2021-02-05	mantifao	Initial mockups
-#+end_example
-
 #+end_landscape
 #+RESULTS:
 
