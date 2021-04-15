@@ -313,46 +313,64 @@ For this project, I found myself acting as a senior developer of sorts.  I got
 to make decisions about which technologies we were using, and I found my
 teammates asking for advice on best practices and such, because I have previous
 experience with Javascript frameworks like React and Node.js. My team trusted
-the decisions I was making.
+the decisions I was making. Most of the time, when we wanted to start working
+on a new feature, I would be the one to make some boilerplate code that we would then
+be able to build on top of. This also had the benefit of showing others
+examples of how to write code for the frameworks we were using.
 
 I worked mainly on the backend and database side of things. I also touched a
 fair bit of the frontend code, mainly hooking up core functionality and making
 sure that the frontend can communicate properly with the server. Basically, I
 touched almost every element of the project that was non visual. Things like
 fetching data from the server and displaying them, minus the looking pretty
-part.  I also worked entirely on the authentication system. This involved
+part. I also worked entirely on the authentication system. This involved
 managing the dashboard on Auth0, and writing code to do the login flow on the
 frontend.  On the backend side of things, this involved code like requiring
 certain client requests to be authenticated and verifying the JSON web token
-provided in the request.  database I also worked on getting our project deployed
+provided in the request.  I also worked on getting our project deployed
 so that we can play the game on polypong.ca. This involved domain registration,
 administering DNS records, deploying the frontend to Cloudflare Pages, writing
-Dockerfiles, and deploying the backend to Cybera.
+Dockerfiles, and deploying the backend to Cybera. For the database side of things,
+I wrote the queries and helper functions which would be used in other parts
+of the application. I also worked on designing most of the tests.
+The database and server tests
 
-Michael mainly focused on the frontend, UI design, and making features which I
-added look pretty. Eventually, we also had to refactor the code and we pair
-programmed together, fixing bugs. He came up with the initial UI prototype for
+Micheal mainly focused on the frontend, UI design, and making features which I
+added look pretty. He also had to work a bit in the backend
+when he wanted to add features to the frontend. As a result,
+Micheal has a really good understanding of how the frontend works,
+and a solid understanding of how the backend works.
+Eventually, we also had to refactor the code and we pair
+programmed together, fixing bugs, adding features, and fixing more bugs.
+He came up with the initial UI prototype for
 the frontend, a large portion of which we have tweaked and kept in the final
 product. He also worked on getting the game to render on the HTML canvas, and
 did some geometry math to figure out how to render an n-sided polygon on the
 canvas, rotate the canvas, draw shapes, etc.
 
-He also figured out how to do collision detection, input handling, and designing
-the game loop.  I pair programmed with Michael a lot over the course of the
-project, getting things between the frontend and backend in sync, and making
-sure they communicate with each other.  Together, we got a basic game working,
-one without synchronization. "Basic game" meaning that we got multiple players
-to connect to the server, get their paddles to move on each others' screens, and
-a ball moving. However, at that point, there was no synchronization, and
-although we could see the ball moving in the same direction on all screens, they
-were in different positions because of the lack of synchronization
+Micheal also figured out how to do collision detection, input handling, and
+designing the game loop.  I pair programmed with Michael a lot over the course
+of the project, getting things between the frontend and backend in sync, and
+making sure they communicate with each other.  Together, we got a basic game
+working, one without synchronization. "Basic game" meaning that we got multiple
+players to connect to the server, get their paddles to move on each others'
+screens, and a ball moving. However, at that point, there was no
+synchronization, and although we could see the ball moving in the same direction
+on all screens, the movement was jittery because of the lack of synchronization.
+Michael also implemented a majority of the eleven powerups in the game.  I
+helped to implement some when we were pair programming as well.
 
-Josh mainly worked on the synchronization algorithm. We also pair programmed for
-a bit. He worked on implementing the Dead Reckoning Algorithm, which makes the
-clients predict the movement of the paddles so that the game appears to be more
-smooth and less jittery.
-
-
+Joshua mainly worked on the synchronization algorithm. The algorithm implemented
+was the dead reckoning algorithm. Basically, each client predicts what will
+happen in the game, and small corrections are made, which helps make the game
+appear smoother.  There was also one day where we pair programmed together for a
+bit, and another few days leading up to the project demo date where we
+programmed together, along with Micheal to get the remaining power ups
+implemented. Joshua also wrote the initial code we used for the 'Add Ball'
+powerup.  His main contribution was implementing the Dead Reckoning Algorithm,
+which makes the clients predict the movement of the paddles so that the game
+appears to be more smooth and less jittery. This involved simulating the paddle
+movement for opponents, and also predicting the movement of the ball.
 
 * History of Changes
 #+begin_landscape
