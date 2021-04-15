@@ -57,7 +57,98 @@ allows one to play a multiplayer game similar to pong. Here are a few examples:
   game requires the player to always be connected to the internet.
 
 * Our Solution
-We chose a client server model over a peer-to-peer model
+
+We wanted our game to be easily accessible, so that users can pick up the game,
+and start playing it in just a few seconds.  This helped us narrow down our
+choices for what programming language to write our application in: The best way
+to make our application work on almost any device with next to no setup is to
+make it so that it can just run in a browser. Most modern devices have a web
+browser based on Google Chrome of Firefox pre-installed.  So, if we make a web
+application, the user does not have to download any new program, or install
+anything. They can just visit a website and start playing right away!
+
+The most popular language for web applications is JavaScript, however, we chose
+to go with TypeScript which has recently gained a lot of popularity. Created by
+Microsoft in 2012, TypeScript is a superset of JavaScript, which means that you
+can still write normal JavaScript code for your web application, however, you
+can also opt to use additional features, which helps to avoid common pitfalls in
+JavaScript. One of the main benefits of using TypeScript over JavaScript is its
+type checking system, which allows for types to be statically checked before the
+code is transpiled to JavaScript. This helps to avoid errors such as referencing
+a null object by accident, or attempting to access a field that does not exist,
+because the programmer may not know the exact structure of the data.  With
+TypeScript, one can write 'interfaces' for an object, which defines what fields
+should be available, and if the programmer does something that may cause an
+error down the line, the static analyzer can warn the programmer.  We decided
+that we like these extra features that TypeScript has over JavaScript, so we
+went for it.
+
+Alternatively, we could have chosen to write our code in a language that
+compiles to WebAssembly, like Rust.  WebAssembly is a binary instruction format
+for a stack based virtual machine that runs in the browser.  Rust is a modern
+low-level systems programming language with manual memory management, similar to
+C++. One of its main draws is its notorious compiler, which can guarantee memory
+safety using its infamous borrow checker which validates references to objects
+in memory and spits out errors, frustrating programmers everywhere when they
+write unsafe code.  It manages to guarantee memory safety, while being on par
+with C++ in terms of performance. Similar programs written in C++ or Rust
+usually trade blows in terms of performance. Rust can be compiled to
+WebAssembly, so it would be totally feasible to write our game in that language.
+This would also bring some of the same benefits that a typed language like
+TypeScript has like static type checking, while offering other benefits like
+better performance.  This language would be an excellent choice if we needed to
+squeeze our every bit of performance possible for our application.  Luckily,
+drawing paddles, balls, and handling collisions is not that demanding
+for modern computers these days and we can afford a performance hit and
+instead use a language with garbage collection like JavaScript/TypeScript to
+make our jobs a bit easier. The borrow checker is wonderful, however, given the
+limited time for working on this project, we decided against it because it is
+easier to get something running and working when you don't have to worry about
+manual memory management.
+
+Clearly, at this point, TypeScript seems to be in the winning spot for our
+language of choice, at least for the code running in the browser. Next, we
+needed to make a decision about how the game state would be synchronized between
+different players. We could either go with a peer-to-peer design where all of
+the code is client-side, or we could go with a client-server model.  Most online
+multiplayer games I have played personally have used this client-server model
+(Among Us, Team Fortress 2, Rocket League, <Insert Latest Battle Royale Game
+Here>...). Also, I have found from personal experience that peer-to-peer
+multiplayer games tend to be a bit more finnicky. For example, games like Super
+Mario Smash Bros. Ultimate and Mass Effect 3 Multiplayer tend to have issues
+when a peer loses their connection, and some players can get an unfair advantage
+over others if they are acting as the host, since they get the most up-to-date
+information.
+
+We chose to go with a client server model over a peer-to-peer model, partially
+because of these past experiences as a consumer of multiplayer video games. We
+also thought it would be easier to go with a client-server model over deciding
+some consensus algorithm for the peer-to-peer method. The server is the
+authoritative source. This also allows us to keep track of user statistics in a
+centralized location, which we need to satisfy our functional requirements in
+the Software Requirements Specification. In order to provide a leaderboard
+feature, we need to store the ranking of each user in a central location, so the
+decision to go with a client-server model for the game was obvious.
+
+Now that we decided to go with a client-server model, we needed to decide what
+language to write the backend in.  From previous experience, I have found that
+one of the most frustrating things as either a frontend or backend developer is
+when the frontend developer and the backend developer have different ideas of
+what the data looks like, or the data models are out-of-sync. The frontend might
+be expecting for something that the backend does not provide, while the backend
+developer might not know what the frontend developer wants. I have found in
+previous projects that when the backend and frontend are written in the same
+language, I usually don't have to worry about this happening, because the
+frontend and backend can depend on the same data models. When the types or
+interfaces for a piece of data is updated for the backend for example, the
+frontend also gets that update immediately since it also imports the same
+dependency. When something breaks because of the data model, the frontend and
+backend developers notice immediately, and the problem tends to get solved
+quicker, instead of one party saying something to the effect of "it's a
+backend/frontend problem".  The obvious choice for the backend code then, is
+also TypeScript.
+
+
 
 We use WebSockets for quick, bi-directional communication between the game server and clients
 
