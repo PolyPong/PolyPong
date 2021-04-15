@@ -18,23 +18,57 @@ be infeasible. A manual test should be designed instead.
 
 ** User Registration
 *** FR2
-Setting up a test for login will also be slightly difficult. For security reasons,
-both GitHub and Google (the social login providers we chose) occasionally require
-a code to be entered which is sent by e-mail.  For this reason, an automated test
-would be infeasible. A manual test should be designed instead.
+Setting up a test for login will also be slightly difficult. For security
+reasons, both GitHub and Google (the social login providers we chose)
+occasionally require a code to be entered which is sent by e-mail.  For this
+reason, an automated test would be infeasible. A manual test should be designed
+instead.
 
 ** Play Game
 *** FR3 Create Game
-To test this functionality, at least three users are required to test the requirement
-that the game can start when three or more players are present as outlined in the
-Software Requirements Specification. This needs to happen in three separate browser windows
-either on the same computer, or on different computers. This makes an automated test
-difficult, so a manual test should be designed instead.
+To test this functionality, at least three users are required to test the
+requirement that the game can start when three or more players are present as
+outlined in the Software Requirements Specification. This needs to happen in
+three separate browser windows either on the same computer, or on different
+computers. This makes an automated test difficult, so a manual test should be
+designed instead.
+
 *** FR4 Share Link
+To test this functionality, a link needs to be copied, and then pasted into a
+new browser window.  Even if you ignore the security implications of using a
+script to copy clipboard contents, this requires opening a new browser window
+and pasting a link. A manual test will be designed for this feature.
+
 *** FR5 Join Game
+To test this functionality, a lobby id would have to already exist,
+meaning that this test would depend on the create game functionality,
+which will be a manual test. Therefore, a manual test will also
+be designed for this feature.
+
 *** FR6 Play Game
+To test this functionality, one would have to actually play the game.
+There are a lot of things that can happen in a game, and many scenarios
+to think about that can happen in the game. There are virtually
+infinite possibilities of combinations of game states, which depend on things like:
+- the number of players
+- the positions of paddles
+- the powerups used
+- network latency
+We found from preliminary playtesting that the game gets really chaotic past about 12 players.
+Beyond that point, the distance you can move a paddle becomes really small.
+So, the test will start with 12 players, each with powerups such that
+all of the power ups will be used multiple times throughout the game, and will run until there is
+one player left. Also, it will be a manual test because of the amount of players required.
 ** Leaderboard and Statistics
-*** FR7
+*** FR7 Earn XP
+Parts of this feature can be tested with automated tools. In the backend, an
+automated test can be made to ensure that the function which adds XP to a
+user updates the database correctly.
+
+For a player to actually earn XP however, they must play the game.
+So, the other part of this test would be to ensure that when a game ends,
+the correct amount of XP is awarded. This will be a manual test case.
+
 *** FR8
 *** FR9
 *** FR10
