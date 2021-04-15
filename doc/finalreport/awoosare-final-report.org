@@ -24,8 +24,37 @@ even required to sign up before playing a game. Users can enjoy the game as a
 guest, and sign up later if they choose to.
 
 * Existing Solutions
-A quick google search reveals that there are a plethora of online projects which already exist that
-allows one to play a multiplayer game online, with balls and paddles.
+A quick google search for "multiplayer pong" reveals that there are a plethora of online projects which already exist that
+allows one to play a multiplayer game similar to pong. Here are a few examples:
+
+- https://pong-2.com/
+  This has multiplayer online play, a single player mode, offline play, online multiplayer, and the ability to change
+  the colours of the baddle, background and ball. However, this does not have power ups like our game.
+  Furthermore, the online multiplayer feature is restricted to two players, while we have no such restriction
+- https://play.google.com/store/apps/details?id=com.AvidGames.Pong&hl=en_CA&gl=US
+  This requires an Android phone, and an app download. Also, it does not seem to provide online multiplayer
+  with more than two players at once like we do, nor does it appear to have power ups.
+- https://github.com/pstefa1707/multiplayer-pong
+  This also seems to have a single player mode and online multiplayer. Like the other examples, there is no
+  option to play a game with more than two players simultaneously.\
+- https://github.com/HarshdeepGupta/multi_pong
+  This appears to work with up to four players, while our game allows for more than four players to play in a single game.
+  Also, it requires Java to be installed, while our game just runs in the browser.
+- https://github.com/Eisah-Jones/Multiplayer-Pong/tree/master/Multiplayer-Pong
+  This one seems to have a chatroom feature, which we do not have. However, this game
+  seems to have a limit of four for the maximum amount of players that can play at once.
+  Also, this game needs to be compiled, or a binary needs to be downloaded before it can
+  be enjoyed, and the setup is not as simple as just going to a website like our game.
+
+  A common trend among these examples seems to be that most of them have the
+  limitation that the games usually have a set maximum number of players. In our
+  game, we have no such limit, and 6, or even 12 players can easily play a game
+  together. (The game does get more and more chaotic as more players join, and
+  at a certain point, it does get impractical to play a game).  However, we did
+  not implement any single player mode in our game, while other alternatives
+  usually have a single player mode with a computer opponent controlling the
+  other paddle. I also found some games that seem to work offline, while our
+  game requires the player to always be connected to the internet.
 
 * Our Solution
 We chose a client server model over a peer-to-peer model
