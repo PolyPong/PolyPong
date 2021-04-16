@@ -1,5 +1,7 @@
 import type { Auth0ClientOptions } from "@auth0/auth0-spa-js";
 
+// FR1 User Login
+// FR2 User Registration
 const redirect_uri = import.meta.env.MODE === "production" ? "https://polypong.ca/#/callback" : "http://localhost:3000/#/callback"
 const config: Auth0ClientOptions = {
   domain: "polypong.us.auth0.com",
