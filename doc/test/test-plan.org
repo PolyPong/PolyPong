@@ -199,10 +199,8 @@ since testing the game is also done manually and cannot be automated.
 *** FR1
 This is a manual test
 **** Test steps
-1. Pick a Google or GitHub account with an email that does not already exist in the database
-   - if the user already exists, either delete the entry in the database, or create a new GitHub/Google account.
-2. Go to https://polypong.ca
-3. Click on the ~Sign Up/Log In~ buttons
+1. Go to https://polypong.ca
+2. Click on the ~Sign Up/Log In~ buttons
    - you will be redirected to log in to either your github or google account
 
 **** Expectations
@@ -215,6 +213,38 @@ This is a manual test
 
 ** User Registration
 *** FR2
+This is a manual test
+**** Test steps
+1. Pick a Google or GitHub account with an email that does not already exist in the database
+   - if the user already exists, either delete the entry in the database, or create a new GitHub/Google account.
+2. Go to https://polypong.ca
+3. Click on the ~Sign Up/Log In~ buttons
+   - you will be redirected to log in to either your github or google account
+4. When login in to Google or GitHub is done, you should be redirected to a sign up page
+   where you are asked to choose a username for your new account
+5. Type a username that already exists in the database. (If one is not known already, you can look at the leaderboard to see some already existing usernames)
+6. Hit ~Create Account~
+7. Change the username requested to something unique
+8. Hit ~Create Account~
+
+
+
+**** Expectations
+1. When the sign up process is finished, you should be redirected to the home page.
+   If it was successful, you will see two new buttons on the home page: ~My Stats and Leaderboard~, and ~Settings~.
+   Also, the ~Sign Up/Log In~ button should no longer be visible.
+2. In the developer tools for your browser, you should see a cookie set by auth0:
+   - Name: auth0.isauthenticated
+   - Value: true
+3. On step 6, when a user attempts to sign up with an already existing username, an error should notify the user that the requested username is taken.
+4. Also on step 6, on the network tab, a to https://polyserver.polypong.ca should be made, with the response
+   status code being ~409 Conflict~ indicating that the username is already taken
+5. After step 8, you should be redirected to the home page for polypong.ca.
+   If it was successful, you will see two new buttons on the home page: ~My Stats and Leaderboard~, and ~Settings~.
+   Also, the ~Sign Up/Log In~ button should no longer be visible.
+6. In the developer tools for your browser, you should see a cookie set by auth0:
+   - Name: auth0.isauthenticated
+   - Value: true
 
 ** Play Game
 *** FR3 Create Game
