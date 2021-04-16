@@ -1,5 +1,6 @@
 import { Game, Paddle, Player, Ball, Shape, Color, ClientUpdateMessage } from "@polypong/polypong-common";
 
+// FR6 Play Game
 export class GameClient extends Game {
   radius: number = 175; // Size of the game board, determined at runtime but set to default of 400
   sides: number;
@@ -39,6 +40,19 @@ export class GameClient extends Game {
       this.players.push(player);
     }
   }
+  // FR6 Play Game
+  // FR11 Power Ups
+  // FR12 Expanded Paddle
+  // FR13 Shrink Paddle
+  // FR14 Self Invisible Paddle
+  // FR15 Others Invisible Paddle
+  // FR16 Invisible Ball
+  // FR17 Self Curved Outwards Paddle
+  // FR18 Self Curved Inwards Paddle
+  // FR19 Self Bumpy Paddle
+  // FR20 Distracting Background
+  // FR23 Add Ball
+  // FR26 Path Trace
   mergeState(state: GameClient, player_number: number | undefined, message: ClientUpdateMessage) {
     // if (player_number || player_number === 0) {
     //   // this.players[player_number].paddle.x = state.players[player_number].paddle.x;
