@@ -4,6 +4,8 @@ import createAuth0Client, { Auth0Client } from "@auth0/auth0-spa-js";
 import { popupOpen, user } from "./store";
 import config from "./auth_config";
 
+// FR1 User Login
+// FR2 User Registration
 async function createClient() {
   let auth0Client = await createAuth0Client({
     domain: config.domain,
@@ -13,6 +15,8 @@ async function createClient() {
   return auth0Client;
 }
 
+// FR1 User Login
+// FR2 User Registration
 async function loginWithPopup(client: Auth0Client, options: any) {
   popupOpen.set(true);
   try {
@@ -27,6 +31,8 @@ async function loginWithPopup(client: Auth0Client, options: any) {
   }
 }
 
+// FR1 User Login
+// FR2 User Registration
 async function loginWithRedirect(client: Auth0Client, options: any) {
   try {
     await client.loginWithRedirect(options);
@@ -39,6 +45,8 @@ async function loginWithRedirect(client: Auth0Client, options: any) {
   }
 }
 
+// FR1 User Login
+// FR2 User Registration
 function logout(client: Auth0Client) {
   return client.logout();
 }
