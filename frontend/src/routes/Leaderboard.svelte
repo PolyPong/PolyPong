@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { ws, user_id, user, auth0Client } from "../store";
   import { router, meta } from "tinro";
-  import Stats from "./Stats.svelte";
 
   let globalLeaderboard = false;
   let xp: number = 0;
