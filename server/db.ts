@@ -207,12 +207,6 @@ export const getXP: (username: string) => Promise<number | undefined> = async (u
   return result?.xp
 }
 
-export const getXPByEmail: (email: string) => Promise<number | undefined> = async (email: string) => {
-  const result = await users.findOne({ email: { $eq: email } }, { projection: { _id: 0, xp: 1 } })
-  return result?.xp
-};
-
-
 Deno.test("database test", async () => {
 
   // clean db for test
@@ -258,6 +252,20 @@ Deno.test("database test", async () => {
   const user2 = await getXP("arun")
   assertEquals(user2, 869);
 
+
+  // add win test
+  await users.updateOne({ username: { $eq: "arun" } }, { $set: { wins: 122 } });
+  await addWin("arun")
+  const wins = await getWins("arun");
+  assertEquals(wins, 123);
+  assertEquals(await getWins("nonexistent"), -1);
+
+  // add loss test
+  await users.updateOne({ username: { $eq: "arun" } }, { $set: { losses: 245 } });
+  await addLoss("arun");
+  const loss = await getLosses("arun");
+  assertEquals(loss, 246);
+  assertEquals(await getLosses("nonexistent"), -1);
   // get available skins
   const available = await getAvailableSkins("arun")
   assertEquals(available, [Color.White, Color.BlueGrey, Color.Grey, Color.Brown, Color.DeepOrange, Color.Orange, Color.Amber, Color.Yellow, Color.Lime, Color.LightGreen, Color.Green, Color.Teal])
@@ -269,6 +277,10 @@ Deno.test("database test", async () => {
   // set skin that's not allowed yet because low xp
   const newskin2 = await setSkin("test@example.com", Color.Red);
   assertEquals(newskin2, setSkinResponse.LevelTooLow);
+
+  // set skin user does not exist
+  const setskin = await setSkin("thisuserdoesntexist", Color.DeepOrange);
+  assertEquals(setskin, setSkinResponse.UserNotFound);
 
 
   // global leaderboard

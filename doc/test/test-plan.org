@@ -34,16 +34,20 @@ this functional requirement. As a result, a new email would need to be created
 each time we would want to run the test.  A compromise would be to delete the
 email in our database, so that the user is still new to us, even though the
 OAuth provider (In this case, Auth0) would still remember that the user had
-previously authorized our application. An automated test for this feature would
-be infeasible. A manual test should be designed instead.
+previously authorized our application.
+
+An automated test will test the server side code, while a manual test
+will ensure that a user can in fact, log in.
 
 ** User Registration
 *** FR2
 Setting up a test for login will also be slightly difficult. For security
 reasons, both GitHub and Google (the social login providers we chose)
 occasionally require a code to be entered which is sent by e-mail.  For this
-reason, an automated test would be infeasible. A manual test should be designed
-instead.
+reason, an manual test is required to test the frontend part of this feature.
+
+An automated test will test the server side code, while a manual test
+will ensure that a user can in fact, log in.
 
 ** Play Game
 *** FR3 Create Game
@@ -213,6 +217,9 @@ This is a manual test
 
 ** User Registration
 *** FR2
+On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
+along with other tests
+
 This is a manual test
 **** Test steps
 1. Pick a Google or GitHub account with an email that does not already exist in the database
@@ -226,7 +233,6 @@ This is a manual test
 6. Hit ~Create Account~
 7. Change the username requested to something unique
 8. Hit ~Create Account~
-
 
 
 **** Expectations
@@ -262,6 +268,7 @@ This is a manual test
 *** FR9 View Global Leaderboard
 
 *** FR10 User statistics
+
 ** Power Ups
 *** FR11 Power Ups
 *** FR12 Expanded Paddle
