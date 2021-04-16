@@ -12,7 +12,15 @@ import {
 } from "https://deno.land/std/testing/asserts.ts";
 
 
-
+// Database initialization
+// FR1 User Login
+// FR2 User Registration
+// FR7 Earn XP
+// FR8 Local Leaderboard
+// FR9 Global Leaderboard
+// FR10 User statistics
+// FR27 Earn Skin
+// FR28 Select skin
 const client = new MongoClient();
 
 // Defining schema interface
@@ -56,12 +64,13 @@ await users.createIndexes(
   },
 );
 
-
+// FR9 Global Leaderboard
 export const getGlobalLeaderboard = async (limit = 10) => {
   const top10 = await users.find({}, { projection: { _id: 0, username: 1, xp: 1 } }).sort({ xp: -1 }).limit(limit).toArray()
   return top10;
 }
 
+// FR8 Local Leaderboard
 export const getLocalLeaderboard = async (username: string, plusminus = 5) => {
   const xp = await getXP(username);
   if (!xp) {
@@ -91,6 +100,7 @@ export const getLocalLeaderboard = async (username: string, plusminus = 5) => {
   return [...greater, user, ...less];
 }
 
+// FR28 Select skin
 export const getAvailableSkins: (username: string) => Promise<Color[]> = async (username: string) => {
   const user = await getUser(username);
   if (!user) {
@@ -103,6 +113,7 @@ export const getAvailableSkins: (username: string) => Promise<Color[]> = async (
     .map(([k, v]) => k as Color);
 }
 
+// FR28 Select skin
 export const getSelectedSkin: (username: string) => Promise<Color> = async (username: string) => {
   const user = await getUser(username);
   if (!user) {
@@ -111,6 +122,7 @@ export const getSelectedSkin: (username: string) => Promise<Color> = async (user
   return user.paddleColor;
 }
 
+// FR28 Select skin
 export enum setSkinResponse {
   UserNotFound,
   LevelTooLow,
@@ -118,6 +130,7 @@ export enum setSkinResponse {
   ErrorUpdating
 }
 
+// FR28 Select skin
 export const setSkin = async (email: string, skin: Color) => {
   const user = await getUserbyEmail(email)
   if (!user) {
@@ -136,22 +149,25 @@ export const setSkin = async (email: string, skin: Color) => {
   return setSkinResponse.ErrorUpdating;
 }
 
+// FR7 Earn XP
 // this should be determined by the server, not the game client
 export const levelUp = async (username: string, levels: number) => {
   return await users.updateOne({ username: { $eq: username } }, { $inc: { xp: levels } });
 }
 
+// FR10 User statistics
 // this should be determined by the server, not the game client
 export const addWin = async (username: string) => {
   return await users.updateOne({ username: { $eq: username } }, { $inc: { wins: 1 } });
 }
 
+// FR10 User statistics
 // this should be determined by the server, not the game client
 export const addLoss = async (username: string) => {
   return await users.updateOne({ username: { $eq: username } }, { $inc: { losses: 1 } });
 }
 
-
+// FR10 User statistics
 export const getWins: (username: string) => Promise<number> = async (username: string) => {
   const user = await getUser(username);
   if (!user) {
@@ -161,6 +177,7 @@ export const getWins: (username: string) => Promise<number> = async (username: s
   return user.wins;
 }
 
+// FR10 User statistics
 export const getLosses: (username: string) => Promise<number> = async (username: string) => {
   const user = await getUser(username);
   if (!user) {
@@ -170,10 +187,7 @@ export const getLosses: (username: string) => Promise<number> = async (username:
   return user.losses;
 }
 
-
-
-
-
+// FR2 User Registration
 export const addUser: (username: string, email: string) => Document = async (
   username: string,
   email: string,
@@ -189,24 +203,31 @@ export const addUser: (username: string, email: string) => Document = async (
   return insertId;
 };
 
+// FR2 User Registration
 export const checkExists = async (field: "username" | "email", str: string) => {
   return !!(await users.findOne({ [field]: str }));
 };
 
-
+// FR10 User statistics
+// FR28 Select skin
 export const getUser = async (username: string) => {
   return await users.findOne({ username: { $eq: username } }, { projection: { _id: 0 } });
 };
 
+// FR28 Select skin
 export const getUserbyEmail = async (email: string) => {
   return await users.findOne({ email: { $eq: email } }, { projection: { _id: 0 } });
 }
 
+// FR8 Local Leaderboard
+// FR9 Global Leaderboard
+// FR10 User statistics
 export const getXP: (username: string) => Promise<number | undefined> = async (username: string) => {
   const result = await users.findOne({ username: { $eq: username } }, { projection: { _id: 0, xp: 1 } })
   return result?.xp
 }
 
+// tests
 Deno.test("database test", async () => {
 
   // clean db for test
