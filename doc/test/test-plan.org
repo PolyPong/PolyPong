@@ -195,3 +195,70 @@ A manual test would be needed to ensure that the user's currently selected skin 
 since testing the game is also done manually and cannot be automated.
 
 * Test Suite
+** User Login
+*** FR1
+This is a manual test
+**** Test steps
+1. Pick a Google or GitHub account with an email that does not already exist in the database
+   - if the user already exists, either delete the entry in the database, or create a new GitHub/Google account.
+2. Go to https://polypong.ca
+3. Click on the ~Sign Up/Log In~ buttons
+   - you will be redirected to log in to either your github or google account
+
+**** Expectations
+1. When the login process is finished, you should be redirected to the home page.
+   If it was successful, you will see two new buttons on the home page: ~My Stats and Leaderboard~, and ~Settings~.
+   Also, the ~Sign Up/Log In~ button should no longer be visible.
+2. In the developer tools for your browser, you should see a cookie set by auth0:
+   - Name: auth0.isauthenticated
+   - Value: true
+
+** User Registration
+*** FR2
+
+** Play Game
+*** FR3 Create Game
+
+*** FR4 Share Link
+
+*** FR5 Join Game
+
+*** FR6 Play Game
+** Leaderboard and Statistics
+*** FR7 Earn XP
+
+*** FR8 View Local Leaderboard
+
+*** FR9 View Global Leaderboard
+
+*** FR10 User statistics
+** Power Ups
+*** FR11 Power Ups
+*** FR12 Expanded Paddle
+*** FR13 Shrink Paddle
+*** FR14 Self Invisible Paddle
+*** FR15 Others Invisible Paddle
+*** FR16 Invisible Ball
+*** FR17 Self Curved Outwards Paddle
+*** FR18 Self Curved Inwards Paddle
+*** FR19 Self Bumpy Paddle
+*** FR20 Distracting Background
+*** FR21
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
+*** FR22
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
+*** FR23 Add Ball
+*** FR24
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
+*** FR25
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
+*** FR26 Path Trace
+
+** Skins
+*** FR27 Earn Skin
+
+*** FR28 Select skin
