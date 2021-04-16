@@ -5,7 +5,6 @@
   import Game from "./routes/Game.svelte";
   import Leaderboard from "./routes/Leaderboard.svelte";
   import Lobby from "./routes/Lobby.svelte";
-  import Powerups from "./routes/Powerups.svelte";
   import Settings from "./routes/Settings.svelte";
   import Signup from "./routes/Signup.svelte";
   import Callback from "./routes/Callback.svelte";
@@ -166,11 +165,6 @@
   <!-- // FR5 Join Game -->
   <Route path="/lobby">
     <Lobby id="" />
-  </Route>
-
-  <!-- // FR11 Power Ups -->
-  <Route path="/powerups">
-    <Powerups />
   </Route>
 
   <!-- // FR28 Select skin -->
