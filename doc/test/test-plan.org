@@ -220,7 +220,8 @@ This is a manual test
 On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
 along with other tests
 
-This is a manual test
+A manual test is used to test the functionality from the user's perspective, and also to test portions of code
+that are not covered by automated tests.
 **** Test steps
 1. Pick a Google or GitHub account with an email that does not already exist in the database
    - if the user already exists, either delete the entry in the database, or create a new GitHub/Google account.
@@ -254,20 +255,146 @@ This is a manual test
 
 ** Play Game
 *** FR3 Create Game
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id
 
 *** FR4 Share Link
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id
+3. When step 3 above is completed, a link should be copied to your system clipboard
 
 *** FR5 Join Game
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id
+3. When step 3 above is completed, a link should be copied to your system clipboard
+4. When step 4 is completed, there should now be two players in the lobby
 
 *** FR6 Play Game
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. Have all users in the lobby click on the ~Let's Play~ button at the bottom of the page
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id
+3. When step 3 above is completed, a link should be copied to your system clipboard
+4. When step 4 is completed, there should now be two players in the lobby
+5. When step 5 is completed, there should now be three players in the lobby
+6. When step 6 is completed, the game should start and users can start playing.
+
 ** Leaderboard and Statistics
 *** FR7 Earn XP
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, and log in as a different user, or get a friend to log in with their account and paste the link and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. Have all users in the lobby click on the ~Let's Play~ button at the bottom of the page
+7. Play the game until each player either wins or gets eliminated.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id
+3. When step 3 above is completed, a link should be copied to your system clipboard
+4. When step 4 is completed, there should now be two players in the lobby
+5. When step 5 is completed, there should now be three players in the lobby
+6. When step 6 is completed, the game should start and users can start playing.
+7. When step 7 is completed, there should be a notification at the end of the game
+   indicating the amount of XP earned for playing the game.
+   1. The first player to get eliminated should have earned 1 XP
+   2. The second player should have earned 2 XP
+   3. The player that won the game should have earned 3 XP
 
 *** FR8 View Local Leaderboard
+On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
+along with other tests
+
+A manual test is used to test the functionality from the user's perspective, and also to test portions of code
+that are not covered by automated tests.
+
+**** Test Steps
+1. Go to https://polypong.ca
+2. Log in if not already logged in yet.
+3. If you have 0 XP, play the game to earn some XP
+4. On the home page, click on the ~My Stats and Leaderboard~ button
+
+**** Expectations
+1. You should see a list of usernames and their corresponding XP. The users that appear
+   directly next to your name should be the ones that have the closest amount of XP to you
 
 *** FR9 View Global Leaderboard
+On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
+along with other tests
+
+A manual test is used to test the functionality from the user's perspective, and also to test portions of code
+that are not covered by automated tests.
+
+**** Test Steps
+1. Go to https://polypong.ca
+2. Log in if not already logged in yet.
+3. If you have 0 XP, play the game to earn some XP
+4. On the home page, click on the ~My Stats and Leaderboard~ button
+5. Click on the ~Top in the World~ button
+
+**** Expectations
+1. You should see a top 10 list of usernames and their corresponding XP.
+   These users are the 10 players in descending order with the highest XP.
 
 *** FR10 User statistics
+On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
+along with other tests
+
+A manual test is used to test the functionality from the user's perspective, and also to test portions of code
+that are not covered by automated tests.
+
+**** Test Steps
+1. Go to https://polypong.ca
+2. Log in if not already logged in yet.
+3. If you have 0 XP, play the game to earn some XP
+4. On the home page, click on the ~My Stats and Leaderboard~ button
+
+**** Expectations
+1. You should see three statistics which should match with your past play history
+   1. Games Played
+   2. Games Won
+   3. XP Level
 
 ** Power Ups
 *** FR11 Power Ups
