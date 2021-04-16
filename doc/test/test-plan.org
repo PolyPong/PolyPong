@@ -244,7 +244,8 @@ that are not covered by automated tests.
    - Name: auth0.isauthenticated
    - Value: true
 3. On step 6, when a user attempts to sign up with an already existing username, an error should notify the user that the requested username is taken.
-4. Also on step 6, on the network tab, a to https://polyserver.polypong.ca should be made, with the response
+4. Also on step 6, on the network tab of your browser's developer tools,
+   a request to https://polyserver.polypong.ca/signup should be made, with the response
    status code being ~409 Conflict~ indicating that the username is already taken
 5. After step 8, you should be redirected to the home page for polypong.ca.
    If it was successful, you will see two new buttons on the home page: ~My Stats and Leaderboard~, and ~Settings~.
@@ -424,5 +425,77 @@ so no tests are required for a feature that does not exist.
 
 ** Skins
 *** FR27 Earn Skin
+On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
+along with other tests
+
+A manual test is used to test the functionality from the user's perspective, and also to test portions of code
+that are not covered by automated tests.
+
+**** Test Steps
+1. Go to https://polypong.ca
+2. Log in if not already logged in yet.
+3. Make note of your current XP level. This can be checked on the leaderboard page
+   by clicking on the ~My Stats and Leaderboard~ button on the home page
+4. Make note of the current skins you have unlocked. This can be checked on the settings page
+   by clicking on the ~Settings~ button on the home page.
+5. Play enough games to earn enough XP to unlock a new skin:
+   Skins are unlocked at the following thresholds
+
+    #+begin_example
+    {
+      [Color.White]: 0,
+      [Color.BlueGrey]: 7,
+      [Color.Grey]: 11,
+      [Color.Brown]: 18,
+      [Color.DeepOrange]: 29,
+      [Color.Orange]: 47,
+      [Color.Amber]: 76,
+      [Color.Yellow]: 123,
+      [Color.Lime]: 199,
+      [Color.LightGreen]: 322,
+      [Color.Green]: 521,
+      [Color.Teal]: 843,
+      [Color.Cyan]: 1364,
+      [Color.LightBlue]: 2207,
+      [Color.Blue]: 3571,
+      [Color.Indigo]: 5778,
+      [Color.DeepPurple]: 9349,
+      [Color.Purple]: 15127,
+      [Color.Pink]: 24476,
+      [Color.Red]: 39603,
+      [Color.Black]: 64079,
+      [Color.BackgroundColor]: 103682
+    }
+    #+end_example
+
+6. When enough experience points are earned to unlock a new skin, go to the home page
+   and click on the ~Settings~ button
+
+**** Expectations
+1. You should now see a new skin available to choose from
 
 *** FR28 Select skin
+On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
+along with other tests
+
+A manual test is used to test the functionality from the user's perspective, and also to test portions of code
+that are not covered by automated tests.
+
+**** Test Steps
+1. Go to https://polypong.ca
+2. Log in if not already logged in yet.
+3. Go to the settings page by clicking on the ~Settings~ button
+4. Select a different skin from the one you currently have equipped
+5. Play a game to see the new skin in action
+
+
+**** Expectations
+1. You should see a selection of skins that you can choose
+2. After step 3, in the network tab of the developer console of your browser, a
+   network request should be seen made to https://polyserver.polypong.ca/getavailableskins
+   The response code should be 200
+3. After step 4, in the network tab of the developer console of your browser, a network
+   request should be seen made to https://polyserver.polypong.ca/setskin
+   The response code should be 204
+4. During step 5, you should see the new skin that was selected active in the game. Your opponents should
+   also be able to see the skin colour you chose.
