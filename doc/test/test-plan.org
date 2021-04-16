@@ -4,6 +4,27 @@
 #+options: toc:nil
 
 * Test Plan
+Overall, the tests for the backend code are automated,
+and will have over 80% line coverage, as outlined in the software requirements
+specification document. Because the backend is using the Deno runtime,
+we are using a built-in testing tool. In conjunction with this,
+we are also using a library called 'superoak', which is designed
+to help with testing oak applications. Oak is a framework
+we use for routing requests in the server.
+
+The frontend code will be subject to manual testing, due to the difficulty
+with automating tests for a multiplayer game. We do have an automated
+test which clicks buttons and navigates the site to ensure that our navigation
+works, and certain things are displayed correctly. However, we found that
+manual tests were necessary to ensure that our functional requirements
+are satisfied and the application works as expected.
+The automated test which click buttons and navigates around is written
+using the puppeteer framework. Puppeteer is a tool written by Google,
+which allows one to automate actions in the Chrome browser. With the combination
+of this tool plus manual testing, we are confident that the lines covered
+far exceed 80%, however, since a coverage report is not automatically generated
+like in automated tests, we do not know the exact percentage of lines covered.
+
 ** User Login
 *** FR1
 Setting up a repeatable test that covers everything for this feature would be
@@ -40,57 +61,137 @@ script to copy clipboard contents, this requires opening a new browser window
 and pasting a link. A manual test will be designed for this feature.
 
 *** FR5 Join Game
-To test this functionality, a lobby id would have to already exist,
-meaning that this test would depend on the create game functionality,
-which will be a manual test. Therefore, a manual test will also
-be designed for this feature.
+To test this functionality, a lobby id would have to already exist, meaning that
+this test would depend on the create game functionality, which will be a manual
+test. Therefore, a manual test will also be designed for this feature.
 
 *** FR6 Play Game
-To test this functionality, one would have to actually play the game.
-There are a lot of things that can happen in a game, and many scenarios
-to think about that can happen in the game. There are virtually
-infinite possibilities of combinations of game states, which depend on things like:
+To test this functionality, one would have to actually play the game.  There are
+a lot of things that can happen in a game, and many scenarios to think about
+that can happen in the game. There are virtually infinite possibilities of
+combinations of game states, which depend on things like:
 - the number of players
 - the positions of paddles
 - the powerups used
 - network latency
-We found from preliminary playtesting that the game gets really chaotic past about 12 players.
-Beyond that point, the distance you can move a paddle becomes really small.
-So, the test will start with 12 players, each with powerups such that
-all of the power ups will be used multiple times throughout the game, and will run until there is
-one player left. Also, it will be a manual test because of the amount of players required.
+We found from preliminary playtesting that the game gets really chaotic past
+about 12 players.  Beyond that point, the distance you can move a paddle becomes
+really small.  So, the test will start with 12 players, each with powerups such
+that all of the power ups will be used multiple times throughout the game, and
+will run until there is one player left. Also, it will be a manual test because
+of the amount of players required.
 ** Leaderboard and Statistics
 *** FR7 Earn XP
 Parts of this feature can be tested with automated tools. In the backend, an
-automated test can be made to ensure that the function which adds XP to a
-user updates the database correctly.
+automated test can be made to ensure that the function which adds XP to a user
+updates the database correctly.
 
-For a player to actually earn XP however, they must play the game.
-So, the other part of this test would be to ensure that when a game ends,
-the correct amount of XP is awarded. This will be a manual test case.
+For a player to actually earn XP however, they must play the game.  So, the
+other part of this test would be to ensure that when a game ends, the correct
+amount of XP is awarded. This will be a manual test case.
 
-*** FR8
-*** FR9
-*** FR10
+*** FR8 View Local Leaderboard
+Parts of this feature can be tested with automated tools. In the backend, an
+automated test can be made to ensure that the function which returns the data
+that the frontend requests is in the correct format.
+
+A manual test will be used to ensure that the correct data is shown in the
+frontend.  Another acceptable solution would be to have a unit test in the
+frontend which mocks the response from the server and ensures the data is
+displayed correctly.
+
+*** FR9 View Global Leaderboard
+Parts of this feature can be tested with automated tools. In the backend, an
+automated test can be made to ensure that the function which returns the data
+that the frontend requests is in the correct format.
+
+A manual test will be used to ensure that the correct data is shown in the
+frontend.  Another acceptable solution would be to have a unit test in the
+frontend which mocks the response from the server and ensures the data is
+displayed correctly.
+
+*** FR10 User statistics
+Parts of this feature can be tested with automated tools. In the backend, an
+automated test can be made to ensure that the function which returns the user
+statistics data that the frontend requests is in the correct format.
+
+A manual test will be used to ensure that the correct data is shown in the
+frontend.  Another acceptable solution would be to have a unit test in the
+frontend which mocks the response from the server and ensures the data is
+displayed correctly.
 ** Power Ups
-*** FR11
-*** FR12
-*** FR13
-*** FR14
-*** FR15
-*** FR16
-*** FR17
-*** FR18
-*** FR19
-*** FR20
+*** FR11 Power Ups
+There are 11 Choose 3 = 165 possible combinations of power up choices that
+users can make. Given more time, we could make that many test cases, however,
+because a game has multiple players, we could have a game with say, 11 players
+(because there are 11 power ups in total), and get each player to pick one power up.
+This is a much more reasonable solution, and we still ensure that all of the power ups
+can be picked. Each power up is still has their respective tests for ensuring that
+the power ups itself works as expected.
+
+*** FR12 Expanded Paddle
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR13 Shrink Paddle
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR14 Self Invisible Paddle
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR15 Others Invisible Paddle
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR16 Invisible Ball
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR17 Self Curved Outwards Paddle
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR18 Self Curved Inwards Paddle
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR19 Self Bumpy Paddle
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+*** FR20 Distracting Background
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
 *** FR21
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
 *** FR22
-*** FR23
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
+*** FR23 Add Ball
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
 *** FR24
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
 *** FR25
-*** FR26
+This optional functional requirement was scrapped. Therefore, the feature does not exist,
+so no tests are required for a feature that does not exist.
+*** FR26 Path Trace
+This functional requirement is a power up, and a power up is activated during a game.
+The actions that happen in a game cannot be automated, so testing is to be done manually.
+
 ** Skins
-*** FR27
-*** FR28
+*** FR27 Earn Skin
+Parts of this feature can be tested with automated tools. In the backend, an
+automated test can be made to ensure the following:
+- the function which returns the available skins (based on current XP) is correct
+- the user can select a new skin when the XP threshold for that skin is earned
+
+  A manual test would be needed to ensure that the user can actually select a skin
+  when the skin has been earned
+
+*** FR28 Select skin
+Parts of this feature can be tested with automated tools. In the backend, an
+automated test can be made to ensure the following:
+- the function which returns the available skins (based on current XP) is correct
+- the function that sets the user's skin works, and does not allow a user to set a skin they have not unlocked yet
+
+A manual test would be needed to ensure that the user's currently selected skin is visible when the game starts,
+since testing the game is also done manually and cannot be automated.
 
 * Test Suite
