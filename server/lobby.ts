@@ -19,7 +19,10 @@ import {
 import { GameServer } from "./Game.ts"
 
 import dbHelper from "./db.ts";
-
+// FR3 Create Game
+// FR4 Share Link
+// FR5 Join Game
+// FR6 Play Game
 class Lobby {
   userlist: Map<string, WebSocket>;
   userReadyList: string[]; // Array of user_id's that have hit "Let's play"
@@ -38,7 +41,7 @@ class Lobby {
     this.game = new GameServer(new Map(), new Map()); // will be replaced by setGame
   }
 
-  printState(){
+  printState() {
     console.log("The current state of the lobby is: ")
     console.log("User List: " + this.userlist);
     console.log("User Ready List: " + this.userReadyList);
@@ -53,9 +56,10 @@ class Lobby {
     this.game = game;
   }
 
+  // FR5 Join Game
   async joinGame(user_id: string, ws: WebSocket, username: string | undefined) {
 
-    if (this.game_in_progress){
+    if (this.game_in_progress) {
       console.log("We are in game in progress")
       console.log(this.userlist.keys());
       const response: ErrorPayload = {
@@ -67,7 +71,7 @@ class Lobby {
     }
 
     this.userlist.set(user_id, ws);
-    if (username !== undefined){
+    if (username !== undefined) {
       this.usernameList.set(user_id, username);
     }
 
@@ -85,15 +89,16 @@ class Lobby {
     ws.send("success joining game");
   }
 
+  // FR5 Join Game
   async getListOfUsernames(username: string | undefined): Promise<[string, number][]> {
     const usernamesToSend: [string, number][] = [];
     let i = 1;
-    for (let user of this.userlist.keys()){
+    for (let user of this.userlist.keys()) {
       console.log("User in userlist: " + user);
       username = this.usernameList.get(user);
-      if (username){
+      if (username) {
         const xp = await dbHelper.getXP(username);
-        if (xp){
+        if (xp) {
           usernamesToSend.push([username, xp]);
         } else {
           usernamesToSend.push([username, 0]);
@@ -108,16 +113,30 @@ class Lobby {
 
   }
 
+  // FR5 Join Game
+  // FR6 Play Game
+  // FR11 Power Ups
+  // FR12 Expanded Paddle
+  // FR13 Shrink Paddle
+  // FR14 Self Invisible Paddle
+  // FR15 Others Invisible Paddle
+  // FR16 Invisible Ball
+  // FR17 Self Curved Outwards Paddle
+  // FR18 Self Curved Inwards Paddle
+  // FR19 Self Bumpy Paddle
+  // FR20 Distracting Background
+  // FR23 Add Ball
+  // FR26 Path Trace
   broadcast(message: string, ignore: string | undefined) {
     //console.log("broadcasting message", message)
     console.log("Userlist: " + this.userlist);
     for (const [k, v] of this.userlist.entries()) {
-      if (v.isClosed){
+      if (v.isClosed) {
         this.userlist.delete(k);
         this.usernameList.delete(k);
         continue;
       }
-      
+
       if (k === ignore) {
         continue;
       }
@@ -125,13 +144,29 @@ class Lobby {
     }
   }
 
+  // FR6 Play Game
+  // FR11 Power Ups
+  // FR12 Expanded Paddle
+  // FR13 Shrink Paddle
+  // FR14 Self Invisible Paddle
+  // FR15 Others Invisible Paddle
+  // FR16 Invisible Ball
+  // FR17 Self Curved Outwards Paddle
+  // FR18 Self Curved Inwards Paddle
+  // FR19 Self Bumpy Paddle
+  // FR20 Distracting Background
+  // FR23 Add Ball
+  // FR26 Path Trace
   mergeGameState(game: Game, player_number: number, message: ClientUpdateMessage) {
     this.game!.mergeState(game, player_number, message);
   }
 
+  // FR6 Play Game
   incrementReady() {
     this.ready_count += 1;
   }
+
+  // FR6 Play Game
   async checkReady() {
     if (this.ready_count < this.userlist.size) {
       return
@@ -141,9 +176,12 @@ class Lobby {
     this.startGame();
   }
 
+  // FR6 Play Game
   incrementLobbyReady() {
     this.lobby_count += 1;
   }
+
+  // FR6 Play Game
   async checkLobbyReady(lobby: Lobby) {
     if (this.lobby_count < this.userlist.size) {
       return
@@ -154,14 +192,15 @@ class Lobby {
     lobby.setGame(game);
   }
 
+  // FR6 Play Game
   startGame() {
 
-    for (const [user_id, ws_connection] of this.userlist.entries()){
-      if (ws_connection.isClosed){
+    for (const [user_id, ws_connection] of this.userlist.entries()) {
+      if (ws_connection.isClosed) {
         this.userlist.delete(user_id);
         this.usernameList.delete(user_id);
-        if (user_id in this.userReadyList){
-          this.userReadyList.splice(this.userReadyList.indexOf(user_id),1);
+        if (user_id in this.userReadyList) {
+          this.userReadyList.splice(this.userReadyList.indexOf(user_id), 1);
           this.lobby_count -= 1;
         }
 
@@ -169,7 +208,7 @@ class Lobby {
           this.game_in_progress = false;
           this.lobby_count = 0;
           this.ready_count = 0;
-          if (!(LobbyNames.has(this.lobby_id))){
+          if (!(LobbyNames.has(this.lobby_id))) {
             LOBBIES.delete(this.lobby_id);
           }
         }
@@ -197,13 +236,15 @@ class Lobby {
 // this dies if the server dies
 const LOBBIES: Map<string, Lobby> = new Map();
 const LobbyNames: Set<string> = new Set();
-const names = ["DICE","Solarium","Cameron","SUB","CCIS","Windsor","ECERF","Telus", "Tory", "Butterdome", "Quad", "Lister"];
+const names = ["DICE", "Solarium", "Cameron", "SUB", "CCIS", "Windsor", "ECERF", "Telus", "Tory", "Butterdome", "Quad", "Lister"];
 names.forEach((n) => LobbyNames.add(n));
 
-for (const lobbyName of LobbyNames){
+// FR5 Join Game
+for (const lobbyName of LobbyNames) {
   LOBBIES.set(lobbyName, new Lobby(lobbyName));
 }
 
+// FR3 Create Game
 export const createLobby: () => string = () => {
   const lobby_id = v4.generate();
   const lobby = new Lobby(lobby_id);
@@ -211,6 +252,21 @@ export const createLobby: () => string = () => {
   return lobby_id;
 };
 
+// FR6 Play Game
+// FR7 Earn XP
+// FR11 Power Ups
+// FR12 Expanded Paddle
+// FR13 Shrink Paddle
+// FR14 Self Invisible Paddle
+// FR15 Others Invisible Paddle
+// FR16 Invisible Ball
+// FR17 Self Curved Outwards Paddle
+// FR18 Self Curved Inwards Paddle
+// FR19 Self Bumpy Paddle
+// FR20 Distracting Background
+// FR23 Add Ball
+// FR26 Path Trace
+// FR27 Earn Skin
 const doStuff = async (ws: any) => {
   for await (const event of ws) {
     // console.log("got message", event);
@@ -229,6 +285,7 @@ const doStuff = async (ws: any) => {
 
     try {
       const message = JSON.parse(event);
+      // FR5 Join Game
       if (message.type === "join_game") {
         const lobby = LOBBIES.get(message.lobby_id);
         if (!lobby) {
@@ -239,20 +296,20 @@ const doStuff = async (ws: any) => {
           ws.send(JSON.stringify(response));
           continue;
         }
-        ws.onclose = function(){
+        ws.onclose = function () {
           console.log("We are closing the WS");
           this.userlist.delete(message.user_id);
           this.usernameList.delete(message.user_id);
-          if (message.user_id in this.userReadyList){
-            this.userReadyList.splice(this.userReadyList.indexOf(message.user_id),1);
+          if (message.user_id in this.userReadyList) {
+            this.userReadyList.splice(this.userReadyList.indexOf(message.user_id), 1);
             this.lobby_count -= 1;
           }
-  
+
           if (this.userlist.size < 1) {
             this.game_in_progress = false;
             this.lobby_count = 0;
             this.ready_count = 0;
-            if (!(LobbyNames.has(this.lobby_id))){
+            if (!(LobbyNames.has(this.lobby_id))) {
               LOBBIES.delete(this.lobby_id);
             }
           }
@@ -260,12 +317,13 @@ const doStuff = async (ws: any) => {
         console.log("About to enter joinGame()");
         await lobby.joinGame(message.user_id, ws, message.username);
         continue;
-      } else if (message.type === "exit_game"){
+        // FR6 Play Game
+      } else if (message.type === "exit_game") {
 
         // Known bug: If two players are in one lobby and one of the players
         // loses connection or closes the window, the lobby is deleted and the player
         // left in the lobby is in a non-existent lobby (ie. nobody else can join them)
-        
+
         const lobby = LOBBIES.get(message.lobby_id);
         if (!lobby) {
           const response: ErrorPayload = {
@@ -279,16 +337,16 @@ const doStuff = async (ws: any) => {
         lobby.printState();
 
         // If the message contains a user_id and a lobby_id (ie. the person's lobby_id has not yet been reset to the empty string)
-        if (message.user_id && message.lobby_id){
+        if (message.user_id && message.lobby_id) {
           // If the game is currently in progress and the user is a part of the game
-          if (lobby.game_in_progress && lobby.userlist.get(message.user_id)){
+          if (lobby.game_in_progress && lobby.userlist.get(message.user_id)) {
             console.log("A user just left while a game is in progress");
             console.log("We may wish to display a message and start a new game without the player that lost connection");
-            
+
             lobby.userlist.delete(message.user_id);
             lobby.usernameList.delete(message.user_id);
-            if (message.user_id in lobby.userReadyList){
-              lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id),1);
+            if (message.user_id in lobby.userReadyList) {
+              lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id), 1);
               lobby.lobby_count -= 1;
             }
 
@@ -297,10 +355,10 @@ const doStuff = async (ws: any) => {
               player_number: message.player_number,
               user_id: message.user_id,
             }
-    
+
             lobby.broadcast(JSON.stringify(payload), undefined)
             lobby.ready_count = 0;
-          
+
           }
 
 
@@ -308,7 +366,7 @@ const doStuff = async (ws: any) => {
             lobby.game_in_progress = false;
             lobby.lobby_count = 0;
             lobby.ready_count = 0;
-            if (!(LobbyNames.has(message.lobby_id))){
+            if (!(LobbyNames.has(message.lobby_id))) {
               LOBBIES.delete(message.lobby_id);
             }
           }
@@ -321,7 +379,7 @@ const doStuff = async (ws: any) => {
         const usernamesToSend: [string, number][] = await lobby.getListOfUsernames(message.username);
 
         console.log("Length: " + usernamesToSend.length)
-        if (usernamesToSend.length === 1){
+        if (usernamesToSend.length === 1) {
           const response: ErrorPayload = {
             type: "error",
             message: "lobby not found",
@@ -335,6 +393,7 @@ const doStuff = async (ws: any) => {
           usernames: usernamesToSend,
         };
         lobby.broadcast(JSON.stringify(response), undefined);
+        // FR3 Create Game
       } else if (message.type === "create_lobby") {
         const lobby_id = createLobby();
         const response: LobbyCreatedPayload = {
@@ -342,6 +401,7 @@ const doStuff = async (ws: any) => {
           lobby_id,
         };
         ws.send(JSON.stringify(response));
+        // FR6 Play Game
       } else if (message.type === "start_game") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
@@ -356,6 +416,19 @@ const doStuff = async (ws: any) => {
 
         const game = new GameServer(lobby.userlist, lobby.usernameList);
         lobby.setGame(game);
+        // FR6 Play Game
+        // FR11 Power Ups
+        // FR12 Expanded Paddle
+        // FR13 Shrink Paddle
+        // FR14 Self Invisible Paddle
+        // FR15 Others Invisible Paddle
+        // FR16 Invisible Ball
+        // FR17 Self Curved Outwards Paddle
+        // FR18 Self Curved Inwards Paddle
+        // FR19 Self Bumpy Paddle
+        // FR20 Distracting Background
+        // FR23 Add Ball
+        // FR26 Path Trace
       } else if (message.type === "client_update") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
@@ -377,11 +450,12 @@ const doStuff = async (ws: any) => {
           player_number,
           message: message.message,
         };
-        if (message.message === "anotherBall"){
+        if (message.message === "anotherBall") {
           lobby!.broadcast(JSON.stringify(payload), undefined);
         } else {
           lobby!.broadcast(JSON.stringify(payload), player_id);
         }
+        // FR6 Play Game
       } else if (message.type === "lobby_client_ready") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
@@ -396,6 +470,7 @@ const doStuff = async (ws: any) => {
         lobby.userReadyList.push(message.user_id);
         lobby.incrementLobbyReady();
         lobby.checkLobbyReady(lobby);
+        // FR6 Play Game
       } else if (message.type === "client_ready") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
@@ -409,6 +484,9 @@ const doStuff = async (ws: any) => {
         }
         lobby.incrementReady();
         lobby.checkReady();
+        // FR6 Play Game
+        // FR7 Earn XP
+        // FR27 Earn Skin
       } else if (message.type === "game_over") {
         const { lobby_id } = message;
         const lobby = LOBBIES.get(lobby_id);
@@ -421,26 +499,26 @@ const doStuff = async (ws: any) => {
           continue;
         }
 
-        for (const username of lobby.usernameList.values()){
+        for (const username of lobby.usernameList.values()) {
           console.log(username);
           dbHelper.levelUp(username, 1);
         }
 
         const lossUsername = lobby.usernameList.get(message.user_id);
-        if (lossUsername){
+        if (lossUsername) {
           dbHelper.addLoss(lossUsername);
         }
-          
+
         lobby.userlist.delete(message.user_id);
         lobby.usernameList.delete(message.user_id);
-        if (message.user_id in lobby.userReadyList){
-          lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id),1);
+        if (message.user_id in lobby.userReadyList) {
+          lobby.userReadyList.splice(lobby.userReadyList.indexOf(message.user_id), 1);
           lobby.lobby_count -= 1;
         }
 
-        if (lobby.userlist.size < 2){
+        if (lobby.userlist.size < 2) {
           console.log("There is only one player left, the game is over");
-          for (const username of lobby.usernameList.values()){
+          for (const username of lobby.usernameList.values()) {
             console.log(username);
             dbHelper.levelUp(username, 1);
             dbHelper.addWin(username);
@@ -455,6 +533,7 @@ const doStuff = async (ws: any) => {
 
         lobby.broadcast(JSON.stringify(payload), undefined)
         lobby.ready_count = 0;
+        // FR6 Play Game
       } else if (message.type === "client_stopped") {
 
         const { lobby_id } = message;
@@ -476,7 +555,7 @@ const doStuff = async (ws: any) => {
 
         if (lobby.userlist.size < 2) {
           console.log("Size of userlist less than 1");
-          if (!(LobbyNames.has(lobby_id))){
+          if (!(LobbyNames.has(lobby_id))) {
             console.log(lobby_id + " is not in LobbyNames");
             LOBBIES.delete(lobby_id);
           } else {
@@ -510,6 +589,24 @@ const doStuff = async (ws: any) => {
   }
 };
 
+// FR5 Join Game
+// FR6 Play Game
+// FR7 Earn XP
+// FR8 Local Leaderboard
+// FR9 Global Leaderboard
+// FR10 User statistics
+// FR11 Power Ups
+// FR12 Expanded Paddle
+// FR13 Shrink Paddle
+// FR14 Self Invisible Paddle
+// FR15 Others Invisible Paddle
+// FR16 Invisible Ball
+// FR17 Self Curved Outwards Paddle
+// FR18 Self Curved Inwards Paddle
+// FR19 Self Bumpy Paddle
+// FR20 Distracting Background
+// FR23 Add Ball
+// FR26 Path Trace
 const handleSocket = async (ctx: Context) => {
   console.log(ctx);
   const socket = await ctx.upgrade();
