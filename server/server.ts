@@ -17,7 +17,8 @@ import { verify, decode } from "https://deno.land/x/djwt@v2.2/mod.ts";
 const SECRET = Deno.env.get("SECRET") ?? "secret was not set";
 
 const app = new Application();
-const port = Deno.env.get("PORT") ? +Deno.env.get("PORT")! : 5000;
+const port = Deno.env.get("PORT") ? +Deno.env.get("PORT")! : 8443;
+const hostname = "0.0.0.0"
 
 app.addEventListener("listen", ({ secure, hostname, port }) => {
   const protocol = secure ? "https://" : "http://";
@@ -196,13 +197,13 @@ app.use(router.allowedMethods());
 if (MODE === "production") {
   await app.listen({
     port,
-    hostname: "0.0.0.0",
+    hostname,
     certFile: "/app/server/cert.pem",
     keyFile: "/app/server/key.pem",
     secure: true,
   });
 } else if (import.meta.main) {
-  await app.listen({ port });
+  await app.listen({ port, hostname });
 }
 
 const test_setup = async () => {

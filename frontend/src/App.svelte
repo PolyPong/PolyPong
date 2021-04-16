@@ -18,7 +18,7 @@
   const SERVER_URL =
     import.meta.env.MODE === "production"
       ? "https://polyserver.polypong.ca:8443/"
-      : "http://localhost:5000/";
+      : "http://localhost:8443/";
 
   router.mode.hash();
 

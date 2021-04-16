@@ -14,10 +14,10 @@ services:
       context: .
     container_name: polyserver
     ports:
-      - 0.0.0.0:8443:5000
+      - 8443:8443
     environment:
       MONGOURL: "mongodb://mongoo:27017"
-      MODE: "production"
+      MODE: $MODE
       SECRET: $SECRET
     restart: unless-stopped
     depends_on: 

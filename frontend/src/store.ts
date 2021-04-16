@@ -26,7 +26,7 @@ export const skins = writable<[Color]>([Color.White]);
 const SERVER_URL =
   import.meta.env.MODE === "production"
     ? "wss://polyserver.polypong.ca:8443/ws"
-    : "ws://localhost:5000/ws";
+    : "ws://localhost:8443/ws";
 export const ws = writable(new WebSocket(SERVER_URL));
 //export const ws = writable(new WebSocket("wss://polyserver.polypong.ca:8443/ws"));
 
