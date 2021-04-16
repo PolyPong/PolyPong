@@ -13,7 +13,7 @@
   import auth from "./authService";
   import { user, auth0Client, lobby_id, user_id, ws } from "./store";
   import LobbySelection from "./routes/LobbySelection.svelte";
-  import type {ExitGamePayload} from "@polypong/polypong-common";
+  import type { ExitGamePayload } from "@polypong/polypong-common";
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -24,6 +24,7 @@
 
   // let auth0Client;
 
+  // FR1 User Login
   onMount(async () => {
     console.log("We are in onMount");
     if (await (await $auth0Client).isAuthenticated()) {
@@ -36,11 +37,10 @@
     user.set(await (await $auth0Client).getUser());
     await getUsername();
 
-
     window.onbeforeunload = () => {
       console.log("We are unloading the page");
       console.log("Lobby ID, client side: " + $lobby_id);
-      if ($lobby_id !== ""){
+      if ($lobby_id !== "") {
         const username = $user?.username;
         const payload: ExitGamePayload = {
           type: "exit_game",
@@ -51,11 +51,10 @@
         $ws.send(JSON.stringify(payload));
         // return "Are you sure you want to exit the game?";
       }
-    }
-
+    };
   });
 
-
+  // FR1 User Login
   async function getUsername() {
     if (await (await $auth0Client).isAuthenticated()) {
       const token = await (await $auth0Client).getTokenSilently();
@@ -100,46 +99,97 @@
 </div> -->
 
 <Route>
-  <Route path="/" redirect="/home" />
-
+  <!-- // FR1 User Login -->
+  <!-- // FR2 User Registration -->
+  <!-- // FR3 Create Game -->
+  <!-- // FR4 Share Link -->
+  <!-- // FR5 Join Game -->
+  <!-- // FR6 Play Game -->
+  <!-- // FR7 Earn XP -->
+  <!-- // FR8 Local Leaderboard -->
+  <!-- // FR9 Global Leaderboard -->
+  <!-- // FR10 User statistics -->
+  <!-- // FR11 Power Ups -->
+  <!-- // FR12 Expanded Paddle -->
+  <!-- // FR13 Shrink Paddle -->
+  <!-- // FR14 Self Invisible Paddle -->
+  <!-- // FR15 Others Invisible Paddle -->
+  <!-- // FR16 Invisible Ball -->
+  <!-- // FR17 Self Curved Outwards Paddle -->
+  <!-- // FR18 Self Curved Inwards Paddle -->
+  <!-- // FR19 Self Bumpy Paddle -->
+  <!-- // FR20 Distracting Background -->
+  <!-- // FR23 Add Ball -->
+  <!-- // FR26 Path Trace -->
+  <!-- // FR27 Earn Skin -->
+  <!-- // FR28 Select skin -->
   <Route path="/home">
     <Home />
   </Route>
+  <Route path="/" redirect="/home" />
 
+  <!-- // FR6 Play Game -->
+  <!-- // FR7 Earn XP -->
+  <!-- // FR11 Power Ups -->
+  <!-- // FR12 Expanded Paddle -->
+  <!-- // FR13 Shrink Paddle -->
+  <!-- // FR14 Self Invisible Paddle -->
+  <!-- // FR15 Others Invisible Paddle -->
+  <!-- // FR16 Invisible Ball -->
+  <!-- // FR17 Self Curved Outwards Paddle -->
+  <!-- // FR18 Self Curved Inwards Paddle -->
+  <!-- // FR19 Self Bumpy Paddle -->
+  <!-- // FR20 Distracting Background -->
+  <!-- // FR23 Add Ball -->
+  <!-- // FR26 Path Trace -->
+  <!-- // FR27 Earn Skin -->
   <Route path="/game">
     <Game />
   </Route>
 
+  <!-- // FR6 Play Game -->
   <Route path="/eliminated" redirect="/game" />
 
+  <!-- // FR8 Local Leaderboard -->
+  <!-- // FR9 Global Leaderboard -->
   <Route path="/leaderboard">
     <Leaderboard />
   </Route>
 
+  <!-- // FR3 Create Game -->
+  <!-- // FR5 Join Game -->
   <Route path="/lobby/:id" let:meta>
     <Lobby id={meta.params.id} />
   </Route>
 
+  <!-- // FR3 Create Game -->
+  <!-- // FR5 Join Game -->
   <Route path="/lobby">
     <Lobby id="" />
   </Route>
 
+  <!-- // FR11 Power Ups -->
   <Route path="/powerups">
     <Powerups />
   </Route>
 
+  <!-- // FR28 Select skin -->
   <Route path="/settings">
     <Settings />
   </Route>
 
+  <!-- // FR2 User Registration -->
   <Route path="/signup">
     <Signup />
   </Route>
 
+  <!-- // FR5 Join Game -->
   <Route path="/lobbySelection">
     <LobbySelection />
   </Route>
 
+  <!-- // FR1 User Login -->
+  <!-- // FR2 User Registration -->
   <Route path="/callback">
     <Callback />
   </Route>
