@@ -210,14 +210,23 @@ const test_setup = async () => {
   await users.deleteMany({})
   // add user test
   await dbHelper.addUser("arun", "test@example.com");
+  dbHelper.levelUp("arun", 869)
 }
+
+const ARUN_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJoWmJMdFNuWWZjQlY4ZktzdkpRRiJ9.eyJodHRwczovL3BvbHlzZXJ2ZXIucG9seXBvbmcuY2EvZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaXNzIjoiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDMzODA5NzgyNjkwNjI1MzUyNTUiLCJhdWQiOlsiaHR0cHM6Ly9wb2x5c2VydmVyLnBvbHlwb25nLmNhIiwiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjE3NzY4NjYxLCJleHAiOjE2MTc4NTUwNjEsImF6cCI6Im1IYXpnbTZmUktYT2dvTHhGWVJodnN0WEpSbDFkU0dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9Cg.sRn45skCZAGdXCuPBD8u-k5lFSWpuqCd0v4bbl-YQnLso7UlYELLzRfURUFeUuGVMub1mEsnboyrb8623sQHiYRTWjj_X4pAyFLWBmQ96aPBSvsu_joh9X5j-pGJGs_UKitiMp_ugMU6Nr9bsklfslMRoO4YOn3i-uQlH8WPCbMFrVN4V7Nru18T9_YHPgQPKUxHau4hGmT4nbDe3WM466vSWoIUS-Ful2drStwUT9ug7O6gkBZtx3AkTL7toqjgzb8jQu_Rg0DK9hfNC9cukAYIBeP8v36QSnDGwtLMjEuDuCtICt6nr_ecpM15J2WdSsgMFF1dwsBfhkDMPjyI9A"
+
+Deno.test("getxp", async () => {
+  test_setup();
+  const request = await superoak(app);
+  await request.get("/getxp/arun").expect(200).expect("869");
+})
 
 Deno.test("whatismyname", async () => {
   await test_setup();
   const request = await superoak(app);
   await request
     .get("/whatismyname")
-    .set("Authorization", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJoWmJMdFNuWWZjQlY4ZktzdkpRRiJ9.eyJodHRwczovL3BvbHlzZXJ2ZXIucG9seXBvbmcuY2EvZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaXNzIjoiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDMzODA5NzgyNjkwNjI1MzUyNTUiLCJhdWQiOlsiaHR0cHM6Ly9wb2x5c2VydmVyLnBvbHlwb25nLmNhIiwiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjE3NzY4NjYxLCJleHAiOjE2MTc4NTUwNjEsImF6cCI6Im1IYXpnbTZmUktYT2dvTHhGWVJodnN0WEpSbDFkU0dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9Cg.sRn45skCZAGdXCuPBD8u-k5lFSWpuqCd0v4bbl-YQnLso7UlYELLzRfURUFeUuGVMub1mEsnboyrb8623sQHiYRTWjj_X4pAyFLWBmQ96aPBSvsu_joh9X5j-pGJGs_UKitiMp_ugMU6Nr9bsklfslMRoO4YOn3i-uQlH8WPCbMFrVN4V7Nru18T9_YHPgQPKUxHau4hGmT4nbDe3WM466vSWoIUS-Ful2drStwUT9ug7O6gkBZtx3AkTL7toqjgzb8jQu_Rg0DK9hfNC9cukAYIBeP8v36QSnDGwtLMjEuDuCtICt6nr_ecpM15J2WdSsgMFF1dwsBfhkDMPjyI9A")
+    .set("Authorization", ARUN_TOKEN)
     .expect(200)
     .expect("arun");
 })
