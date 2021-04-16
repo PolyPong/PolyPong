@@ -54,12 +54,12 @@
   const SERVER_URL =
     import.meta.env.MODE === "production"
       ? "https://polyserver.polypong.ca:8443/"
-      : "http://localhost:5000/";
+      : "http://localhost:8443/";
 
   const WS_SERVER_URL =
     import.meta.env.MODE === "production"
       ? "wss://polyserver.polypong.ca:8443/ws"
-      : "ws://localhost:5000/ws";
+      : "ws://localhost:8443/ws";
 
   let beginningXP: number = 0;
   let endingXP: number = 0;

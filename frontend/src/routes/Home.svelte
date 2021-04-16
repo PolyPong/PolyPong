@@ -9,7 +9,7 @@
   const SERVER_URL =
     import.meta.env.MODE === "production"
       ? "https://polyserver.polypong.ca:8443/"
-      : "http://localhost:5000/";
+      : "http://localhost:8443/";
 
   async function logIn() {
     auth.loginWithRedirect(await $auth0Client); // Do not pass in null in the options field or the code will break

@@ -17,7 +17,8 @@ import { verify, decode } from "https://deno.land/x/djwt@v2.2/mod.ts";
 const SECRET = Deno.env.get("SECRET") ?? "secret was not set";
 
 const app = new Application();
-const port = Deno.env.get("PORT") ? +Deno.env.get("PORT")! : 5000;
+const port = Deno.env.get("PORT") ? +Deno.env.get("PORT")! : 8443;
+const hostname = "0.0.0.0"
 
 app.addEventListener("listen", ({ secure, hostname, port }) => {
   const protocol = secure ? "https://" : "http://";
@@ -196,13 +197,13 @@ app.use(router.allowedMethods());
 if (MODE === "production") {
   await app.listen({
     port,
-    hostname: "0.0.0.0",
+    hostname,
     certFile: "/app/server/cert.pem",
     keyFile: "/app/server/key.pem",
     secure: true,
   });
 } else if (import.meta.main) {
-  await app.listen({ port });
+  await app.listen({ port, hostname });
 }
 
 const test_setup = async () => {
@@ -210,16 +211,52 @@ const test_setup = async () => {
   await users.deleteMany({})
   // add user test
   await dbHelper.addUser("arun", "test@example.com");
+  await dbHelper.levelUp("arun", 869)
+  await dbHelper.setSkin("test@example.com", Color.DeepOrange);
+  await users.updateOne({ username: { $eq: "arun" } }, { $set: { wins: 123 } });
+  await users.updateOne({ username: { $eq: "arun" } }, { $set: { losses: 246 } });
 }
 
-Deno.test("whatismyname", async () => {
+const ARUN_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJoWmJMdFNuWWZjQlY4ZktzdkpRRiJ9.eyJodHRwczovL3BvbHlzZXJ2ZXIucG9seXBvbmcuY2EvZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaXNzIjoiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDMzODA5NzgyNjkwNjI1MzUyNTUiLCJhdWQiOlsiaHR0cHM6Ly9wb2x5c2VydmVyLnBvbHlwb25nLmNhIiwiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjE3NzY4NjYxLCJleHAiOjE2MTc4NTUwNjEsImF6cCI6Im1IYXpnbTZmUktYT2dvTHhGWVJodnN0WEpSbDFkU0dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9Cg.sRn45skCZAGdXCuPBD8u-k5lFSWpuqCd0v4bbl-YQnLso7UlYELLzRfURUFeUuGVMub1mEsnboyrb8623sQHiYRTWjj_X4pAyFLWBmQ96aPBSvsu_joh9X5j-pGJGs_UKitiMp_ugMU6Nr9bsklfslMRoO4YOn3i-uQlH8WPCbMFrVN4V7Nru18T9_YHPgQPKUxHau4hGmT4nbDe3WM466vSWoIUS-Ful2drStwUT9ug7O6gkBZtx3AkTL7toqjgzb8jQu_Rg0DK9hfNC9cukAYIBeP8v36QSnDGwtLMjEuDuCtICt6nr_ecpM15J2WdSsgMFF1dwsBfhkDMPjyI9A"
+
+Deno.test("getxp", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request.get("/getxp/arun").expect(200).expect("869");
+})
+
+Deno.test("getavailableskins", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request.get("/getavailableskins/arun").expect(200).expect(JSON.stringify([Color.White, Color.BlueGrey, Color.Grey, Color.Brown, Color.DeepOrange, Color.Orange, Color.Amber, Color.Yellow, Color.Lime, Color.LightGreen, Color.Green, Color.Teal]));
+})
+
+Deno.test("getselectedskin/arun", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request.get("/getselectedskin/arun").expect(200).expect(`${Color.DeepOrange}`);
+})
+
+Deno.test("getwins", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request.get("/getwins/arun").expect(200).expect("123");
+})
+
+Deno.test("getlosses", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request.get("/getlosses/arun").expect(200).expect("246");
+})
+
+Deno.test("setskin", async () => {
   await test_setup();
   const request = await superoak(app);
   await request
-    .get("/whatismyname")
-    .set("Authorization", "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImJoWmJMdFNuWWZjQlY4ZktzdkpRRiJ9.eyJodHRwczovL3BvbHlzZXJ2ZXIucG9seXBvbmcuY2EvZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIiwiaXNzIjoiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDMzODA5NzgyNjkwNjI1MzUyNTUiLCJhdWQiOlsiaHR0cHM6Ly9wb2x5c2VydmVyLnBvbHlwb25nLmNhIiwiaHR0cHM6Ly9wb2x5cG9uZy51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjE3NzY4NjYxLCJleHAiOjE2MTc4NTUwNjEsImF6cCI6Im1IYXpnbTZmUktYT2dvTHhGWVJodnN0WEpSbDFkU0dDIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9Cg.sRn45skCZAGdXCuPBD8u-k5lFSWpuqCd0v4bbl-YQnLso7UlYELLzRfURUFeUuGVMub1mEsnboyrb8623sQHiYRTWjj_X4pAyFLWBmQ96aPBSvsu_joh9X5j-pGJGs_UKitiMp_ugMU6Nr9bsklfslMRoO4YOn3i-uQlH8WPCbMFrVN4V7Nru18T9_YHPgQPKUxHau4hGmT4nbDe3WM466vSWoIUS-Ful2drStwUT9ug7O6gkBZtx3AkTL7toqjgzb8jQu_Rg0DK9hfNC9cukAYIBeP8v36QSnDGwtLMjEuDuCtICt6nr_ecpM15J2WdSsgMFF1dwsBfhkDMPjyI9A")
-    .expect(200)
-    .expect("arun");
+    .post("/setskin")
+    .send(Color.BlueGrey)
+    .set("Authorization", ARUN_TOKEN)
+    .expect(204);
 })
 
 Deno.test("leaderboard", async () => {
@@ -228,5 +265,35 @@ Deno.test("leaderboard", async () => {
   await request
     .get("/leaderboard")
     .expect(200)
-    .expect('[{"username":"arun","xp":0}]');
+    .expect('[{"username":"arun","xp":869}]');
 })
+
+Deno.test("localleaderboard", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request.get("/localleaderboard/arun").expect(200);
+})
+
+Deno.test("whatismyname", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request
+    .get("/whatismyname")
+    .set("Authorization", ARUN_TOKEN)
+    .expect(200)
+    .expect("arun");
+})
+
+Deno.test("signup", async () => {
+  await test_setup();
+  const request = await superoak(app);
+  await request.post("/signup")
+  .send({username: "arun"})
+    .set("Authorization", ARUN_TOKEN)
+    .expect(409);
+})
+
+
+
+
+
