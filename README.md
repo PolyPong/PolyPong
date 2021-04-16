@@ -42,6 +42,10 @@ npm i
 npm start
 ```
 
+Now, if you open up a browser window,
+the frontend should be accessible at
+http://localhost:3000
+
 ## Backend
 There are two ways to get the backend up and running:
 
@@ -65,6 +69,9 @@ This was tested with
 Docker version 20.10.6, build 370c28948e
 docker-compose version 1.29.1
 ```
+
+The server should be running at
+http://0.0.0.0:8443
 
 ### Manual installation
 
