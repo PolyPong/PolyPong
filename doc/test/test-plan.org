@@ -1,5 +1,5 @@
 #+TITLE: ECE 493 Capstone Test Plan and Suite for PolyPong
-#+author: Arun Woosaree, Michael Antifaoff, Joshua Chang
+#+author: Arun Woosaree, Micheal Antifaoff, Joshua Chang
 
 #+options: toc:nil
 
@@ -127,11 +127,12 @@ displayed correctly.
 *** FR11 Power Ups
 There are 11 Choose 3 = 165 possible combinations of power up choices that
 users can make. Given more time, we could make that many test cases, however,
-because a game has multiple players, we could have a game with say, 11 players
-(because there are 11 power ups in total), and get each player to pick one power up.
+because a game has multiple players, we could have a game with say, 12 players
+(because there are 11 power ups in total), and get each player to pick three power ups.
 This is a much more reasonable solution, and we still ensure that all of the power ups
 can be picked. Each power up is still has their respective tests for ensuring that
-the power ups itself works as expected.
+the powerup itself works as expected, and this helps us to test some of the possible 
+Combinations of powerups together.
 
 *** FR12 Expanded Paddle
 This functional requirement is a power up, and a power up is activated during a game.
@@ -399,29 +400,340 @@ that are not covered by automated tests.
 
 ** Power Ups
 *** FR11 Power Ups
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4 ten more times, so that twelve people join the lobby
+6. Have every player select three random powerups, ensuring each powerup has been selected at least once.
+7. Once each player has selected three random powerups, have them hit the ~Let's Play~ button at the bottom of the page.
+8. Over the course of a regular 12-player game, have each player use their powerups by pressing 1, 2 and 3. Make sure each player knows which powerup they are using by having them view the inventory before they press 1, 2 or 3. 
+9. When the player uses the powerup, ensure the specified powerup's behaviour is consistent with the expectations for the powerup set out below.
+
+
 *** FR12 Expanded Paddle
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Bigger Paddle" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, your paddle should be twice as big as normal on your screen and your friends' screens.
+9. Thirty seconds after step 9 is completed, your paddle should return to regular size on your screen and your friends' screens.
+
+
 *** FR13 Shrink Paddle
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Smaller Paddle" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, your paddle should be half as big as normal on your screen and your friends' screens.
+9. Thirty seconds after step 9 is completed, your paddle should return to regular size on your screen and your friends' screens.
+
+
 *** FR14 Self Invisible Paddle
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Invisible Paddle, Self" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, your paddle should be invisible on your screen and your friends' screens.
+9. One minute after step 9 is completed, your paddle should return to being visible on your screen and your friends' screens.
+
+
 *** FR15 Others Invisible Paddle
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Invisible Paddle, Others" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, your friends' paddles should be invisible on your screen and your friends' screens.
+9. Fifteen seconds after step 9 is completed, your friends' paddles should return to being visible on your screen and your friends' screens.
+
+
 *** FR16 Invisible Ball
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Invisible Ball" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, the ball should be invisible on your screen and your friends' screens.
+9. Fifteen seconds after step 9 is completed, the ball should return to being visible on your screen and your friends' screens.
+
+
 *** FR17 Self Curved Outwards Paddle
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Curved Outwards" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, your paddle should be curved outwards on your screen and your friends' screens.
+9. When a ball collides with your paddle, the collision return angle should range from 60 degrees to the left on the left side of the paddle to 60 degrees to the right on the right side of the paddle (continuous 120 degree range).
+10. Your paddle should remain curved outwards until you are eliminated or you win the game.
+
+
 *** FR18 Self Curved Inwards Paddle
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Curved Inwards" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, your paddle should be curved inwards on your screen and your friends' screens.
+9. When a ball collides with your paddle, the collision return angle should range from 60 degrees to the right on the left side of the paddle to 60 degrees to the left on the right side of the paddle (continuous 120 degree range).
+10. Your paddle should remain curved inwards until you are eliminated or you win the game.
+
+
 *** FR19 Self Bumpy Paddle
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Bumpy Paddle" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, your paddle should be bumpy on your screen and your friends' screens.
+9. When a ball collides with your paddle, the collision return angle should be random, ranging from 60 degrees to the left to 60 degrees to the right (continuous 120 degree range).
+10. Your paddle should remain bumpy until you are eliminated or you win the game.
+
+
 *** FR20 Distracting Background
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Distracting Background" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, the background should have changed colour on your screen and your friends' screens.
+9. Every 5 seconds going forward, the background colour should randomly change on your screen and your friends' screens.
+
+
 *** FR21
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
 so no tests are required for a feature that does not exist.
+
+
 *** FR22
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
 so no tests are required for a feature that does not exist.
+
+
 *** FR23 Add Ball
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Add Ball" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, there should be an additional ball in play on your screen and your friends' screens.
+9. The additional ball should behave exactly like a regular ball. When one player is eliminated, the next round should only have one ball.
+
+
 *** FR24
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
 so no tests are required for a feature that does not exist.
+
+
 *** FR25
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
 so no tests are required for a feature that does not exist.
+
+
 *** FR26 Path Trace
+
+This is a manual test
+
+**** Test steps
+1. Go to https://polypong.ca
+2. Click on ~Create Private Game~
+3. Click on ~Copy Link to Clipboard to Invite Friends~
+4. Open a new browser window, paste the link, and hit enter
+5. Repeat step 4, so that a third person joins the lobby
+6. In the power selection part of the lobby, double click on the "Trace Ball Path" button, ensuring that it is highlighted in white (to indicate it has been selected). Make sure this is the only powerup you have selected.
+7. Once you have selected this powerup, click on the ~Let's Play~ button at the bottom of the page.
+8. Have all the other users in the lobby also click on the ~Let's Play~ button at the bottom of the page.
+9. Once the countdown (3-2-1) is over and you see the game board as well as other players' paddles, press 1 to use the powerup.
+
+
+**** Expectations
+1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
+2. You should also see a lobby id.
+3. When step 3 above is completed, a link should be copied to your system clipboard.
+4. When step 4 is completed, there should now be two players in the lobby.
+5. When step 5 is completed, there should now be three players in the lobby.
+6. When step 6 is completed, only the current powerup should be highlighted in white (to indicate it has been selected).
+7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
+8. When step 9 is completed, there should be an arrow indicating the direction of the ball's path on your screen.
+9. One minute after step 9 is completed, the arrow indicating the direction of the ball's path on your screen should disappear.
+
 
 ** Skins
 *** FR27 Earn Skin
