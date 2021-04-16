@@ -332,8 +332,8 @@ so that we can play the game on polypong.ca. This involved domain registration,
 administering DNS records, deploying the frontend to Cloudflare Pages, writing
 Dockerfiles, and deploying the backend to Cybera. For the database side of things,
 I wrote the queries and helper functions which would be used in other parts
-of the application. I also worked on designing most of the tests.
-The database and server tests
+of the application. I also worked on designing most of the tests like the database and server tests,
+while Micheal did the power up tests.
 
 Micheal mainly focused on the frontend, UI design, and making features which I
 added look pretty. He also had to work a bit in the backend
@@ -349,7 +349,7 @@ did some geometry math to figure out how to render an n-sided polygon on the
 canvas, rotate the canvas, draw shapes, etc.
 
 Micheal also figured out how to do collision detection, input handling, and
-designing the game loop.  I pair programmed with Michael a lot over the course
+designing the game loop.  I pair programmed with Micheal a lot over the course
 of the project, getting things between the frontend and backend in sync, and
 making sure they communicate with each other.  Together, we got a basic game
 working, one without synchronization. "Basic game" meaning that we got multiple
@@ -357,7 +357,7 @@ players to connect to the server, get their paddles to move on each others'
 screens, and a ball moving. However, at that point, there was no
 synchronization, and although we could see the ball moving in the same direction
 on all screens, the movement was jittery because of the lack of synchronization.
-Michael also implemented a majority of the eleven powerups in the game.  I
+Micheal also implemented a majority of the eleven powerups in the game.  I
 helped to implement some when we were pair programming as well.
 
 Joshua mainly worked on the synchronization algorithm. The algorithm implemented
