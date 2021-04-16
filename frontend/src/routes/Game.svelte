@@ -611,6 +611,8 @@
       return 161;
     } else if ($game.sides === 12) {
       return 164;
+    } else {
+      return 165;
     }
     // else {
     //   return $game.radius - 100 + 8 * $game.sides;
