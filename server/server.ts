@@ -2,7 +2,6 @@ import { handleSocket } from "./lobby.ts";
 
 import {
   Application,
-  Response,
   Router,
   Status,
 } from "https://deno.land/x/oak@v6.5.0/mod.ts";
@@ -11,8 +10,32 @@ import { oakCors } from "https://deno.land/x/cors@v1.2.1/mod.ts";
 import { getQuery } from "https://deno.land/x/oak@v6.5.0/helpers.ts";
 import dbHelper, { setSkinResponse, users } from "./db.ts";
 import { Color } from "../PolyPong-Common/src/Game.ts";
-
 import { verify, decode } from "https://deno.land/x/djwt@v2.2/mod.ts";
+
+// FR1 User Login
+// FR2 User Registration
+// FR3 Create Game
+// FR4 Share Link
+// FR5 Join Game
+// FR6 Play Game
+// FR7 Earn XP
+// FR8 Local Leaderboard
+// FR9 Global Leaderboard
+// FR10 User statistics
+// FR11 Power Ups
+// FR12 Expanded Paddle
+// FR13 Shrink Paddle
+// FR14 Self Invisible Paddle
+// FR15 Others Invisible Paddle
+// FR16 Invisible Ball
+// FR17 Self Curved Outwards Paddle
+// FR18 Self Curved Inwards Paddle
+// FR19 Self Bumpy Paddle
+// FR20 Distracting Background
+// FR23 Add Ball
+// FR26 Path Trace
+// FR27 Earn Skin
+// FR28 Select skin
 
 const SECRET = Deno.env.get("SECRET") ?? "secret was not set";
 
@@ -28,39 +51,65 @@ app.addEventListener("listen", ({ secure, hostname, port }) => {
 
 const router = new Router();
 
+// FR5 Join Game
+// FR6 Play Game
+// FR7 Earn XP
+// FR8 Local Leaderboard
+// FR9 Global Leaderboard
+// FR10 User statistics
+// FR11 Power Ups
+// FR12 Expanded Paddle
+// FR13 Shrink Paddle
+// FR14 Self Invisible Paddle
+// FR15 Others Invisible Paddle
+// FR16 Invisible Ball
+// FR17 Self Curved Outwards Paddle
+// FR18 Self Curved Inwards Paddle
+// FR19 Self Bumpy Paddle
+// FR20 Distracting Background
+// FR23 Add Ball
+// FR26 Path Trace
 router.get("/ws", handleSocket);
 
+
+// FR8 Local Leaderboard
+// FR9 Global Leaderboard
+// FR10 User statistics
 router.get("/getxp/:userid", async (ctx) => {
   const { userid } = getQuery(ctx, { mergeParams: true });
   const xp = await dbHelper.getXP(userid);
   ctx.response.body = xp;
 });
 
+// FR28 Select skin
 router.get("/getavailableskins/:userid", async (ctx) => {
   const { userid } = getQuery(ctx, { mergeParams: true });
   const skins = await dbHelper.getAvailableSkins(userid);
   ctx.response.body = skins;
 });
 
+// FR28 Select skin
 router.get("/getselectedskin/:userid", async (ctx) => {
   const { userid } = getQuery(ctx, { mergeParams: true });
   const skin = await dbHelper.getSelectedSkin(userid);
   ctx.response.body = skin;
 });
 
+// FR10 User statistics
 router.get("/getwins/:userid", async (ctx) => {
   const { userid } = getQuery(ctx, { mergeParams: true });
   const wins = await dbHelper.getWins(userid);
   ctx.response.body = wins;
 });
 
+// FR10 User statistics
 router.get("/getlosses/:userid", async (ctx) => {
   const { userid } = getQuery(ctx, { mergeParams: true });
   const losses = await dbHelper.getLosses(userid);
   ctx.response.body = losses;
 });
 
-
+// FR28 Select skin
 router.post("/setskin", async (ctx) => {
   const skinstr = await ctx.request.body({ type: "text" }).value;
   if (!(Object.values(Color).includes(skinstr as Color))) {
@@ -109,16 +158,19 @@ router.post("/setskin", async (ctx) => {
   }
 });
 
+// FR9 Global Leaderboard
 router.get("/leaderboard", async (ctx) => {
   ctx.response.body = await dbHelper.getGlobalLeaderboard();
 });
 
+// FR8 Local Leaderboard
 router.get("/localleaderboard/:userid", async (ctx) => {
   const { userid } = getQuery(ctx, { mergeParams: true });
   const leaderboard = await dbHelper.getLocalLeaderboard(userid);
   ctx.response.body = leaderboard;
 });
 
+// FR1 User Login
 router.get("/whatismyname", async (ctx) => {
   const jwt = ctx.request.headers.get("Authorization");
   if (!jwt) {
@@ -144,6 +196,7 @@ router.get("/whatismyname", async (ctx) => {
   ctx.response.body = user?.username;
 })
 
+// FR2 User Registration
 router.post("/signup", async (ctx) => {
   const jwt = ctx.request.headers.get("Authorization");
   if (!jwt) {
@@ -183,6 +236,7 @@ router.post("/signup", async (ctx) => {
 
 })
 
+// this block runs the actual server, used for all the other FRs mentioned above
 const MODE = Deno.env.get("MODE") ?? "development";
 if (MODE === "production") {
   app.use(oakCors({
@@ -206,6 +260,7 @@ if (MODE === "production") {
   await app.listen({ port, hostname });
 }
 
+// tests
 const test_setup = async () => {
   // clean db for test
   await users.deleteMany({})

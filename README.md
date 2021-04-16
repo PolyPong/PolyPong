@@ -2,27 +2,164 @@
 
 PolyPong is a multiplayer online version of the classic game we all know and love. Play with friends, unlock new skins and climb the leaderboard to eternal PolyPong greatness!
 
-# How to install packages
+# How to build this project
 
-Edit: Actually it looks like you can do a relative import in package.json lol that makes this SO much easier
-and then we don't have to worry about out-of-sync versions lol
+## Frontend
 
-tl;dr ignore everything after this line, and yarn probably still works
+The frontend requires that you have npm and node installed.
+This was tested with npm version 7.10.0.
+
+If your version of npm is out of date, either update with
+your system package manager, or run 
+
+```bash
+sudo npm i -g npm@latest
+```
+
+On Arch Linux, the installation for npm would look like this:
+```bash
+sudo pacman -S npm
+```
+
+Node should be installed automatically, since it is a
+dependency of Node. I cannot guarantee this for your
+operating system though, so make sure node is also installed
 
 
-We made a PolyPong-common package which holds types for both the server and the frontend.
-To be able to install it, you need to create a personal access token in GitHub:
+First, you'll want to build PolyPong-Common
 
-https://github.com/settings/tokens
+```bash
+cd PolyPong-Common
+npm i
+npm run build
+cd ..
+```
+
+Next, install and run the frontend
+```bash
+cd frontend
+npm i
+npm start
+```
+
+Now, if you open up a browser window,
+the frontend should be accessible at
+http://localhost:3000
+
+## Backend
+There are two ways to get the backend up and running:
+
+NOTE: The database is left open in this configuration.
+(i.e. there is no root password for mongoDB in this configuration)
+
+When deploying for production, you should specify a password
+for the database, and also modify the arguments passed to MongoClient
+in server/db.ts
+
+### Using Docker
+make sure you have the Docker service running.
+Open a terminal in the root of this project, and run:
+
+```bash
+docker-compose up
+```
+
+This was tested with 
+```
+Docker version 20.10.6, build 370c28948e
+docker-compose version 1.29.1
+```
+
+The server should be running at
+http://0.0.0.0:8443
+
+### Manual installation
+
+First, install mongodb and Deno
+on Arch Linux, it would look like this
+
+```bash
+sudo pacman -S deno
+git clone https://aur.archlinux.org/mongodb-bin.git
+cd mongodb-bin
+makepkg -si
+cd ..
+rm -rf mongodb-bin
+```
+Then, start the mongodb service
+
+```bash
+sudo systemctl start mongodb
+```
+
+You'll know mongodb is working if you run
+```bash
+curl localhost:27017
+```
+and the response is
+```
+It looks like you are trying to access MongoDB over HTTP on the native driver port.
+```
+
+Now, it's time to get the backend working:
+```
+cd server
+deno run --allow-net --allow-env --allow-read server.ts
+```
+
+You'll know it's working if you see this in the output:
+```
+Listening on: http://0.0.0.0:8443
+```
+
+This was tested with mongo version
+```
+MongoDB shell version v4.4.5
+Build Info: {
+    "version": "4.4.5",
+    "gitVersion": "ff5cb77101b052fa02da43b8538093486cf9b3f7",
+    "openSSLVersion": "OpenSSL 1.1.1k  25 Mar 2021",
+    "modules": [],
+    "allocator": "tcmalloc",
+    "environment": {
+        "distmod": "ubuntu2004",
+        "distarch": "x86_64",
+        "target_arch": "x86_64"
+    }
+}
+```
+
+and Deno version
+```
+deno 1.9.0 (release, x86_64-unknown-linux-gnu)
+v8 9.1.269.5
+typescript 4.2.2
+```
+
+# Running automated tests
+
+## Frontend
+For the frontend, we have an automated puppeteer test
+
+To run it,
+
+```bash
+cd e2e-test
+npm i
+npm start
+```
 
 
-give it the repo:write permission and then copy the token
+## Backend
+For the backend, here's how you run the tests
 
-copy the .npmrc file in the root of this repo to ~/.npmrc
-add the token you just copied to the file
+```bash
+cd server
+deno test  --allow-env --allow-net --coverage=coverage --unstable server.ts 
+```
 
-then cd into frontend, type npm install and watch it go brrrrrrrrrrrrr
+To get the code coverage, run this:
+```bash
+deno coverage --unstable coverage --include="db.ts"
+```
 
-I ditched yarn because it doesn't seem to work well with github's package registry
-
-To make a new version, you need to change the version in package.json, run npm publish, and hope it works

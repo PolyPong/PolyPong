@@ -12,7 +12,7 @@ import {
 import dbHelper from "./db.ts";
 import { WebSocket } from "https://deno.land/std@0.92.0/ws/mod.ts"
 
-
+// FR6 Play Game
 export class GameServer extends Game {
   radius: number = 175; // Size of the game board, determined at runtime but set to default of 400
   sides: number;
@@ -56,6 +56,7 @@ export class GameServer extends Game {
     this.setSkins(userlist);
   }
 
+  // FR28 Select skin
   async setSkins(userlist: Map<string, WebSocket>){
     console.log("1: " + JSON.stringify(this.players));
     for (const player of this.players){
@@ -92,7 +93,19 @@ export class GameServer extends Game {
     }
 
   }
-
+  // FR6 Play Game
+  // FR11 Power Ups
+  // FR12 Expanded Paddle
+  // FR13 Shrink Paddle
+  // FR14 Self Invisible Paddle
+  // FR15 Others Invisible Paddle
+  // FR16 Invisible Ball
+  // FR17 Self Curved Outwards Paddle
+  // FR18 Self Curved Inwards Paddle
+  // FR19 Self Bumpy Paddle
+  // FR20 Distracting Background
+  // FR23 Add Ball
+  // FR26 Path Trace
   mergeState(game: Game, player_number: number | undefined, message: ClientUpdateMessage) {
 
     console.log("We are in merge State on the server side");
