@@ -24,8 +24,8 @@ sudo pacman -S npm
 ```
 
 Node should be installed automatically, since it is a
-dependency of Node. I cannot guarantee this for your
-operating system though, so make sure node is also installed
+dependency of npm. I cannot guarantee this for your
+operating system though, so make sure node is also installed.
 
 
 First, you'll want to build PolyPong-Common
@@ -49,7 +49,7 @@ the frontend should be accessible at
 http://localhost:3000
 
 ## Backend
-There are two ways to get the backend up and running:
+There are two ways to get the backend up and running: either using docker or doing a manual installation.
 
 NOTE: The database is left open in this configuration.
 (i.e. there is no root password for mongoDB in this configuration)
@@ -77,8 +77,8 @@ http://0.0.0.0:8443
 
 ### Manual installation
 
-First, install mongodb and Deno
-on Arch Linux, it would look like this
+First, install mongodb and Deno.
+For example, on Arch Linux, it would look like this
 
 ```bash
 sudo pacman -S deno
