@@ -1,3 +1,5 @@
+<!-- This file is used for FR1 User Login and FR2 User Registration -->
+
 <script>
   import { onMount } from "svelte";
   import { router } from "tinro";
