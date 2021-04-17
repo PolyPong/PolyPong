@@ -263,6 +263,7 @@ This is a manual test
    - Name: auth0.isauthenticated
    - Value: true
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 ** User Registration
 *** FR2
 On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
@@ -302,6 +303,8 @@ that are not covered by automated tests.
    - Name: auth0.isauthenticated
    - Value: true
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 ** Play Game
 *** FR3 Create Game
 This is a manual test
@@ -313,6 +316,8 @@ This is a manual test
 **** Expectations
 1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
 2. You should also see a lobby id
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 *** FR4 Share Link
 This is a manual test
@@ -327,6 +332,8 @@ This is a manual test
 1. You should see that you are put into a new lobby, and that you are waiting for users to join the lobby.
 2. You should also see a lobby id
 3. When step 3 above is completed, a link should be copied to your system clipboard
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 *** FR5 Join Game
 This is a manual test
@@ -343,6 +350,8 @@ This is a manual test
 2. You should also see a lobby id
 3. When step 3 above is completed, a link should be copied to your system clipboard
 4. When step 4 is completed, there should now be two players in the lobby
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 *** FR6 Play Game
 This is a manual test
@@ -363,6 +372,8 @@ This is a manual test
 4. When step 4 is completed, there should now be two players in the lobby
 5. When step 5 is completed, there should now be three players in the lobby
 6. When step 6 is completed, the game should start and users can start playing.
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 ** Leaderboard and Statistics
 *** FR7 Earn XP
@@ -391,6 +402,8 @@ This is a manual test
    2. The second player should have earned 2 XP
    3. The player that won the game should have earned 3 XP
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 *** FR8 View Local Leaderboard
 On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
 along with other tests
@@ -407,6 +420,8 @@ that are not covered by automated tests.
 **** Expectations
 1. You should see a list of usernames and their corresponding XP. The users that appear
    directly next to your name should be the ones that have the closest amount of XP to you
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 *** FR9 View Global Leaderboard
 On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
@@ -425,6 +440,8 @@ that are not covered by automated tests.
 **** Expectations
 1. You should see a top 10 list of usernames and their corresponding XP.
    These users are the 10 players in descending order with the highest XP.
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 *** FR10 User statistics
 On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
@@ -445,6 +462,8 @@ that are not covered by automated tests.
    2. Games Won
    3. XP Level
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 ** Power Ups
 *** FR11 Power Ups
 This is a manual test
@@ -462,6 +481,7 @@ This is a manual test
 **** Expectations
 1. Each time a player uses a powerup, ensure the specified powerup's behaviour is consistent with the expectations for each individual powerup test defined below.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 *** FR12 Expanded Paddle
 This is a manual test
 
@@ -488,6 +508,7 @@ This is a manual test
 8. When step 9 is completed, your paddle should be twice as big as normal on your screen and your friends' screens.
 9. Thirty seconds after step 9 is completed, your paddle should return to regular size on your screen and your friends' screens.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 *** FR13 Shrink Paddle
 This is a manual test
@@ -514,6 +535,8 @@ This is a manual test
 7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
 8. When step 9 is completed, your paddle should be half as big as normal on your screen and your friends' screens.
 9. Thirty seconds after step 9 is completed, your paddle should return to regular size on your screen and your friends' screens.
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 
 *** FR14 Self Invisible Paddle
@@ -542,6 +565,8 @@ This is a manual test
 8. When step 9 is completed, your paddle should be invisible on your screen and your friends' screens.
 9. One minute after step 9 is completed, your paddle should return to being visible on your screen and your friends' screens.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 
 *** FR15 Others Invisible Paddle
 This is a manual test
@@ -569,6 +594,8 @@ This is a manual test
 8. When step 9 is completed, your friends' paddles should be invisible on your screen and your friends' screens.
 9. Fifteen seconds after step 9 is completed, your friends' paddles should return to being visible on your screen and your friends' screens.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 
 *** FR16 Invisible Ball
 This is a manual test
@@ -595,6 +622,8 @@ This is a manual test
 7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
 8. When step 9 is completed, the ball should be invisible on your screen and your friends' screens.
 9. Fifteen seconds after step 9 is completed, the ball should return to being visible on your screen and your friends' screens.
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 
 *** FR17 Self Curved Outwards Paddle
@@ -624,6 +653,8 @@ This is a manual test
 9. When a ball collides with your paddle, the collision return angle should range from 60 degrees to the left on the left side of the paddle to 60 degrees to the right on the right side of the paddle (continuous 120 degree range).
 10. Your paddle should remain curved outwards until you are eliminated or you win the game.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 
 *** FR18 Self Curved Inwards Paddle
 This is a manual test
@@ -651,6 +682,8 @@ This is a manual test
 8. When step 9 is completed, your paddle should be curved inwards on your screen and your friends' screens.
 9. When a ball collides with your paddle, the collision return angle should range from 60 degrees to the right on the left side of the paddle to 60 degrees to the left on the right side of the paddle (continuous 120 degree range).
 10. Your paddle should remain curved inwards until you are eliminated or you win the game.
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 
 
 *** FR19 Self Bumpy Paddle
@@ -680,6 +713,8 @@ This is a manual test
 9. When a ball collides with your paddle, the collision return angle should be random, ranging from 60 degrees to the left to 60 degrees to the right (continuous 120 degree range).
 10. Your paddle should remain bumpy until you are eliminated or you win the game.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 
 *** FR20 Distracting Background
 This is a manual test
@@ -707,15 +742,17 @@ This is a manual test
 8. When step 9 is completed, the background should have changed colour on your screen and your friends' screens.
 9. Every 5 seconds going forward, the background colour should randomly change on your screen and your friends' screens.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 
 *** FR21
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
-so no tests are required for a feature that does not exist.
+so no tests can be written for a feature that does not exist.
 
 
 *** FR22
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
-so no tests are required for a feature that does not exist.
+so no tests can be written for a feature that does not exist.
 
 
 *** FR23 Add Ball
@@ -744,15 +781,17 @@ This is a manual test
 8. When step 9 is completed, there should be an additional ball in play on your screen and your friends' screens.
 9. The additional ball should behave exactly like a regular ball. When one player is eliminated, the next round should only have one ball.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 
 *** FR24
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
-so no tests are required for a feature that does not exist.
+so no tests can be written for a feature that does not exist.
 
 
 *** FR25
 This optional functional requirement was scrapped. Therefore, the feature does not exist,
-so no tests are required for a feature that does not exist.
+so no tests can be written for a feature that does not exist.
 
 
 *** FR26 Path Trace
@@ -782,6 +821,7 @@ This is a manual test
 8. When step 9 is completed, there should be an arrow indicating the direction of the ball's path on your screen.
 9. One minute after step 9 is completed, the arrow indicating the direction of the ball's path on your screen should disappear.
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
 ** Skins
 *** FR27 Earn Skin
 On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
@@ -833,6 +873,8 @@ that are not covered by automated tests.
 **** Expectations
 1. You should now see a new skin available to choose from
 
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
+
 *** FR28 Select skin
 On the server side, there is an automated test. Use the provided test.sh script in the server/ folder to run it,
 along with other tests
@@ -858,3 +900,5 @@ that are not covered by automated tests.
    The response code should be 204
 4. During step 5, you should see the new skin that was selected active in the game. Your opponents should
    also be able to see the skin colour you chose.
+
+This test was last run on April 16 on commit 26d0ef9 and it was determined to be passing by us
