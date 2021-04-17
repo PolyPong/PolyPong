@@ -24,8 +24,8 @@ sudo pacman -S npm
 ```
 
 Node should be installed automatically, since it is a
-dependency of Node. I cannot guarantee this for your
-operating system though, so make sure node is also installed
+dependency of npm. I cannot guarantee this for your
+operating system though, so make sure node is also installed.
 
 
 First, you'll want to build PolyPong-Common
