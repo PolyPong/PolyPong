@@ -77,8 +77,8 @@ http://0.0.0.0:8443
 
 ### Manual installation
 
-First, install mongodb and Deno
-on Arch Linux, it would look like this
+First, install mongodb and Deno.
+For example, on Arch Linux, it would look like this
 
 ```bash
 sudo pacman -S deno
