@@ -23,6 +23,29 @@ and start playing. The experience is as frictionless as possible. Users are not
 even required to sign up before playing a game. Users can enjoy the game as a
 guest, and sign up later if they choose to.
 
+PolyPong does not solve any huge problems in its own right, however, it does fit
+within the realm of gaming. It could be argued that one of the things that
+PolyPong solves is (at least temporarily) boredom.  Humans have enjoyed playing
+games for a really long time.  I'm not an anthropologist, but I think it is fair
+to say that modern humans have been playing games for a really long time, and
+that playing games is how many of us have kept ourselves busy and entertained.
+Games are a way to bring people together, and we saw this happen just recently
+when the COVID pandemic hit: Steam (an online platform which distributes games)
+beat its highest concurrent players record multiple times last year.  In a time
+when we were forced to isolate ourselves, we found ourselves more connected than
+ever by playing games together. PolyPong is another one of those things that
+friends can use to spend time together.
+
+One problem we had to deal with was sharing state across multiple computers.
+A synchronization algorithm had to be developed. We did not invent anything
+new or groundbreaking here. We instead used a tried and true method for
+multiplayer game synchronization -- the Dead Reckoning Algorithm.
+This allowed for clients of the game to predict the future state of the
+game and make small corrections in an effort to hide the latency
+of the connections between each client and the server.
+
+
+
 * Existing Solutions
 A quick google search for "multiplayer pong" reveals that there are a plethora of online projects which already exist that
 allows one to play a multiplayer game similar to pong. Here are a few examples:
@@ -36,7 +59,7 @@ allows one to play a multiplayer game similar to pong. Here are a few examples:
   with more than two players at once like we do, nor does it appear to have power ups.
 - https://github.com/pstefa1707/multiplayer-pong
   This also seems to have a single player mode and online multiplayer. Like the other examples, there is no
-  option to play a game with more than two players simultaneously.\
+  option to play a game with more than two players simultaneously.
 - https://github.com/HarshdeepGupta/multi_pong
   This appears to work with up to four players, while our game allows for more than four players to play in a single game.
   Also, it requires Java to be installed, while our game just runs in the browser.
@@ -327,26 +350,24 @@ part. I also worked entirely on the authentication system. This involved
 managing the dashboard on Auth0, and writing code to do the login flow on the
 frontend.  On the backend side of things, this involved code like requiring
 certain client requests to be authenticated and verifying the JSON web token
-provided in the request.  I also worked on getting our project deployed
-so that we can play the game on polypong.ca. This involved domain registration,
+provided in the request.  I also worked on getting our project deployed so that
+we can play the game on polypong.ca. This involved domain registration,
 administering DNS records, deploying the frontend to Cloudflare Pages, writing
-Dockerfiles, and deploying the backend to Cybera. For the database side of things,
-I wrote the queries and helper functions which would be used in other parts
-of the application. I also worked on designing most of the tests like the database and server tests,
-while Micheal did the power up tests.
+Dockerfiles, and deploying the backend to Cybera. For the database side of
+things, I wrote the queries and helper functions which would be used in other
+parts of the application. I also worked on designing most of the tests like the
+database and server tests, while Micheal did the power up tests.
 
 Micheal mainly focused on the frontend, UI design, and making features which I
-added look pretty. He also had to work a bit in the backend
-when he wanted to add features to the frontend. As a result,
-Micheal has a really good understanding of how the frontend works,
-and a solid understanding of how the backend works.
-Eventually, we also had to refactor the code and we pair
-programmed together, fixing bugs, adding features, and fixing more bugs.
-He came up with the initial UI prototype for
-the frontend, a large portion of which we have tweaked and kept in the final
-product. He also worked on getting the game to render on the HTML canvas, and
-did some geometry math to figure out how to render an n-sided polygon on the
-canvas, rotate the canvas, draw shapes, etc.
+added look pretty. He also had to work a bit in the backend when he wanted to
+add features to the frontend. As a result, Micheal has a really good
+understanding of how the frontend works, and a solid understanding of how the
+backend works.  Eventually, we also had to refactor the code and we pair
+programmed together, fixing bugs, adding features, and fixing more bugs.  He
+came up with the initial UI prototype for the frontend, a large portion of which
+we have tweaked and kept in the final product. He also worked on getting the
+game to render on the HTML canvas, and did some geometry math to figure out how
+to render an n-sided polygon on the canvas, rotate the canvas, draw shapes, etc.
 
 Micheal also figured out how to do collision detection, input handling, and
 designing the game loop.  I pair programmed with Micheal a lot over the course
@@ -371,14 +392,4 @@ powerup.  His main contribution was implementing the Dead Reckoning Algorithm,
 which makes the clients predict the movement of the paddles so that the game
 appears to be more smooth and less jittery. This involved simulating the paddle
 movement for opponents, and also predicting the movement of the ball.
-
-* History of Changes
-#+begin_landscape
-#+begin_src sh :results output :exports results
-git --no-pager log --graph --all --oneline --pretty=format:"%h %ad%x09%an%x09%s" --date=short
-#+end_src
-#+end_landscape
-#+RESULTS:
-
-* Summary of Defects
-oh boy....
+Overall, Joshua's involvement in the project was limited.
