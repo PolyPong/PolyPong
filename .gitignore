@@ -8,3 +8,7 @@ doc/finalreport/.auctex-auto/awoosare-final-report.el
 doc/test/test-plan.tex
 doc/test/.auctex-auto/test-plan.el
 doc/test/test-plan.out
+doc/test-plan-and-suite/test-plan-and-suite.tex
+.gitignore
+doc/test-plan-and-suite/.auctex-auto/test-plan.el
+doc/test-plan-and-suite/.auctex-auto/test-plan-and-suite.el
