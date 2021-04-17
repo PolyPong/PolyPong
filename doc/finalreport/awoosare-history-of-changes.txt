@@ -1,0 +1,653 @@
+ECE 493 Capstone History of Changes for PolyPong
+
+Note:
+The 'mantifao'  username refers to Micheal Antifaoff
+The 'Arunscape' username refers to Arun Woosaree
+The 'phlana'    username refers to Joshua Chang
+
+This document is in reverse chronological order,
+You may want to read the document from the bottom up.
+
+the log was originally created with the following command:
+
+```
+git --no-pager log --graph --all --oneline --pretty=format:"%h %ad%x09%an%x09%s" --date=short
+```
+
+I chose to write comments in the middle of the commit history, so that there is
+a better sense of the passage of time. Any line that does not start with a '*'
+or a '|' is a comment I have written.
+
+The convention I chose is that each comment will be referring to the
+group of commits below it.
+
+Note: there may be more commits above this one, but those relate to
+the final submissions, and at this point the actual code for the project
+is finalized.
+
+================================================================================
+
+Below here is the obvious last day frantic rush to get everything done.
+Luckily, the code portion is basically done, and we just needed to
+add comments, attaching our functional requrements.
+
+Oh, and also finish all the reports. Turns out those were bigger than
+I had anticipated. Micheal and I worked together to finish the test plan
+and add comments to the code. 
+
+We also ran all of our tests one last time to make sure that everything works
+as expected. We somehow finished all of the functional requirements!
+
+Joshua did not help at all with any of the final documents.
+
+His contributions overall were limited for the entire project. 
+With over 350 commits total, he had made under 10 of them. 
+
+* 609bde5 2021-04-16	Arunscape	final report changes
+* 9b4d79c 2021-04-16	mantifao	Game.svelte comments are done!
+* 93440ee 2021-04-16	mantifao	Final report PDF
+*   3564293 2021-04-16	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 52f13b5 2021-04-16	Arunscape	remove ## in document
+* | 2c7fc0a 2021-04-16	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\| 
+| * c72e1b4 2021-04-16	Arunscape	rename test plan and suite
+| * 88f403c 2021-04-16	mantifao	Update README.md
+| * d8cac27 2021-04-16	Arunscape	assert that we ran the test cases
+| * 63ff50a 2021-04-16	mantifao	Update README.md
+| * f4a2107 2021-04-16	mantifao	Update README.md
+| * a963bf9 2021-04-16	mantifao	Update test plan
+* | 8a2065d 2021-04-16	mantifao	Final Report for Micheal - not yet finished
+|/  
+* 37c0893 2021-04-16	mantifao	Add comments to Callback.svelte
+* e2ec636 2021-04-16	mantifao	Add comments, clean up code in Home.svelte
+* 26d0ef9 2021-04-16	mantifao	Add comments to Leaderboard.svelte; round win/loss ratio to three decimals
+*   48859fc 2021-04-16	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 99847f7 2021-04-16	Arunscape	test plan
+* | c413f92 2021-04-16	mantifao	Add comments, clean up code in Lobby.svelte
+|/  
+* dd51c6a 2021-04-16	mantifao	Add comments, clean up code in LobbySelection.svelte
+*   ce4cc22 2021-04-16	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 6e4b48e 2021-04-16	Arunscape	update test documentation
+| * 4780c42 2021-04-16	Arunscape	fix e2e test
+* | c4e9663 2021-04-16	mantifao	Add comments, clean up code in Settings.svelte
+|/  
+*   cf21bdd 2021-04-16	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 9987c8c 2021-04-16	Arunscape	get rid of unused code
+* | 35c6faa 2021-04-16	mantifao	Clean up Signup.svelte, add FR comments
+|/  
+* ef49c76 2021-04-16	mantifao	Delete Powerups.svelte, remove all references
+* 93959ad 2021-04-16	mantifao	Stats.svelte and Login.svelte are deleted, removed all references to them as well
+* 7451491 2021-04-16	Arunscape	game.ts comments
+* 3f4a053 2021-04-16	Arunscape	comments for app.svelte
+* 3f24e0c 2021-04-16	Arunscape	formatting
+* 0407b42 2021-04-16	Arunscape	add comments for store.ts
+* d2d3472 2021-04-16	Arunscape	index.ts comments
+* 413ed8a 2021-04-16	Arunscape	authservice.ts comments
+* bb6d005 2021-04-16	Arunscape	auth_config.ts comments
+* 88bfcc5 2021-04-16	Arunscape	more granular comments for lobby.ts
+*   222020f 2021-04-16	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+* | abb2072 2021-04-16	mantifao	Update test plan/suite with lots more tests, add all powerup tests
+| | *   c56ec1c 2021-04-16	Arunscape	WIP on master: 4bd8e9c more granular comments for lobby.ts
+| | |\  
+| | | * 92b73d0 2021-04-16	Arunscape	index on master: 4bd8e9c more granular comments for lobby.ts
+| | |/  
+| | * 4bd8e9c 2021-04-16	Arunscape	more granular comments for lobby.ts
+| |/  
+| * b8b7b7f 2021-04-16	Arunscape	server/game.ts FR comments
+| * 792745f 2021-04-16	Arun Woosaree	Create key.pem
+| * 407dcfb 2021-04-16	Arunscape	attach FRs to server.ts
+| * 677bd14 2021-04-16	Arunscape	attach each code block in db.ts to functional requirement
+| * 2940ba0 2021-04-16	Arunscape	more details for readme
+| * 44f6748 2021-04-16	Arunscape	add build instructions
+|/  
+*   a761eae 2021-04-16	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+
+It was time to start the final capstone assignments.
+Turns out there is a lot of work to do.
+Also, it turns out there was still a lot of functionality left to test.
+I was definitely up past 1:30 am here.
+I also started the test plan report.
+
+| * 2d1b8a3 2021-04-16	Arunscape	deploy faster by not copying as many files
+| * acae2a6 2021-04-16	Arunscape	ugh. finally the docker-compose file can be used to run the app locally
+| * c41e4cb 2021-04-15	Arunscape	I think that's all of the test cases minus powerups
+| * 39f3aa1 2021-04-15	Arunscape	tests tests tests tests
+| * dc6a2a8 2021-04-15	Arunscape	teeeeeeessssstttttsssss
+| * d99cc0f 2021-04-15	Arunscape	lots of tests
+| * d9b1e32 2021-04-15	Arunscape	getxp server test
+| * f999314 2021-04-15	Arunscape	registration test
+| * a20adc0 2021-04-15	Arunscape	login test fr1
+| * 1bd6d17 2021-04-15	Arunscape	this is a test plan. Time to write tests
+| * 8b8f846 2021-04-15	Arunscape	more explanations for tests
+| * 5c58b4e 2021-04-15	Arunscape	oh man this test plan is gonna take a while to do
+| * 115824d 2021-04-15	Arunscape	final report: alright I guess I just need to come up with a summary of defects
+| * 456e8eb 2021-04-15	Arunscape	I should really sleep at some point tonight
+| * 3126c3c 2021-04-14	Arunscape	dang that was a lengthy section
+| * c6ee920 2021-04-14	Arunscape	final report: wow this section's gonna be long
+| * a0d4f00 2021-04-14	Arunscape	final report: existing solutions
+| * cf94d0d 2021-04-14	Arunscape	final report: problem domain
+
+Micheal enabled games with more than 12 players.
+
+* | 31e52a1 2021-04-16	mantifao	Update getPaddleY for games with more than 12 players
+|/  
+
+In the days leading up to the demo, we had to get a lot done in a short period of time
+You can see how many commits we did in such a short period of time. 
+There were a bunch of bug fixes. In general, we were fixing a lot of
+"jank" in the hopes that the demo would go smoothly. We think we did alright.
+Joshua also helped to contribute a little. There was a regression where the
+game state was being overwritten. In other words, there was a race condition
+in the synchronization algorithm, and the game play was very jittery.
+Luckily, we got that fixed thanks to the combined effort of three team members
+this time.
+
+* a1dfbdc 2021-04-13	mantifao	Adding async so that await works, back to 60 FPS after demo
+* b58afcc 2021-04-13	Arunscape	remove these buttons bc they won't be implemented
+*   fb3fd32 2021-04-13	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 75115ec 2021-04-13	Joshua Chang	add logo and favicon
+* | d9a020c 2021-04-13	mantifao	Switch to 30 FPS for the demo
+|/  
+* 6fe8715 2021-04-13	mantifao	Fix bug where Lobby not created when websocket not ready
+* 8254b39 2021-04-13	mantifao	Fix bug of username being empty: Await getUsername since it is async
+* 98b4e09 2021-04-13	mantifao	Update local leaderboard for newly created users
+* 19eb609 2021-04-13	mantifao	Username exists message
+* c943793 2021-04-13	mantifao	Username exists message
+* ef5991e 2021-04-13	mantifao	Getting username exists message working
+* adf6b9d 2021-04-13	mantifao	Display username exists to user if username exists
+* 8104398 2021-04-13	Arunscape	pin oak dependency so that the server can actually build
+*   524b0dc 2021-04-13	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 65431a6 2021-04-12	Arunscape	change git log command in report
+* | 76fd5cc 2021-04-13	mantifao	Fix bug with Arun where game was restarting when a player who had lost closes the tab, fix xp bug which was reporting 0 xp earned because the SERVER_URL was incorrect (so endingXP was NaN)
+* | 706caee 2021-04-13	mantifao	Fix not logged in when joining Lobby using a link, add sound effects for xp earned, fix bug with Arun causing games to restart when a player who has lost closes the tab
+|/  
+* 85a494c 2021-04-12	mantifao	Rename bomb - commit 2/2. Should now appear in the powerups selection screen
+* 277950d 2021-04-12	mantifao	Rename bomb - commit 1/2
+* 5972aad 2021-04-12	mantifao	Add images for shaped paddles
+* db7877b 2021-04-11	Arunscape	local leaderboard returns indices :)
+* 4f343f8 2021-04-11	mantifao	Fix bug causing shrunk paddles to become super expanded when setTimeout expired
+*   3f52c62 2021-04-11	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * d0cd47f 2021-04-11	Arunscape	fix local leaderboard bug SPOILER: I wasn't sorting lol
+* | 1ecf59f 2021-04-11	mantifao	pathTrace powerup now working with multiple balls
+|/  
+* a41647a 2021-04-11	mantifao	Adjust path trace to work with multiple balls
+* 1da988a 2021-04-11	mantifao	Another ball small bug fixes to make consistent across all clients
+*   4b9ea1f 2021-04-11	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 17d3007 2021-04-11	Arunscape	nice we are testing everything on the frontend except for the game itself
+| * 9e49e1e 2021-04-11	Arunscape	here's a login test
+* | 15accea 2021-04-11	mantifao	Collision detection now working for different shaped paddles
+|/  
+* 84f1669 2021-04-11	mantifao	Fix bug where alert was coming up when lobby_id was ""
+*   f93d8f9 2021-04-11	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| *   53d7e6a 2021-04-11	Phlana	Merge pull request #19 from PolyPong/add-ball
+| |\  
+| | *   632209f 2021-04-11	Joshua Chang	add ball powerup finished
+| | |\  
+| | |/  
+| |/|   
+| | * a545f53 2021-04-11	Joshua Chang	additional ball
+| | * c0c9fa6 2021-04-11	Joshua Chang	array of balls working
+* | | c9e64f5 2021-04-11	mantifao	Update getPaddleY() for 8-12 players
+|/ /  
+* | 32d989b 2021-04-11	mantifao	Shapes are now rendered consistently across rounds
+* | 760da7b 2021-04-11	mantifao	Fix bug where powerup names were not correctly displayed on client (were being displayed as undefined even when they were in the user's inventory)
+* | 75c96a8 2021-04-11	mantifao	CurvedInwards, CurvedOutwards and Bumpy render correctly for one round; fixed bug where player 0 could not update their state across the other clients (and other clients would end up overwriting player 0, leading to paddle stickiness and powerups not working for player 0)
+|/  
+* 2dfb8d9 2021-04-11	mantifao	Skins should now be correctly rendered
+* cd2b13f 2021-04-11	mantifao	Fixing skins
+* 000e87c 2021-04-11	mantifao	Fixing bug where skins are not showing
+* a7b9922 2021-04-11	mantifao	Update mergeState
+* 502b95b 2021-04-10	mantifao	Reduce volume of client-server keypress communication
+* ea03666 2021-04-10	mantifao	Remove some logs, add some logs
+* ad870ba 2021-04-10	Joshua Chang	added debugging statments
+* 80cd847 2021-04-10	mantifao	Better Lobby Names; sound effects that only work in certain browsers (Firefox works, Safari does not)
+
+Here, we needed to clean up the code a bit.
+Also, I started writing more tests for the backend code.
+Micheal was working on powerup features, and getting the statistics
+page to communicate with the server functions I had set up earlier.
+
+*   afdc17a 2021-04-10	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 59953fa 2021-04-10	Arunscape	here's how we do testing for oak
+* | bcfa680 2021-04-10	mantifao	Powerups now working properly across clients
+|/  
+* 57446c5 2021-04-10	mantifao	Small code refactoring, no additional functionality, just cleaner code
+*   500411e 2021-04-10	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 4c7ccd4 2021-04-10	Arunscape	test script for server
+| * 1e94b08 2021-04-10	Arunscape	fix database tests
+* | 0eafcf4 2021-04-10	mantifao	Stats are updated and saved in the DB; queried using API and displayed to the user in Leaderboard.Svelte
+|/  
+
+The work done is this block of commits is mostly Micheal, however,
+I was with him in a Discord call for most of the time.
+I believe I had other assignments due during this time period, however
+I made an effort to be there so I could help debug things and fix
+issues in a few minutes versus the hours that it could have taken
+a single tired individual to find the bug. Two minds are better than one.
+
+* 17d7cf7 2021-04-10	mantifao	This should fix one player game starting
+* 048fa33 2021-04-10	mantifao	Fix lobby doesn't exist error
+* 1a1467e 2021-04-10	mantifao	When a user exits a game, it restarts without them; minor changes so in-game powerups available are more clear
+* 2a4c65e 2021-04-09	mantifao	Combine Stats.svelte with Leaderboard.svelte, Remove Login and Stats routes since Login.svelte is now a part of Home.svelte
+* a5860b6 2021-04-09	mantifao	Update Settings.Svelte, tell the user what their current paddle color is
+* b557edd 2021-04-09	mantifao	Leaderboard almost done, just need place returned for local leaderboard
+* a155f05 2021-04-09	mantifao	Fixed canvas equal to null bug by clearing all the intervals and remove the event listener for keys and blur
+* c3eb94b 2021-04-09	mantifao	Fixes bug where keyDownHandlers were not removed when a game was won (they were only removed when a game was lost). This was causing unnecessary client-server communication
+* 543859b 2021-04-09	mantifao	Fixed a bug with lobby system: when two players are in a lobby and one lost connection, the other is now informed the lobby no longer exists; Fixed another bug where when a user exits the lobby, it is shown on all clients. Unless we find more bugs, lobby should be complete!
+* bdf06cc 2021-04-09	mantifao	Lobby improvements, on closing a window, users are now removed from a lobby
+* c40b848 2021-04-09	mantifao	Update settings and skin selection pages
+* dc9dfec 2021-04-09	mantifao	Lobby redesign, works with link sharing and shows when users (registered or guest users) join a lobby
+* 7ba7b18 2021-04-07	mantifao	Fixes a bug where skins were set correctly on the server, but not on the client so all paddles were white (instead of the correct skin color)
+
+This group of commits was another rare moment where we got all three team
+members together in a call. There were some weird bugs, 
+but we sat down for hours and got them fixed.
+Joshua also implemented the Dead Reckoning Algorithm.
+
+* 4c6b4c5 2021-04-07	mantifao	Remove lobby_id resetting
+* 0a19ca8 2021-04-07	mantifao	XP bug should now be fixed
+* 8fc7df1 2021-04-07	mantifao	Fix bug where XP was not assigned due to lobby_id being reset on the client before the last message from client to server was sent
+*   bad880b 2021-04-07	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * c187963 2021-04-06	Joshua Chang	replace fewer players when merging states
+| * b15fddc 2021-04-06	Arunscape	we weren't specifying the port!!!
+| * 3c71308 2021-04-06	Joshua Chang	add and remove event listeners when needed
+| * 1f029a4 2021-04-06	Joshua Chang	good paddle movement
+* | ac4755d 2021-04-07	mantifao	Fixed game breaking bug where second round of game couldn't start after first round ended
+|/  
+
+More pair programming between Micheal and I.
+We encountered many issues with the lobby over the course of this project.
+Thanks to the new rest endpoints I created, we were now able to implement
+the skins and game XP feature
+
+* d79b9bd 2021-04-06	mantifao	Fixed lobby selection bug
+* fd04f02 2021-04-06	mantifao	Add package.json
+* 61bace9 2021-04-06	mantifao	Skins are now working! Strong start on lobby selection, need to fix bug where two users cannot restart a game in the same lobby
+* 64e089c 2021-04-05	mantifao	Skins are now working!
+*   5717d7f 2021-04-05	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * b6c363b 2021-04-05	Arunscape	final report draft
+| * c368319 2021-04-05	Arunscape	bind:this for canvas
+* | 33f7a48 2021-04-05	mantifao	Game XP is now added and displayed to the user
+|/  
+
+Another few days, more pair programming was going on.
+At this point, I was missing lectures from other classes
+and just focusing entirely on the capstone project because
+all of the midterms were done. The signup process 
+was not working as we expected, so I had to fix that, 
+and I helpd Micheal implement a few power ups.
+Credit should go mostly to Micheal for the power ups,
+but I did help fix errors he encountered, and
+helped with designing how the client server
+communication works when a power up is activated.
+Things like sending the update to the server,
+merging the game state on the server, broadcasting
+updates to the clients, and merging the game state on the clients.
+We implemented a good amount of powerups and felt good about how the
+project was looking so far.
+
+* c35b6f8 2021-04-05	mantifao	Code cleanup, adding comments
+* cb34633 2021-04-05	mantifao	Update getPaddleY() for up to 7 players (need to finish 8-12 later)
+* 55f9aa7 2021-04-05	mantifao	Add attribution
+* 708e3ee 2021-04-05	mantifao	Path Trace powerup done, better initial ball speed
+* 9849a65 2021-04-04	mantifao	Distracting background working, stops when player who applied it is eliminated (no menu, just random colors every 5 seconds)
+* d8bed85 2021-04-04	Arunscape	this was confusing the compiler I guess
+*   42495dc 2021-04-04	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 97409a6 2021-04-04	Arunscape	one space
+| * 1866e33 2021-04-04	Arunscape	cleanup
+| * d831fe9 2021-04-04	Arunscape	formatting
+* | e3b97e1 2021-04-04	mantifao	2 Player wall collision detection working
+|/  
+*   2635ddd 2021-04-04	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * e5a8ccb 2021-04-03	Arunscape	signup works now
+| * 7c088c8 2021-04-03	Arunscape	oops
+| * 6e5ccce 2021-04-03	Arunscape	oops
+| * ac7d5c2 2021-04-03	Arunscape	signup theoretically works
+| * 475f2fe 2021-04-03	Arunscape	missing }
+| * a0a7a2c 2021-04-03	Arunscape	redirect user if logged in but account does not exist
+| * 81cc3fd 2021-04-03	Arunscape	handle loginwithredirect callback
+* | 6074ad7 2021-04-04	mantifao	5 Powerups implemented (bigger, smaller and 3 invisibles)! Need testing to ensure they work as expected
+|/  
+*   69fe1c4 2021-04-03	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 2b9e162 2021-04-03	Arunscape	copy, share link works now
+| * 344cc95 2021-04-03	Arunscape	oops
+| * a94864f 2021-04-03	Arunscape	create get username endpoint
+* | 53f0a36 2021-04-03	mantifao	Added list of powerups on each client
+|/  
+
+More pair programming happened here.
+I cleaned up some code, and changed how the frontend can
+request data from the server for stateless things. I showed Micheal
+how to consume the new endpoints, and together, we fixed some bugs
+that existed in the code for the lobby system.
+
+* 70804d4 2021-04-02	mantifao	Update images, Lobby now waits for everybody and has power up selection
+* 081f246 2021-04-02	Arunscape	global and local leaderboard now using rest methods, just need to get username now
+* e8e23a8 2021-04-02	Arunscape	setskin works from the frontend now (in the sense that it saves the new value in the database)
+* 1b40a09 2021-04-02	Arunscape	oops
+* ad0b811 2021-04-02	Arunscape	we're using rest to handle this stateless data instead of passing it over the websocket
+* c11e716 2021-04-02	Arunscape	set skin rest endpoint
+* 72a2fb8 2021-04-02	Arunscape	remove unused code in server.ts
+
+
+Finally, we had gotten all three team members together in a call.
+I showed Joshua how to run the project and walked him through the
+code we had already written so far. Even at this point, there was a lot to
+go through. On April 1st, Joshua made his first commit to the repository.
+
+* 7306fc0 2021-04-01	Arunscape	local leaderboard rest endpoint
+* 6009ccc 2021-04-01	Arunscape	global leaderboard rest endpoint
+* ade41a6 2021-04-01	Arunscape	getavailableskins rest endpoint
+* 759dd24 2021-04-01	Arunscape	use auth0client.isauthenticated
+*   8f9836d 2021-04-01	Joshua Chang	Merge branch 'master' of https://github.com/ECE493Capstone/project
+|\  
+| * bb8bda8 2021-04-01	Arunscape	login with redirect also, getTokenSilently() returns a proper token now
+| * 9463ba2 2021-04-01	Arunscape	implement getxp endpoint using traditional rest for simplicity
+* | 5e54f66 2021-04-01	Joshua Chang	smoother paddle movement
+|/  
+| * 4821c69 2021-04-01	mantifao	Work in progress to synchronize emails and usernames across client and server
+|/  
+
+Here, Micheal and I did a lot more pair programming. We added a buch of
+features together, and fixed some bugs. At this point, we had a working game
+basically, and we could spend some time having fun bouncing a ball
+off of some paddles. Another exciting development was that I managed
+to deploy our code to a server, so that a production version
+of the website is accessible at https://polypong.ca
+We could finally share our project with friends!
+(Even though we were far from done at this point)
+I also wrote tests for the database functions.
+
+
+* a956424 2021-03-31	mantifao	Game background colour is now the same as rest of background
+* 5628aca 2021-03-31	mantifao	Fix background color
+*   ab60467 2021-03-31	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 5c0a06c 2021-03-30	Arunscape	leaderboard functionality
+| * 4c4bf61 2021-03-30	Arunscape	leaderboard also theoretically works now
+| * 0e8cf83 2021-03-30	Arunscape	add logic for getting skins and setting it (with authentication!) (untested lol)
+| * c65fecf 2021-03-30	Arunscape	fix some linting and allow port to be specified as an environment variable
+| * 26fff32 2021-03-30	Arunscape	add leaderboard functions for dbhelper, and tests for all of dbhelper
+| * 6c3827e 2021-03-30	Arunscape	server can run locally again
+| * d6916f4 2021-03-29	Arunscape	let's see if this is faster
+| * 14b0ff6 2021-03-29	Arunscape	oops
+| * 3812267 2021-03-29	Arunscape	ooh let's try this
+| * 3177e7a 2021-03-29	Arunscape	pls
+| * bd9b095 2021-03-29	Arunscape	ohhh it might be a CORS thing
+* | 0a6155f 2021-03-31	mantifao	When we finish one game, a new game is started!
+|/  
+* a7d7ffa 2021-03-29	mantifao	Improve the animation
+* 9c827df 2021-03-29	mantifao	Update getPaddleY() to work better, add Game Over text animation
+* 1ec3a21 2021-03-29	Arunscape	try this port on cloudflare
+* 09dd68a 2021-03-29	Arunscape	let's see if this works
+* 32ff7d0 2021-03-29	Arunscape	try binding to 0.0.0.0
+* dec0d48 2021-03-29	Arunscape	oops I spoke too soon
+* 272adda 2021-03-29	Arunscape	aaand theoretically we should be live
+* ec610f9 2021-03-29	Arunscape	it works
+* e8d3dc4 2021-03-29	Arunscape	rename it so it works on cybera (because I'm already running another instance of mongo there)
+* 9ccb72f 2021-03-29	Arunscape	this should work
+* 54788c8 2021-03-29	Arunscape	create dockerfile
+
+In this group of commits, Micheal and I over several days pair programmed
+even more together, and we got a lot of work done. At this point, 
+I will admit that I was a bit worried that Joshua had many opportunities
+to join the video calls Micheal and I had on Discord, and he had not
+contributed any code yet or talked about the project much
+-- especially because Micheal and I were sending messages back and forth which 
+are supposed to send notifications in Discord.
+
+I had also created some database functions in this group of commits.
+At this time, I had asked Joshua about a week ago
+to research a bit about MongoDB and Deno,
+and see if he could start writing some interfaces, and maybe
+a few database functions to see how we can interact with the database.
+We didn't really hear from him for a while aside from the Monday meeting
+we had established, and in order to progress with the project, we needed
+to start doing some database stuff.
+
+
+*   a852a09 2021-03-28	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 2917325 2021-03-28	Arunscape	oops
+| * acd4dc4 2021-03-28	Arunscape	logic for levelling up and setting skins and getting available skins
+| * fa4b545 2021-03-28	Arunscape	add some pretty colours
+* | cfae28a 2021-03-28	mantifao	Gameplay working and smooth, graphicaly glitches ironed out, Client can now detect when it has lost (but not yet sent to server or other clients)
+|/  
+*   a25d53e 2021-03-28	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 260a729 2021-03-28	Arunscape	undo rotation
+* | 4bf30cc 2021-03-28	mantifao	Collision detection working across multiple clients, graphical glitches abound
+|/  
+*   6940d71 2021-03-28	mantifao	Merge branch 'master' of https://github.com/PolyPong/PolyPong
+|\  
+| * 42f197a 2021-03-28	Arunscape	don't send websocket buffer
+* | 74d6856 2021-03-28	mantifao	Working on getting ball consistent
+|/  
+* 1d95da8 2021-03-28	mantifao	Collision detection is poor but working
+* 00757ec 2021-03-28	Arunscape	send unrotated dy dx for ball
+* 8f4370a 2021-03-28	Arunscape	skip sending websocket buffer in the update lol
+* 035bb48 2021-03-28	Arunscape	red paddle should move now on other clients
+* 8e626d9 2021-03-28	mantifao	Collision detection now works client-side! Ball is also drawn correctly (but not synchronized)
+* 5cf8b12 2021-03-27	Arunscape	idk :/
+* ac0a03b 2021-03-27	Arunscape	oops
+* 0e12240 2021-03-27	Arunscape	ball should be in sync now
+* b8ae6e0 2021-03-27	Arunscape	ball moves in sync until there is a collision also collisions are broken
+* 3814bc4 2021-03-27	Arunscape	refactor
+* 61f7b36 2021-03-27	Arunscape	refactored game object
+* dfee8ff 2021-03-26	mantifao	Include interface from PPC (removes error message)
+* 3e67b26 2021-03-26	mantifao	Login now checks db, we let users set their username on first login
+* 0dc17aa 2021-03-25	Arunscape	we can see other players' paddles moving now!!!
+
+In this group of commits, Micheal and I did a bunch of pair programming together.
+We fixed issues with the login system, I showed him how the lobby system I made
+in the previous group of commits work, how the store works, and he showed me
+the changes he made to the frontend. I showed Micheal how to use
+WebSockets and how he could build on top of my existing code 
+in the backend. We spend a lot of time on a discord call together.
+
+
+* a3da283 2021-03-22	mantifao	Log In on Home page now prints user email to console if authenticated
+* 07f5092 2021-03-22	mantifao	Fix Auth0 bugs
+* 9c3dd00 2021-03-22	mantifao	Update db.ts to import from PP-Common
+* aa6ce39 2021-03-22	mantifao	auth0Client now in store.ts
+* 4d4227e 2021-03-19	mantifao	Change default port to 3000
+
+Variables in a tree structure are kind of tricky. If you want
+something to be accessible by two components, you need to go to the parent
+of each nodes until you find a common ancestor, and then pass the state down
+to the children. Luckily, Svelte provides a store which simplifies this process.
+We effectively abused a bunch of global variables.
+
+* ec001d6 2021-03-19	Arunscape	attempt to start game
+* a395ced 2021-03-19	Arunscape	moved client side lobby websocket stuff to global scope in store.ts
+
+These changes are not really groundbreaking. It's mostly clean up.
+
+* ccdf142 2021-03-16	Arunscape	why did I change these types lol
+* 370549f 2021-03-12	Arunscape	delete old stuff
+* 895b5d6 2021-03-12	Arunscape	format tsconfig
+* 7a7f748 2021-03-12	Arunscape	idk
+* 05fdd37 2021-03-12	Arunscape	Revert "install in preinstall?" mistakes were made...
+* fbd103e 2021-03-12	Arunscape	install in preinstall?
+* b22b713 2021-03-12	Arunscape	frontend can build now
+
+We had a rather large amount of diagrams to make around this time,
+and I chose to do the sequence diagrams for our system.
+See below for my explanation on why I like plain text.
+
+* 603ebdd 2021-03-12	Arunscape	if I have to do another UML diagram I'll wanna fucking kms
+* a0ca534 2021-03-12	Arunscape	render diagrams
+* 65c19d3 2021-03-12	Arun Woosaree	Create fr26.puml
+* 1b90018 2021-03-12	Arun Woosaree	Create fr25.puml
+* 0ce9d9f 2021-03-12	Arun Woosaree	Update fr16.puml
+* 82f5fab 2021-03-12	Arun Woosaree	Create fr24.puml
+* 3dcd30e 2021-03-12	Arun Woosaree	Create fr23.puml
+* a16f102 2021-03-12	Arun Woosaree	Create fr22.puml
+* 74b20bb 2021-03-12	Arun Woosaree	Create fr21.puml
+* 95b4032 2021-03-12	Arun Woosaree	Create fr20.puml
+* b47b915 2021-03-12	Arun Woosaree	Create fr19.puml
+* 38a674c 2021-03-12	Arun Woosaree	Create fr18.puml
+* fed2552 2021-03-12	Arun Woosaree	Create fr17.puml
+* 3402647 2021-03-12	Arun Woosaree	Create fr16.puml
+* 747b23f 2021-03-12	Arun Woosaree	Create fr15.puml
+* 6b0ac6b 2021-03-12	Arun Woosaree	Create fr14.puml
+* 1b2907e 2021-03-12	Arun Woosaree	Create fr13.puml
+* 61dd277 2021-03-12	Arun Woosaree	Create fr12.puml
+* aa1e2b8 2021-03-12	Arunscape	we have a basic database
+* 254af7d 2021-03-12	Arun Woosaree	Update fr27.puml
+* 2649182 2021-03-12	Arun Woosaree	Update fr28.puml
+* e18eca7 2021-03-12	Arunscape	changes
+* d339d94 2021-03-12	Arunscape	delete fr12 for now
+* 86248f7 2021-03-12	Arunscape	oops forgot to commit this one
+* 5ba66dd 2021-03-12	Arunscape	add docker-compose
+* 1f4c0b0 2021-03-12	Arun Woosaree	hopefully last time updating fr1sequence
+* 758aaa0 2021-03-12	Arun Woosaree	Update fr1.puml
+* f780ed8 2021-03-12	Arun Woosaree	Update fr6.puml
+* 53a72bb 2021-03-12	Arunscape	final fr28 hopefully
+* db93bfa 2021-03-12	Arunscape	final fr27 hopefully
+* 56449d8 2021-03-12	Arunscape	final fr28 hopefully
+* 92291c5 2021-03-11	Arunscape	final fr10 hopefully
+* 69de270 2021-03-11	Arunscape	final fr9 hopefully
+* 36c7fa2 2021-03-11	Arunscape	final fr8 hopefully
+* 96d460d 2021-03-11	Arunscape	final fr7 hopefully
+* b056895 2021-03-11	Arunscape	final fr6 hopefully
+* 8caa1aa 2021-03-11	Arunscape	final fr5 hopefully
+* ab61aa3 2021-03-11	Arunscape	final fr4 hopefully
+* 818bbb0 2021-03-11	Arunscape	final fr3 hopefully
+* 7e35a5f 2021-03-11	Arunscape	final fr2 hopefully
+* 1d17042 2021-03-10	Arunscape	script to generate power up sequence diagrams when we figure out how they're supposed to work
+* 91b3235 2021-03-10	Arunscape	tweaks
+* 0875ad3 2021-03-10	Arunscape	remove need for jwt to view leaderboard
+* c6a266b 2021-03-10	Arunscape	play game does not involve lobby
+* e0930b3 2021-03-10	Arunscape	check for 3+ users fr3
+* cbeddbd 2021-03-10	Arunscape	fr12sequence
+* c21c408 2021-03-10	Arunscape	fr28sequence
+* 7fb4f70 2021-03-10	Arunscape	fr27sequence
+* 2879334 2021-03-10	Arunscape	fr10sequence
+* 7360541 2021-03-10	Arunscape	fr9sequence
+* 4e54651 2021-03-10	Arunscape	fr8sequence
+* 51c2cc5 2021-03-10	Arunscape	fr7sequence
+* 72d270e 2021-03-10	Arunscape	fr6sequence
+* 49b9cd4 2021-03-10	Arunscape	fr5sequence
+* 9d5c1ef 2021-03-10	Arunscape	fr4sequence
+* 7aad86c 2021-03-10	Arunscape	fr3sequence
+* fe90914 2021-03-10	Arunscape	fr3sequence
+* dd09d87 2021-03-10	Arunscape	update fr2sequence
+* 33bcadc 2021-03-10	Arunscape	update fr1sequence
+* 8ac287e 2021-03-10	Arunscape	fr2sequence
+* ff37e84 2021-03-10	Arunscape	fr1sequence
+
+With Micheal having added some basic frontend stuff already, we did not have
+much of a backend yet. I was the most knowledgeable in the area, and 
+this seemed like the next big thing to do, so I started making a
+lobby system. I had never worked with WebSockets before, so there was a good
+amount of trial and error here.
+
+* c6c7837 2021-03-10	Arunscape	the websocket is now accessible from anywhere in the application
+* 04c6bb7 2021-03-09	Arunscape	use the types I defined for transmitting messages
+* de4b815 2021-03-09	Arunscape	add joinsuccesspayload to payload.ts
+* c9a8575 2021-03-09	Arunscape	fixed the enter lobby id bug. now uses the textbox input
+* e250620 2021-03-08	Arunscape	here's what the communication protocol might look like
+* f9e9273 2021-03-08	Arunscape	hey we can now create a lobby, and join it with a unique id!!!
+* b180a2f 2021-03-08	Arunscape	add uuid
+
+We mentioned that we chose TypeScript, so that the frontend
+and backend can depend on the same data interfaces and make our lives easier.
+We were not doing that yet, so I began the process of separating out
+types and interfaces that would be shared between both the frontend and backend.
+
+* 0d70162 2021-03-05	Arunscape	package-lock go brrrrrrrrrrrrrr
+* 95a3d19 2021-03-05	Arunscape	document how to install private package
+* f2eb902 2021-03-05	Arunscape	create polypong-common package
+* c6d248a 2021-03-05	Arunscape	v0.0.1
+* 0a64f51 2021-03-05	Arunscape	move Game types to npm package
+
+Micheal did some good work here. He managed to figure out how to
+draw to the canvas, and did some geometry math/magic. We could see
+things coming together here. It was far from a functional game,
+but we could move one paddle, and see a ball moving.
+
+* 51b2d4e 2021-03-01	mantifao	Player number done; paddles rotate accordingly
+* 0d60aee 2021-03-01	mantifao	Ball now scales based on client's window size
+* c5d9a42 2021-03-01	mantifao	Added a ball and basic collision detection
+* 7cc2cc0 2021-02-28	mantifao	Cleaned up code, paddles have colors!
+* ffad707 2021-02-28	mantifao	Paddles are now bounded!
+* 0dfdaf9 2021-02-28	mantifao	Bottom paddle moves! No boundary checking yet
+* dccca91 2021-02-28	mantifao	Initial paddles are drawn
+* 0fb8f2c 2021-02-27	mantifao	Adding classes but not yet working
+* d81ecac 2021-02-27	mantifao	Shapes are drawn again
+
+I committed the work breakdown structure instead of using google drive,
+because I prefer working with plain text files, and then compiling
+my drawings from those files. Using a mouse with graphics software is a
+nightmare. And, plain text works beautifully with git.
+
+* 6f9fadb 2021-02-25	Arunscape	work breakdown structure
+
+In this group of commits, I was working on porting Micheal's vanilla HTML and
+CSS mockup to using the Svelte framework so that we could start leveraging
+its features.
+
+* 345723b 2021-02-17	Arunscape	idk what I changed but it works beautifully now. If the user is already signed in, they are no longer prompted for credentials
+* e07fb58 2021-02-16	Arunscape	getting somewhere
+* 34625da 2021-02-16	Arunscape	hm
+* 61928d8 2021-02-16	Arunscape	add auth0 client library again
+* d158d9c 2021-02-16	Arunscape	oh boy lots of changes
+* 5c62216 2021-02-15	Arunscape	add auth0 client library
+* ccea9cc 2021-02-08	Arunscape	frontend mockup but now in Svelte still kind of ugly because we're not reusing components, but hey, it's a start
+* 739fbe9 2021-02-08	Arunscape	actually let's try svelte@next
+* f51de3c 2021-02-08	Arunscape	add lockfile to gitignore for now
+* 3573a86 2021-02-08	Arunscape	use typescript
+* 0acc958 2021-02-08	Arunscape	init svelte
+
+These last two commits were just me copying over the mockups that
+Micheal had made to the master branch
+
+* 4369d8e 2021-02-08	Arunscape	move frontend mockup
+* bd0191d 2021-02-08	Arunscape	copy over stuff from main branch
+
+I had started work just a day later, however, I used a different branch 
+than Micheal's. It turns out GitHub changed their default branch name
+from 'master' to 'main' and I was still using the old convention.
+From past projects, like for hackathons and such authentication
+has always been a huge time sink, so I decided to start with that.
+At this point, I had a basic sign in demo that I could
+show to Micheal and Josh.
+
+* 7b293ed 2021-02-06	Arunscape	signin works
+* d38e4b4 2021-02-06	Arunscape	signin works
+
+Micheal kicked off the project with the first few commits.
+Being new to web development, he took the time and effort
+to familiarize himself with basic HTML and CSS knowledge,
+knowing that there was a mountain of work ahead to do.
+
+* 026077b 2021-02-05	mantifao	Create README.md
+* 61a93f6 2021-02-05	mantifao	Delete .DS_Store
+* 279df4a 2021-02-05	mantifao	Delete .DS_Store
+* c3a08ef 2021-02-05	mantifao	Delete .DS_Store
+* 58569af 2021-02-05	mantifao	Delete .DS_Store
+* 1d00abd 2021-02-05	mantifao	Delete .DS_Store
+* 1aab6ff 2021-02-05	mantifao	Delete .DS_Store
+* fe524da 2021-02-05	mantifao	Add gitignore
+* 72beaa3 2021-02-05	mantifao	Initial mockups
+
+I created the original git repository.
