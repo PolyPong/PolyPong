@@ -227,7 +227,7 @@ required because the browser fingerprint is recognized, this test
 does in fact pass, and we can watch it browse polypong.ca
 
 
-## Backend
+*** Backend
 For the backend, we are using Deno's built in testing functionality
 to make sure that the database works. We use a library called
 superoak which helps to test the REST endpoints we expose,
