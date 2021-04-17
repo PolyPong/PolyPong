@@ -200,6 +200,53 @@ A manual test would be needed to ensure that the user's currently selected skin 
 since testing the game is also done manually and cannot be automated.
 
 * Test Suite
+** Automated tests
+To run the automated tests that we have, the instructions are as follows:
+
+*** Frontend
+For the frontend, we have an automated puppeteer test.
+Puppeteer is a tool developed by Google which allows for
+programatically controlling a Google Chrome browser. We
+use it to ensure that navigation and pressing buttons
+on our site works properly.
+
+To run it,
+
+#+begin_example bash
+cd e2e-test
+npm i
+npm test
+#+end_example
+
+Note: Due to security issues, it is very likely that GitHub will request
+a two-factor code to be entered which is sent by email if this test
+is run on a different computer for the first time. As a result,
+this test is likely to fail because it would get stuck waiting
+for a two factor code to be entered. If a two factor code is not
+required because the browser fingerprint is recognized, this test
+does in fact pass, and we can watch it browse polypong.ca
+
+
+## Backend
+For the backend, we are using Deno's built in testing functionality
+to make sure that the database works. We use a library called
+superoak which helps to test the REST endpoints we expose,
+like ~/leaderboard~ for example to get the leaderboard data.
+
+
+here's how you run the tests:
+you need to make sure than an instance of mongodb is running and
+is accessible at mongodb://localhost:27017 for it to work
+
+#+begin_example bash
+cd server
+deno test  --allow-env --allow-net --coverage=coverage --unstable server.ts 
+#+end_example
+
+To get the code coverage, run this:
+#+begin_example bash
+deno coverage --unstable coverage --include="db.ts"
+#+end_example
 ** User Login
 *** FR1
 This is a manual test
@@ -733,7 +780,6 @@ This is a manual test
 7. When step 8 is completed, the game should start and users can start playing. Gameplay should be normal.
 8. When step 9 is completed, there should be an arrow indicating the direction of the ball's path on your screen.
 9. One minute after step 9 is completed, the arrow indicating the direction of the ball's path on your screen should disappear.
-
 
 ** Skins
 *** FR27 Earn Skin
