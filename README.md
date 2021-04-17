@@ -49,7 +49,7 @@ the frontend should be accessible at
 http://localhost:3000
 
 ## Backend
-There are two ways to get the backend up and running:
+There are two ways to get the backend up and running: either using docker or doing a manual installation.
 
 NOTE: The database is left open in this configuration.
 (i.e. there is no root password for mongoDB in this configuration)
