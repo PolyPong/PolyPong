@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { skins, ws, user, user_id, auth0Client } from "../store";
   import { Color } from "@polypong/polypong-common";
-import { router } from "tinro";
+  import { router } from "tinro";
 
   const SERVER_URL =
     import.meta.env.MODE === "production"
@@ -18,6 +18,7 @@ import { router } from "tinro";
   let skinSelected: string = "#fafafa";
   let authenticated = false;
 
+  // FR28 Select Skin
   onMount(async () => {
     authenticated = await (await $auth0Client).isAuthenticated();
     console.log(authenticated);
@@ -32,6 +33,7 @@ import { router } from "tinro";
     await getUsername();
   });
 
+  // FR28 Select Skin
   async function getUsername() {
     if (await (await $auth0Client).isAuthenticated()) {
       const token = await (await $auth0Client).getTokenSilently();
@@ -56,24 +58,29 @@ import { router } from "tinro";
     }
   }
 
-  function highlightSkins(idOfSkin: string) {
-    if (idOfSkin == skinSelected) {
-      return true;
-    } else if (idOfSkin == "white") {
-      document.getElementById(skinSelected)!.style.backgroundColor = "#353839";
-      document.getElementById(skinSelected)!.style.color = skinSelected;
-      document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
-      document.getElementById(idOfSkin)!.style.color = "#353839";
-      skinSelected = idOfSkin;
-    } else {
-      document.getElementById(skinSelected)!.style.backgroundColor = "#353839";
-      document.getElementById(skinSelected)!.style.color = skinSelected;
-      document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
-      document.getElementById(idOfSkin)!.style.color = "#FFFFFF";
-      skinSelected = idOfSkin;
-    }
-  }
+  // This code was meant to highlight the background colour with the skin colour,
+  // but we ran out of time to get it working; please ignore it
+  // function highlightSkins(idOfSkin: string) {
+  //   if (idOfSkin == skinSelected) {
+  //     return true;
+  //   } else if (idOfSkin == "white") {
+  //     document.getElementById(skinSelected)!.style.backgroundColor = "#353839";
+  //     document.getElementById(skinSelected)!.style.color = skinSelected;
+  //     document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
+  //     document.getElementById(idOfSkin)!.style.color = "#353839";
+  //     skinSelected = idOfSkin;
+  //   } else {
+  //     document.getElementById(skinSelected)!.style.backgroundColor = "#353839";
+  //     document.getElementById(skinSelected)!.style.color = skinSelected;
+  //     document.getElementById(idOfSkin)!.style.backgroundColor = idOfSkin;
+  //     document.getElementById(idOfSkin)!.style.color = "#FFFFFF";
+  //     skinSelected = idOfSkin;
+  //   }
+  // }
 
+
+  // FR28 Select Skin
+  // Sets the selected skin on button click 
   const setSkin = async (skin: Color) => {
     if (!(await (await $auth0Client).isAuthenticated())) {
       alert("oops, you are a guest user");
@@ -101,6 +108,9 @@ import { router } from "tinro";
   <hr />
   <h2>Skins:</h2>
 
+  <!-- FR28 Select Skin  -->
+  <!-- If the player is logged in, this code creates a grid of buttons with the different colours a player has unlocked and can select
+    Sets the selected skin on button click  -->
   {#await $auth0Client}
     <div>Seeing if you're logged in... Hold on</div>
   {:then client}
@@ -146,7 +156,6 @@ import { router } from "tinro";
 
   
   <a href="/home">
-    <!-- This assumes the user is logged in -->
     <button class="button button8">Home</button>
   </a>
   
