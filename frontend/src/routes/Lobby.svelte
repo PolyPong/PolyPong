@@ -1,25 +1,7 @@
 <script lang="ts">
-  import { onDestroy, onMount, afterUpdate } from "svelte";
-  import { Route, router, meta } from "tinro";
-  import {
-    AddBall,
-    Bomb,
-    CatchAndAim,
-    // ChangeBallShape,
-    ExpandedPaddle,
-    MakePaddleCurveInwards,
-    MakeSelfInvisible,
-    SetBackgroundColor,
-    ShrinkPaddle,
-    SplitPaddle,
-  } from "@polypong/polypong-common";
-  import type { PowerupStrings } from "@polypong/polypong-common";
-  import type {
-    JoinGamePayload,
-    StartGameRequest,
-    LobbyClientReady,
-  } from "@polypong/polypong-common";
-  import type { ServerEvent, ClientAction } from "@polypong/polypong-common";
+  import { onMount, afterUpdate } from "svelte";
+  import { router, meta } from "tinro";
+  import type { LobbyClientReady } from "@polypong/polypong-common";
   import {
     lobby_id,
     user_id,
@@ -47,19 +29,24 @@
 
   export let id: string;
   let lobby_input: string;
+
+  // FR11 Power Ups
   let powerUpsStr: any[] = [];
+
+  // FR5 Join Game
   let allPowerUpNamesShort: string[] = ["bigger", "smaller", "bumpy", "curvedInwards", "curvedOutwards", "selfInvisible", "othersInvisible", "ballInvisible", "anotherBall", "distracting", "tracePath"];
   let allPowerUpNamesLong: string[] = ["Bigger Paddle", "Smaller Paddle", "Bumpy Paddle", "Curved Inwards", "Curved Outwards", "Invisible Paddle, Self", "Invisible Paddle, Others", "Invisible Ball", "Add Ball", "Distracting Background", "Trace Ball Path"];
 
   let client_ready: boolean = false;
 
-  let expandedPaddleButton: HTMLElement;
+  // FR4 Share Link
   let copyLink: HTMLTextAreaElement;
 
   afterUpdate(() => console.log($lobby_id));
 
   onMount(async () => {
 
+    // FR1 User Login
     console.log("We are in onMount");
     if (await (await $auth0Client).isAuthenticated()) {
       console.log("The user is autheticated");
@@ -71,8 +58,7 @@
     user.set(await (await $auth0Client).getUser());
     await getUsername();
 
-
-
+    // FR5 Join Game
     if (id) {
       setTimeout(() => {
         joinGame(id, $user_id);
@@ -82,6 +68,7 @@
     }
   });
 
+  // FR1 User Login
   async function getUsername() {
     if (await (await $auth0Client).isAuthenticated()) {
       const token = await (await $auth0Client).getTokenSilently();
@@ -106,24 +93,8 @@
     }
   }
 
-  const joinGameButton = (input: string | undefined) => {
-    if (!$ws) {
-      return;
-    }
-    joinGame(input, $user_id);
-  };
-
-  const startGame = () => {
-    console.log("We are sending a start_game request on the client");
-    const payload: StartGameRequest = {
-      type: "start_game",
-      lobby_id: $lobby_id,
-    };
-    $ws.send(JSON.stringify(payload));
-  };
-
+  // FR11 Power Ups
   function highlightPowerUps(idOfElement: string) {
-    // expandedPaddleButton.style =
     var id = document.getElementById(idOfElement);
     if (
       id &&
@@ -147,6 +118,9 @@
     }
   }
 
+  // FR6 Play Game
+  // We are saying "I'm ready to play!" so that the server knows we are ready
+  // When all the other clients are ready, the game will start
   function clientReady() {
     console.log("We are sending a lobby_client_ready request on the client");
 
@@ -180,7 +154,8 @@
 </script>
 
 <body>
-  <!-- {#if !!$lobby_id}
+  <!-- Initial prototype, please ignore
+  {#if !!$lobby_id}
     <div>here's the lobby id: {$lobby_id}</div>
     <button on:click={startGame}>Start Game</button>
   {:else}
@@ -205,6 +180,8 @@
       join game
     </button>
   {/if} -->
+
+
   <h1 id="header" style="background-color: #353839;">PolyPong</h1>
   <hr />
   <h2>Lobby</h2>
@@ -213,25 +190,8 @@
 
   <h3>Current Players:</h3>
 
-  <!-- {#each $usernames as [username, xp], index ([username,xp])}
-    {#if index < 6}
-      <div style="float: left; width: 40%;">
-        <div style="text-align: left">
-          {index}. {username}
-          <span style="float:right;">{xp}</span>
-        </div>
-      </div>
-    {:else}
-      <div style="float: right; width: 40%;">
-        <div style="text-align: left">
-          {index}. {username}
-          <span style="float:right;">{xp}</span>
-        </div>
-      </div>
-    {/if}
-  {/each} -->
-
-
+  <!-- // FR5 Join Game -->
+  <!-- // Displays a list of the users who have joined the current lobby -->
   {#if $usernames.length > 6}
     <ol>
       <div style="float: left; width: 40%;">
@@ -308,6 +268,7 @@
   <br />
 
   <div>
+    <!-- // FR4 Share Link -->
     <p>Link to join the lobby you are in:</p>
     <textarea class="text-area" rows="1" readonly bind:this={copyLink}>{WEBSITE_URL + "lobby/" + $lobby_id}</textarea>
     <p style="text-decoration: underline;">{WEBSITE_URL + "lobby/" + $lobby_id}</p>
@@ -320,7 +281,8 @@
       Copy Link to Clipboard to Invite Friends
     </button>
 
-    <!-- {#if !!$lobby_id}
+    <!-- For displaying the lobby id, not needed - just clutters the UI
+    {#if !!$lobby_id}
       <p style="font-size: 10px;">(Lobby ID: {$lobby_id})</p>
     {/if} -->
   </div>
@@ -328,10 +290,8 @@
   <br>
   
 
-  <!-- <button class="button button4" style="vertical-align: middle;">
-    Copy Link to Invite Friends
-  </button> -->
-
+  <!-- // FR11 Power Ups -->
+  <!-- Powerup selection happens here by selecting a button -->
   {#if !client_ready}
     <hr />
     <br>
@@ -353,6 +313,11 @@
     <br />
     <hr />
 
+
+    <!-- // FR6 Play Game
+    // We are saying "I'm ready to play!" so that the server knows we are ready
+    // When all the other clients are ready, the game will start 
+    // We wait to ensure there is at least two players in the lobby (don't want to start a one-player game)-->
     {#if $usernames.length > 1}
       <p>
         When you are ready and have your powerups selected, click the button
@@ -455,24 +420,6 @@
   .alignright {
     float: right;
   }
-
-  /* .powerUpButton {
-    font-family: SuperLegendBoy;
-    border: 2px solid #ffffff;
-    height: 300px;
-    color: white;
-    padding: 15px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-    margin: 5px 5px;
-    cursor: pointer;
-    width: 100%;
-    background-color: #353839;
-    margin-left: auto;
-    margin-right: auto;
-  } */
 
   .powerUpButton {
     font-family: SuperLegendBoy;
