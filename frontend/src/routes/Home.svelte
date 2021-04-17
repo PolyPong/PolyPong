@@ -1,9 +1,8 @@
 <script>
   import auth from "../authService";
-  import { user, auth0Client, popupOpen, ws } from "../store";
+  import { user, auth0Client, ws } from "../store";
 
   import { router } from "tinro";
-  import type { CheckExists } from "@polypong/polypong-common";
   import { onMount } from "svelte";
 
   const SERVER_URL =
@@ -11,6 +10,7 @@
       ? "https://polyserver.polypong.ca:8443/"
       : "http://localhost:8443/";
 
+  // FR1 User Login
   async function logIn() {
     auth.loginWithRedirect(await $auth0Client); // Do not pass in null in the options field or the code will break
   }
@@ -19,6 +19,8 @@
     await getUsername();
   });
 
+  // FR1 User Login
+  // FR5 Join Game
   async function getUsername() {
     if (await (await $auth0Client).isAuthenticated()) {
       const token = await (await $auth0Client).getTokenSilently();
@@ -50,22 +52,23 @@
 
   <hr />
 
+  <!-- // FR3 Create Game -->
   <div>
-    <a href="/lobby">
-      <button class="button button2" 
-        on:click={async () => {
-          if($ws.readyState !== WebSocket.OPEN){
-            return;
-          }
-          const payload = {
-            type: "create_lobby",
-          };
-          $ws.send(JSON.stringify(payload));
-          console.log("Attempting to create lobby");
-        }}
-      >Create Private Game</button>
-    </a>
+    <button class="button button2" 
+      on:click={async () => {
+        if($ws.readyState !== WebSocket.OPEN){
+          return;
+        }
+        const payload = {
+          type: "create_lobby",
+        };
+        $ws.send(JSON.stringify(payload));
+        console.log("Attempting to create lobby");
+        router.goto("/lobby");
+      }}
+    >Create Private Game</button>
 
+    <!-- // FR5 Join Game -->
     <a href="/lobbySelection">
       <button class="button button3">Join Public Game</button>
     </a>
@@ -73,7 +76,13 @@
   </div>
 
 
-
+  <!-- // FR1 User Login -->
+  <!-- // FR2 User Registration -->
+  <!-- // FR8 Local Leaderboard -->
+  <!-- // FR9 Global Leaderboard -->
+  <!-- // FR10 User statistics -->
+  <!-- // FR27 Earn Skin -->
+  <!-- // FR28 Select skin -->
   {#await $auth0Client then client}
     {#await client.isAuthenticated() then loggedin}
       {#if loggedin}
