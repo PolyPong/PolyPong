@@ -1,10 +1,15 @@
+<!-- This file creates a grid of publicly available lobbies that have been precreated on the backend 
+Anyone can join these public lobbies (as long as a game is not in progress) and play a game with people they don't know
+These lobbies are meant to be evergreen - instead of being created and destroyed after a game is over,
+they can be reused for game after game. This file is exclusively about FR5 - Join Game. -->
+
 <script>
     import { router } from "tinro";
 
-    // import {joinGame, ws, user_id} from "../store"
-
+    // FR5 Join Game
     const LobbyNames: string[] = ["DICE","Solarium","Cameron","SUB","CCIS","Windsor","ECERF","Telus", "Tory", "Butterdome", "Quad", "Lister"];
 
+    // FR5 Join Game
     const joinGameButton = (input: string | undefined) => {
         router.goto("/lobby/" + input);
     };
@@ -15,6 +20,7 @@
 
     <hr />
 
+    <!-- // FR5 Join Game -->
     <p>Choose a lobby to join: </p>
 
     <div class="grid-container">
