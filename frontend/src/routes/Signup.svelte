@@ -2,7 +2,6 @@
   import { user, auth0Client, usernameExists, ws } from "../store";
   import { router } from "tinro";
   import { onMount } from "svelte";
-  import type { CheckExists } from "@polypong/polypong-common";
 
   let email: HTMLInputElement;
   let username: HTMLInputElement;
@@ -12,9 +11,12 @@
       ? "https://polyserver.polypong.ca:8443/"
       : "http://localhost:8443/";
 
+  // FR2 User Registration
   onMount(async () => {
     // createclient should do this part automatically
     // await auth0Client.getTokenSilently();
+
+    // If the user is authenticated with Auth0
     if (await (await $auth0Client).isAuthenticated()) {
       email.readOnly = true;
       email.value = $user.email;
@@ -25,6 +27,7 @@
     user.set(await (await $auth0Client).getUser());
   });
 
+  // FR2 User Registration
   async function signUpUser() {
     const input = username.value.trim();
     if (input === "") {
@@ -36,7 +39,7 @@
       }
       const token = await (await $auth0Client).getTokenSilently();
       // Check if username is in the database
-      // Send over a check_exists request for the username to server and wait for response (response happens in store.ts)
+      // Send over a signup request for the username to server and wait for response
       const res = await fetch(SERVER_URL + "signup", {
         method: "POST",
         body: JSON.stringify({
@@ -57,8 +60,6 @@
         $usernameExists = true;
         return;
       }
-
-      // TODO serverurl, add createuser
     }
   }
 </script>
@@ -71,15 +72,10 @@
   <br />
   <br />
 
-  <!-- <p id="email">Email: </p> -->
   <label for="email" class="label1">Email:</label>
   <input type="text" class="input1" id="email" bind:this={email} name="email" />
   <br />
   <br />
-
-  <!-- <label for="username" class="label2">Username:</label>
-    <input type="text" class="input" id="username" name="username" /><br /><br /> -->
-
 
   <label for="username" class="label2">Username:</label>
   <input
@@ -101,12 +97,10 @@
     play with.
   </p>
   <p>
-    The email address above is used to create your account, and we will send you
-    a confirmation email when an account with your email has been created.
+    The email address above is used to create your account.
   </p>
   <p>
-    We will not email you again after the initial confirmation email, and we
-    will never sell your information.
+    We will never email you, and we will never sell your information.
   </p>
 
   <br />
