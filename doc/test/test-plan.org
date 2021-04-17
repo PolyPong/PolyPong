@@ -458,8 +458,9 @@ This is a manual test
 6. Have every player select three random powerups, ensuring each powerup has been selected at least once.
 7. Once each player has selected three random powerups, have them hit the ~Let's Play~ button at the bottom of the page.
 8. Over the course of a regular 12-player game, have each player use their powerups by pressing 1, 2 and 3. Make sure each player knows which powerup they are using by having them view the inventory before they press 1, 2 or 3. 
-9. When the player uses the powerup, ensure the specified powerup's behaviour is consistent with the expectations for the powerup set out below.
 
+**** Expectations
+1. Each time a player uses a powerup, ensure the specified powerup's behaviour is consistent with the expectations for each individual powerup test defined below.
 
 *** FR12 Expanded Paddle
 This is a manual test
