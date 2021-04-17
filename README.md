@@ -3,6 +3,8 @@
 PolyPong is a multiplayer online version of the classic game we all know and love. Play with friends, unlock new skins and climb the leaderboard to eternal PolyPong greatness!
 
 # How to build this project
+You should not have to set any environment variables to
+get the project to run locally. We only use environment variables in the production environment.
 
 ## Frontend
 
