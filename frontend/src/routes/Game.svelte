@@ -31,6 +31,7 @@
   } from "@polypong/polypong-common";
   import { GameClient } from "../Game";
   import { router } from "tinro";
+
   let w: number;
   let h: number;
   let canvas: HTMLCanvasElement;
@@ -81,10 +82,14 @@
   //     return (game.radius-500/sides)*Math.sin(Math.PI/sides + 2*Math.PI*(playerNumber-1)/sides)
   // }
 
+  // FR1 User Login
+  // FR6 Play Game
+  // FR7 Earn XP
   onMount(async () => {
     load();
   });
 
+  // FR6 Play Game
   onDestroy( () => {
     window.removeEventListener("keydown", handleKeyPresses);
     window.removeEventListener("keyup", handleKeyPresses);
@@ -97,6 +102,12 @@
     clearInterval(distractingBackgroundInterval);
   });
 
+  // FR1 User Login
+  // FR6 Play Game
+  // FR7 Earn XP
+  // FR17 Self Curved Outwards Paddle
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
   async function load() {
     w = document.documentElement.clientWidth;
     h = document.documentElement.clientHeight;
@@ -143,6 +154,7 @@
     // Get all the other clients to send a payload saying they have stopped their gameLoop
     // Then, in lobby.ts, once all the clients have send back a ready message, send a game_started message
 
+    // FR6 Play Game
     gameActiveInterval = setInterval(async () => {
       if ($game_active) {
         $game_active = false;
@@ -171,6 +183,11 @@
       await tick();
     }, 50);
 
+    
+    // FR6 Play Game
+    // FR17 Self Curved Outwards Paddle
+    // FR18 Self Curved Inwards Paddle 
+    // FR19 Self Bumpy Paddle 
     allClientsReadyInterval = setInterval(async () => {
       if ($all_clients_ready) {
         $all_clients_ready = false;
@@ -196,6 +213,8 @@
       await tick();
     }, 50);
 
+    // FR6 Play Game
+    // FR7 Earn XP
     serverSaysStopGameInterval = setInterval(async () => {
       if ($stop_game_loop) {
         $stop_game_loop = false;
@@ -246,6 +265,7 @@
     }, 50);
   }
 
+  // FR6 Play Game
   function startGame(sides: number, player_number: number, ball: Ball) {
     // Adding an EventListener to window to listen for keys being pressed
     // window.addEventListener("keydown", keyDownHandler);
@@ -267,6 +287,7 @@
     $ws.send(JSON.stringify(payload));
   }
 
+  // FR6 Play Game
   // Draw the current game board or polygon according to the size of the client's window
   // Also adjust the size of paddles based on the length of each side
   // (currently, each paddle is one quarter of the side length)
@@ -295,12 +316,27 @@
     // }
   }
 
+  // FR6 Play Game
+  // FR7 Earn XP
+  // FR11 Power Ups 
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle 
+  // FR16 Invisible Ball 
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
+  // FR20 Distracting Background 
+  // FR23 Add Ball 
+  // FR26 Path Trace 
   export function gameLoop() {
     update(); // For updating the state of the game
     render(); // For rendering the updated state of the game 
               // (ie. clears the screen and draws the new state onto the canvas)
   }
 
+  // FR6 Play Game
   // Update the state of the game, using what the server sends us
   function update() {
     // Handles paddle movement side-to-side using the left and right arrow keys,
@@ -366,6 +402,20 @@
     }
   }
 
+  // FR6 Play Game
+  // FR7 Earn XP
+  // FR11 Power Ups 
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle 
+  // FR16 Invisible Ball 
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
+  // FR20 Distracting Background 
+  // FR23 Add Ball 
+  // FR26 Path Trace 
   // Re-render the game according to the new state
   function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -403,6 +453,8 @@
     }
   }
 
+  // FR6 Play Game
+  // FR7 Earn XP
   async function drawGameOver() {
     
     clearScreenOriginCentered();
@@ -426,6 +478,8 @@
     router.goto("/home");
   }
 
+  // FR6 Play Game
+  // FR20 Distracting Background
   function drawPolygon(
     sides: number,
     red: string | number,
@@ -473,6 +527,7 @@
     ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
+  // FR6 Play Game
   // // 3 Sides = 120 degrees = 30 degrees
   // // 4 Sides = 90 degrees = 45 degrees
   // // 5 Sides = 72 degrees = 54 degrees
@@ -483,11 +538,18 @@
   // // 10 Sides = 36 degrees = 0 degrees
   // // 11 Sides = 32.727272727 degrees = 32.727272727/4 degrees
   // // 12 Sides = 30 degrees = 15 degrees
-
   function rotationAngle(sides: number) {
     return (360 / sides) * (((sides + 2) % 4) / 4);
   }
 
+  // FR6 Play Game
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle  
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
   function drawPaddles() {
     ctx.lineWidth = Paddle.height;
 
@@ -582,8 +644,9 @@
     ctx.lineWidth = 1;
   }
 
+  // FR6 Play Game
   function getPaddleY() {
-    // Attempting to get the paddles to resize well, still not a great solution but handles about 85% of cases well
+    // Determines the Y position of the paddles so that they are drawn on the sides of the shape
     if ($game.sides == 2) {
       return 175;
     } else if ($game.sides === 3) {
@@ -620,6 +683,7 @@
     // }
   }
 
+  // FR6 Play Game
   function moveBall() {
     for (var i = 0; i < $game.balls.length; i++) {
       $game.balls[i].x += $game.balls[i].dx;
@@ -627,6 +691,10 @@
     }
   }
 
+  // FR6 Play Game
+  // FR16 Invisible Ball 
+  // FR23 Add Ball - works with multiple balls, but no direct add ball functionality here
+  // FR26 Path Trace 
   function drawBall() {
     // If the ball is invisible (across all clients)
     for (var i = 0; i < $game.balls.length; i++) {
@@ -657,6 +725,7 @@
     }
   }
 
+  // FR26 Path Trace
   // Draws an arrow to the canvas, used for path tracing/showing the path of the ball
   // Taken from : https://stackoverflow.com/questions/808826/draw-arrow-on-canvas-tag
   function canvas_arrow(context: CanvasRenderingContext2D, fromx: number, fromy: number, tox: number, toy: number) {
@@ -671,6 +740,7 @@
     context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
   }
 
+  // FR6 Play Game
   // Collision detection function, returns true or false
   function collisionDetect(ballIndex: number) {
 
@@ -729,6 +799,10 @@
     );
   }
 
+  // FR6 Play Game
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
   // Note: for 2-player games, all collision handling is done on one client (player 0)
   // and sent to the other client as an update
   // This is done to prevent the two clients from overwriting each other, 
@@ -809,6 +883,7 @@
     $game.balls[ballIndex].velocity += 0.2;
   }
 
+  // FR6 Play Game
   function gameOver(ballIndex: number) {
     const theta = (2 * Math.PI * $game_info.my_player_number) / $game.sides;
     const transformedBallY =
@@ -818,6 +893,7 @@
     return topOfBall > bottomOfPaddle;
   }
 
+  // FR6 Play Game
   function handleGameOver() {
     window.removeEventListener("keydown", handleKeyPresses);
     window.removeEventListener("keyup", handleKeyPresses);
@@ -841,6 +917,8 @@
     }
   }
 
+  // FR6 Play Game
+  // FR7 Earn XP
   // Note that when calling animateText, the origin must be set to the center of the canvas
   // (ie. (x,y) = (canvas.width/2, canvas.height/2) )
   function animateText(text: string, duration: number) {
@@ -853,6 +931,8 @@
     animationInterval.push(aI);
   }
 
+  // FR6 Play Game
+  // FR7 Earn XP
   function drawText(text: string) {
     textAlpha += 0.01;
     ctx.fillStyle = "rgba(255,69,0, " + textAlpha + ")"; // CSS: orangered, hex value is #ff4500
@@ -866,6 +946,7 @@
     }
   }
 
+  // FR6 Play Game
   function clearScreenOriginCentered() {
     ctx.translate((-1 * canvas.width) / 2, (-1 * canvas.height) / 2);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -912,6 +993,21 @@
   //   startGame(12);
   // }
 
+  // FR6 Play Game
+  // FR7 Earn XP
+  // FR11 Power Ups 
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle 
+  // FR16 Invisible Ball 
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
+  // FR20 Distracting Background 
+  // FR23 Add Ball 
+  // Contributes to all the FRs because every FR makes use of sendUpdate()
+  // to communicate any client updates with the server (only path trace does not use sendUpdate())
   const sendUpdate = (msg) => {
     const payload: ClientUpdate = {
       type: "client_update",
@@ -924,6 +1020,23 @@
     $ws.send(JSON.stringify(payload));
   };
 
+  // FR6 Play Game
+  // FR11 Power Ups 
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle 
+  // FR16 Invisible Ball 
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
+  // FR20 Distracting Background 
+  // FR23 Add Ball 
+  // FR26 Path Trace 
+  // All of the powerups make use of this code, the player's available powerups
+  // are found in the $power_ups_str from store.ts (created and set in Lobby.Svelte)
+  // Whenever a powerup is in the player's inventory (ie. it hasn't been used), 
+  // we are passing it to handlePowerup()
   var keyMap: any = {};
   function handleKeyPresses(event: any) {
     keyMap[event.keyCode] = event.type == "keydown";
@@ -988,6 +1101,7 @@
     }
   }
 
+  // Old protoype code, please ignore
   // Activated when we press a key down
   // function keyDownHandler(event: any) {
   //   if (!leftArrowPressed && !rightArrowPressed) {
@@ -1056,6 +1170,7 @@
   //   }
   // }
 
+  // FR6 Play Game
   // Activated when the window loses focus
   function blurHandler(event: any) {
     console.log("Game lost focus!");
@@ -1069,10 +1184,14 @@
     sendUpdate("lost_focus")
   }
 
+  // FR6 Play Game
+  // FR7 Earn XP
+  // Used whenever we are animating text to the screen (either the countdown or XP messages)
   function sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  // FR7 Earn XP
   async function getXP(): number{
     console.log("We are in getXP(), client side");
     if (await (await $auth0Client).isAuthenticated()){
@@ -1090,6 +1209,18 @@
     }
   }
 
+  // FR11 Power Ups 
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle 
+  // FR16 Invisible Ball 
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
+  // FR20 Distracting Background 
+  // FR23 Add Ball 
+  // FR26 Path Trace 
   function handlePowerup(powerup: PowerupStrings) {
     if (powerup === "bigger") {
       //console.log("We are in 'bigger'");
@@ -1201,6 +1332,8 @@
     }
   }
 
+  // FR6 Play Game
+  // FR7 Earn XP
   function playSound(id: string){
     const mySound = document.getElementById(id);   
     mySound.play();
@@ -1210,6 +1343,8 @@
 
 <!-- <body onload="load()" onresize="getSize()"> -->
 <body>
+  <!-- // FR6 Play Game
+  // FR7 Earn XP -->
   <audio id="XP" volume="0.25">   
     <source src="/sounds/XP.wav" />   
   </audio>
@@ -1238,6 +1373,21 @@
     {/await}
   {/await}
 
+  <!-- // FR6 Play Game
+  // FR7 Earn XP
+  // FR11 Power Ups 
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle 
+  // FR16 Invisible Ball 
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
+  // FR20 Distracting Background 
+  // FR23 Add Ball 
+  // FR26 Path Trace  
+  Drawing to the canvas is used for all elements of the game-->
   <canvas
     id="drawing"
     bind:this={canvas}
@@ -1249,6 +1399,19 @@
   <br />
 
 
+  <!-- // FR11 Power Ups 
+  // FR12 Expanded Paddle 
+  // FR13 Shrink Paddle 
+  // FR14 Self Invisible Paddle 
+  // FR15 Others Invisible Paddle 
+  // FR16 Invisible Ball 
+  // FR17 Self Curved Outwards Paddle 
+  // FR18 Self Curved Inwards Paddle 
+  // FR19 Self Bumpy Paddle 
+  // FR20 Distracting Background 
+  // FR23 Add Ball 
+  // FR26 Path Trace  
+  Displays the user's available powerups -->
   <p>Inventory:</p>
 
   {#if !$power_up_one_used}
