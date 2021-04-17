@@ -146,7 +146,7 @@ To run it,
 ```bash
 cd e2e-test
 npm i
-npm start
+npm test
 ```
 
 

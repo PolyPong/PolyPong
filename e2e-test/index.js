@@ -19,9 +19,9 @@ const puppeteer = require("puppeteer");
     const frame = targetPage.mainFrame();
     const promise = targetPage.waitForNavigation();
     const element = await frame.waitForSelector(
-      "html > body > div > main > section > div > div.c31c314fe > div > div > form.c29c8bf29.c3ab72776.c7171e65b"
+      "aria/Continue with GitHub"
     );
-    await element.evaluate((form) => form.submit());
+    await element.click();
     await promise;
   }
   {
@@ -292,42 +292,6 @@ const puppeteer = require("puppeteer");
   {
     const targetPage = page;
     const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Bomb");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Bomb");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Bomb");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Catch and Aim");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Catch and Aim");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Catch and Aim");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
     const element = await frame.waitForSelector("aria/Distracting Background");
     await element.click();
   }
@@ -341,24 +305,6 @@ const puppeteer = require("puppeteer");
     const targetPage = page;
     const frame = targetPage.mainFrame();
     const element = await frame.waitForSelector("aria/Distracting Background");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Split Paddle");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Split Paddle");
-    await element.click();
-  }
-  {
-    const targetPage = page;
-    const frame = targetPage.mainFrame();
-    const element = await frame.waitForSelector("aria/Split Paddle");
     await element.click();
   }
   {
