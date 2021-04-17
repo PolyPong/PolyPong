@@ -7,6 +7,7 @@
   let xp: number = 0;
   let wins: number = 0;
   let losses: number = 0;
+  let winLossRatio: number = 0;
   let gamesPlayed: number = 0;
 
   let username: string = "";
@@ -16,6 +17,7 @@
       ? "https://polyserver.polypong.ca:8443/"
       : "http://localhost:8443/";
 
+  // FR10 User statistics
   onMount(async () => {
     await getUsername();
 
@@ -33,6 +35,7 @@
       const lossresponseBody = await lossresponse.text();
       losses = parseInt(lossresponseBody);
 
+      winLossRatio = Math.round( (1000 * wins) / (wins + losses))/1000; // Round to three decimals
       gamesPlayed = wins + losses;
       console.log(wins);
       console.log(losses);
@@ -40,6 +43,7 @@
     }
   });
 
+  // FR1 User Login
   async function getUsername() {
     if (await (await $auth0Client).isAuthenticated()) {
       const token = await (await $auth0Client).getTokenSilently();
@@ -64,6 +68,9 @@
     }
   }
 
+  // FR8 Local Leaderboard
+  // FR9 Global Leaderboard
+  // All about leaderboard selection; highlights the selected option
   function toggleBackground(idOfLabel, ...ids) {
     if (idOfLabel == "me") {
       globalLeaderboard = false;
@@ -86,10 +93,11 @@
 
   <h2>My Stats</h2>
 
+  <!-- // FR10 User statistics -->
   {#if username}
     <p style="text-align:center">Games Played: {gamesPlayed}</p>
     {#if wins !== 0 || losses !== 0}
-      <p style="text-align:center">Win/Loss Ratio: {wins / (wins + losses)}</p>
+      <p style="text-align:center">Win/Loss Ratio: {winLossRatio}</p>
     {/if}
     <p style="text-align:center">Games Won: {wins}</p>
     <p style="text-align:center">XP Level: {xp}</p>
@@ -111,6 +119,9 @@
     </tr>
   </table> -->
 
+
+  <!-- // FR8 Local Leaderboard -->
+  <!-- // FR9 Global Leaderboard -->
   <hr />
   <h2>Leaderboard</h2>
 
@@ -138,6 +149,7 @@
   </div>
   <br />
 
+  <!-- // FR9 Global Leaderboard -->
   {#if globalLeaderboard}
     {#await fetch(SERVER_URL + "leaderboard") then res}
       {#await res.json() then leaderboard}
@@ -158,6 +170,7 @@
         </ol>
       {/await}
     {/await}
+  <!-- // FR8 Local Leaderboard -->
   {:else if username}
     {#await fetch(SERVER_URL + "localleaderboard/" + username) then res}
       {#await res.json() then leaderboard}
@@ -190,8 +203,7 @@
     <button class="button button4">Home</button>
   </a>
 
-  <!-- 
-
+  <!-- Initial prototype, please ignore
   <h1>PolyPong</h1>
   <hr />
   <div class="content">
@@ -259,10 +271,12 @@
     </div>
   </div>
 
-  <a href="/home">
-  --><!-- This assumes the user is logged in --><!--
-    <button class="button button4">Home</button>
-  </a> -->
+  <a href="/home"> -->
+    <!-- This assumes the user is logged in -->
+    <!--
+      <button class="button button4">Home</button>
+  </a> 
+  -->
 </body>
 
 <style>
