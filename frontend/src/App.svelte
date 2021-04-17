@@ -9,7 +9,6 @@
   import Signup from "./routes/Signup.svelte";
   import Callback from "./routes/Callback.svelte";
   import { onMount } from "svelte";
-  import auth from "./authService";
   import { user, auth0Client, lobby_id, user_id, ws } from "./store";
   import LobbySelection from "./routes/LobbySelection.svelte";
   import type { ExitGamePayload } from "@polypong/polypong-common";

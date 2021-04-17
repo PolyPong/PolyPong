@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { ws, user_id, user, auth0Client } from "../store";
+  import { user, auth0Client } from "../store";
   import { router, meta } from "tinro";
 
   let globalLeaderboard = false;
@@ -20,7 +20,7 @@
     await getUsername();
 
     username = $user.username;
-    if(username){
+    if (username) {
       const xpresponse = await fetch(SERVER_URL + "getxp/" + username);
       const xpresponseBody = await xpresponse.text();
       xp = parseInt(xpresponseBody);
@@ -29,16 +29,14 @@
       const winresponseBody = await winresponse.text();
       wins = parseInt(winresponseBody);
 
-
       const lossresponse = await fetch(SERVER_URL + "getlosses/" + username);
       const lossresponseBody = await lossresponse.text();
       losses = parseInt(lossresponseBody);
 
-      gamesPlayed = wins+losses;
+      gamesPlayed = wins + losses;
       console.log(wins);
       console.log(losses);
       console.log(gamesPlayed);
-
     }
   });
 
@@ -67,7 +65,7 @@
   }
 
   function toggleBackground(idOfLabel, ...ids) {
-    if (idOfLabel == "me"){
+    if (idOfLabel == "me") {
       globalLeaderboard = false;
     } else {
       globalLeaderboard = true;
@@ -80,11 +78,9 @@
     id.style.backgroundColor = "#FFFFFF";
     id.style.color = "#353839";
   }
-
 </script>
 
 <body>
-
   <h1>PolyPong</h1>
   <hr />
 
@@ -93,14 +89,16 @@
   {#if username}
     <p style="text-align:center">Games Played: {gamesPlayed}</p>
     {#if wins !== 0 || losses !== 0}
-      <p style="text-align:center">Win/Loss Ratio: {(wins)/(wins+losses)}</p>
+      <p style="text-align:center">Win/Loss Ratio: {wins / (wins + losses)}</p>
     {/if}
     <p style="text-align:center">Games Won: {wins}</p>
     <p style="text-align:center">XP Level: {xp}</p>
   {:else}
-  <p style="text-align:center; padding: 50px;">To see your stats, create an account or log in!</p>
+    <p style="text-align:center; padding: 50px;">
+      To see your stats, create an account or log in!
+    </p>
   {/if}
-  
+
   <!-- <table class="center" width="100%">
     <tr height="50px">
       <td style="text-align:left">Games Played: 70</td>
@@ -125,7 +123,8 @@
           name="radio2"
           checked
           on:click={() => toggleBackground("me", "me", "top_worldwide")}
-        />Your Position</label>
+        />Your Position</label
+      >
       <label id="top_worldwide" class="label">
         <input
           type="radio"
@@ -133,10 +132,11 @@
           name="radio2"
           on:click={() =>
             toggleBackground("top_worldwide", "me", "top_worldwide")}
-        />Top in the World</label>
+        />Top in the World</label
+      >
     </div>
   </div>
-  <br/>
+  <br />
 
   {#if globalLeaderboard}
     {#await fetch(SERVER_URL + "leaderboard") then res}
@@ -145,49 +145,52 @@
           <div style="margin: auto; width: 50%;">
             <li class="alignleft" style="list-style-type: none">Username</li>
             <li class="alignright" style="list-style-type: none">XP Earned</li>
-            <br/>
-            <br/>
+            <br />
+            <br />
             {#each leaderboard as entry, index}
-                <li class="alignleft" value={index+1}>{entry.username}</li>
-                <li class="alignright" style="list-style-type: none">{entry.xp}</li>
-                <br />
+              <li class="alignleft" value={index + 1}>{entry.username}</li>
+              <li class="alignright" style="list-style-type: none">
+                {entry.xp}
+              </li>
+              <br />
+            {/each}
+          </div>
+        </ol>
+      {/await}
+    {/await}
+  {:else if username}
+    {#await fetch(SERVER_URL + "localleaderboard/" + username) then res}
+      {#await res.json() then leaderboard}
+        <ol>
+          <div style="margin: auto; width: 50%;">
+            <li class="alignleft" style="list-style-type: none">Username</li>
+            <li class="alignright" style="list-style-type: none">XP Earned</li>
+            <br />
+            <br />
+            {#each leaderboard as entry, index}
+              <li class="alignleft" value={entry.position}>{entry.username}</li>
+              <li class="alignright" style="list-style-type: none">
+                {entry.xp}
+              </li>
+              <br />
             {/each}
           </div>
         </ol>
       {/await}
     {/await}
   {:else}
-    {#if username}
-      {#await fetch(SERVER_URL + "localleaderboard/" + username) then res}
-        {#await res.json() then leaderboard}
-          <ol>
-            <div style="margin: auto; width: 50%;">
-              <li class="alignleft" style="list-style-type: none">Username</li>
-              <li class="alignright" style="list-style-type: none">XP Earned</li>
-              <br/>
-              <br/>
-              {#each leaderboard as entry, index}
-                  <li class="alignleft" value={entry.position}>{entry.username}</li>
-                  <li class="alignright" style="list-style-type: none">{entry.xp}</li>
-                  <br />
-              {/each}
-            </div>
-          </ol>
-        {/await}
-      {/await}
-    {:else}
-      <p style="padding: 50px;">To see your position on the leaderboards, create an account or log in!</p>
-    {/if}
+    <p style="padding: 50px;">
+      To see your position on the leaderboards, create an account or log in!
+    </p>
   {/if}
 
-  <hr/>
+  <hr />
 
   <a href="/home">
     <button class="button button4">Home</button>
   </a>
 
-
-<!-- 
+  <!-- 
 
   <h1>PolyPong</h1>
   <hr />
